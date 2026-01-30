@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FaqRequest extends FormRequest
@@ -13,19 +14,31 @@ class FaqRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
+        $rules = [
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ];
+
+        // Add validation rules for all languages
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $rules['question_' . $language->code] = 'required|string|max:255';
+            $rules['answer_' . $language->code] = 'required|string';
+        }
+
+        return $rules;
     }
 
     public function messages(): array
     {
-        return [
-            'question.required' => 'Вопрос обязателен',
-            'answer.required' => 'Ответ обязателен',
-        ];
+        $messages = [];
+
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $messages['question_' . $language->code . '.required'] = 'Вопрос (' . $language->name . ') обязателен';
+            $messages['answer_' . $language->code . '.required'] = 'Ответ (' . $language->name . ') обязателен';
+        }
+
+        return $messages;
     }
 }

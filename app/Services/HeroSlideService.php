@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Language;
 use App\Repositories\HeroSlideRepository;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,6 +15,23 @@ class HeroSlideService
     public function getAll()
     {
         return $this->heroSlideRepository->getAll();
+    }
+
+    public function getAllByLanguage(string $langCode)
+    {
+        $slides = $this->heroSlideRepository->getAll();
+
+        return $slides->map(function ($slide) use ($langCode) {
+            $translation = $slide->translations->where('lang_code', $langCode)->first();
+            return [
+                'id' => $slide->id,
+                'title' => $translation->title ?? 'N/A',
+                'subtitle' => $translation->subtitle ?? 'N/A',
+                'image_path' => $slide->image_path,
+                'sort_order' => $slide->sort_order,
+                'is_active' => $slide->is_active
+            ];
+        });
     }
 
     public function findById(int $id)
@@ -33,11 +51,15 @@ class HeroSlideService
 
         $heroSlide = $this->heroSlideRepository->create($data);
 
-        $this->heroSlideRepository->createTranslation($heroSlide->id, [
-            'title' => $data['title'],
-            'subtitle' => $data['subtitle'],
-            'lang_code' => 'ru',
-        ]);
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $langCode = $language->code;
+            $this->heroSlideRepository->createTranslation($heroSlide->id, [
+                'title' => $data['title_' . $langCode] ?? '',
+                'subtitle' => $data['subtitle_' . $langCode] ?? '',
+                'lang_code' => $langCode,
+            ]);
+        }
 
         return $heroSlide;
     }
@@ -59,11 +81,17 @@ class HeroSlideService
 
         $this->heroSlideRepository->update($heroSlide, $data);
 
-        $this->heroSlideRepository->createTranslation($heroSlide->id, [
-            'title' => $data['title'],
-            'subtitle' => $data['subtitle'],
-            'lang_code' => 'ru',
-        ]);
+        $heroSlide->translations()->delete();
+
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $langCode = $language->code;
+            $this->heroSlideRepository->createTranslation($heroSlide->id, [
+                'title' => $data['title_' . $langCode] ?? '',
+                'subtitle' => $data['subtitle_' . $langCode] ?? '',
+                'lang_code' => $langCode,
+            ]);
+        }
 
         return $heroSlide;
     }

@@ -3,41 +3,41 @@
        </a>
        <div class="settingSidebar-body ps-container ps-theme-default">
            <div class=" fade show active">
-               <div class="setting-panel-header">Setting Panel
+               <div class="setting-panel-header">Панель настроек
                </div>
                <div class="p-15 border-bottom">
-                   <h6 class="font-medium m-b-10">Select Layout</h6>
+                   <h6 class="font-medium m-b-10">Выберите макет</h6>
                    <div class="selectgroup layout-color w-50">
                        <label class="selectgroup-item">
                            <input type="radio" name="value" value="1" class="selectgroup-input-radio select-layout" checked>
-                           <span class="selectgroup-button">Light</span>
+                           <span class="selectgroup-button">Светлый</span>
                        </label>
                        <label class="selectgroup-item">
                            <input type="radio" name="value" value="2" class="selectgroup-input-radio select-layout">
-                           <span class="selectgroup-button">Dark</span>
+                           <span class="selectgroup-button">Тёмный</span>
                        </label>
                    </div>
                </div>
                <div class="p-15 border-bottom">
-                   <h6 class="font-medium m-b-10">Sidebar Color</h6>
+                   <h6 class="font-medium m-b-10">Цвет боковой панели</h6>
                    <div class="selectgroup selectgroup-pills sidebar-color">
                        <label class="selectgroup-item">
-                           <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
+                           <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar" checked>
                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                               data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
+                               data-original-title="Светлая боковая панель"><i class="fas fa-sun"></i></span>
                        </label>
                        <label class="selectgroup-item">
-                           <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
+                           <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar">
                            <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                               data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
+                               data-original-title="Тёмная боковая панель"><i class="fas fa-moon"></i></span>
                        </label>
                    </div>
                </div>
                <div class="p-15 border-bottom">
-                   <h6 class="font-medium m-b-10">Color Theme</h6>
+                   <h6 class="font-medium m-b-10">Цветовая тема</h6>
                    <div class="theme-setting-options">
                        <ul class="choose-theme list-unstyled mb-0">
-                           <li title="white" class="active">
+                           <li title="white">
                                <div class="white"></div>
                            </li>
                            <li title="cyan">
@@ -49,7 +49,7 @@
                            <li title="purple">
                                <div class="purple"></div>
                            </li>
-                           <li title="orange">
+                           <li title="orange" class="active">
                                <div class="orange"></div>
                            </li>
                            <li title="green">
@@ -67,7 +67,7 @@
                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
                                id="mini_sidebar_setting">
                            <span class="custom-switch-indicator"></span>
-                           <span class="control-label p-l-10">Mini Sidebar</span>
+                           <span class="control-label p-l-10">Мини-боковая панель</span>
                        </label>
                    </div>
                </div>
@@ -77,13 +77,13 @@
                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
                                id="sticky_header_setting">
                            <span class="custom-switch-indicator"></span>
-                           <span class="control-label p-l-10">Sticky Header</span>
+                           <span class="control-label p-l-10">Закреплённая шапка</span>
                        </label>
                    </div>
                </div>
                <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
                    <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
-                       <i class="fas fa-undo"></i> Restore Default
+                       <i class="fas fa-undo"></i> Восстановить по умолчанию
                    </a>
                </div>
            </div>

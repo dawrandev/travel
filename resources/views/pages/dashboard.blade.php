@@ -3,6 +3,9 @@
 @section('content')
 <div class="section-header">
     <h1>Панель управления</h1>
+    <div class="section-header-breadcrumb">
+        <div class="breadcrumb-item active"><i class="fas fa-home"></i> Панель управления</div>
+    </div>
 </div>
 
 <div class="row">

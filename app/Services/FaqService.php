@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Language;
 use App\Repositories\FaqRepository;
 
 class FaqService
@@ -13,6 +14,22 @@ class FaqService
     public function getAll()
     {
         return $this->faqRepository->getAll();
+    }
+
+    public function getAllByLanguage(string $langCode)
+    {
+        $faqs = $this->faqRepository->getAll();
+
+        return $faqs->map(function ($faq) use ($langCode) {
+            $translation = $faq->translations->where('lang_code', $langCode)->first();
+            return [
+                'id' => $faq->id,
+                'question' => $translation->question ?? 'N/A',
+                'answer' => $translation->answer ?? 'N/A',
+                'sort_order' => $faq->sort_order,
+                'is_active' => $faq->is_active
+            ];
+        });
     }
 
     public function findById(int $id)
@@ -27,11 +44,16 @@ class FaqService
 
         $faq = $this->faqRepository->create($data);
 
-        $this->faqRepository->createTranslation($faq->id, [
-            'question' => $data['question'],
-            'answer' => $data['answer'],
-            'lang_code' => 'ru',
-        ]);
+        // Create translations for all languages
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $langCode = $language->code;
+            $this->faqRepository->createTranslation($faq->id, [
+                'question' => $data['question_' . $langCode] ?? '',
+                'answer' => $data['answer_' . $langCode] ?? '',
+                'lang_code' => $langCode,
+            ]);
+        }
 
         return $faq;
     }
@@ -45,11 +67,18 @@ class FaqService
 
         $this->faqRepository->update($faq, $data);
 
-        $this->faqRepository->createTranslation($faq->id, [
-            'question' => $data['question'],
-            'answer' => $data['answer'],
-            'lang_code' => 'ru',
-        ]);
+        // Delete old translations and create new ones
+        $faq->translations()->delete();
+
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $langCode = $language->code;
+            $this->faqRepository->createTranslation($faq->id, [
+                'question' => $data['question_' . $langCode] ?? '',
+                'answer' => $data['answer_' . $langCode] ?? '',
+                'lang_code' => $langCode,
+            ]);
+        }
 
         return $faq;
     }

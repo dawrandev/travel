@@ -23,7 +23,11 @@
             @include('components.footer')
         </div>
     </div>
+
+    @stack('modals')
+
     @include('partials.script')
+    @stack('scripts')
 </body>
 
 </html>

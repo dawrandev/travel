@@ -1,3 +1,12 @@
+/* Sidebar active item warning color */
+.sidebar-menu li.active > a {
+    background-color: #ffc107 !important;
+    color: #fff !important;
+}
+
+.sidebar-menu li.active > a:hover {
+    background-color: #e0a800 !important;
+}
 
 /*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3VzdG9tLmNzcyIsInNvdXJjZXMiOlsiY3VzdG9tLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiJ9 */
 

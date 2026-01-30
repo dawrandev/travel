@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('review_translations', function (Blueprint $table) {
+        Schema::create('tours', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('review_id')->constrained('reviews')->onDelete('cascade');
-            $table->string('lang_code', 5);
-            $table->string('city');
-            $table->text('comment');
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('review_translations');
+        Schema::dropIfExists('tours');
     }
 };
