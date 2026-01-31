@@ -8,6 +8,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ReviewController;
 
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
@@ -69,5 +70,14 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [ReviewController::class, 'store'])->name('store');
         Route::put('/{id}', [ReviewController::class, 'update'])->name('update');
         Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('features')->name('features.')->group(function () {
+        Route::get('/', [FeatureController::class, 'index'])->name('index');
+        Route::get('/filter', [FeatureController::class, 'filter'])->name('filter');
+        Route::get('/{id}/translations', [FeatureController::class, 'getTranslations']);
+        Route::post('/', [FeatureController::class, 'store'])->name('store');
+        Route::put('/{id}', [FeatureController::class, 'update'])->name('update');
+        Route::delete('/{id}', [FeatureController::class, 'destroy'])->name('destroy');
     });
 });

@@ -160,7 +160,6 @@
                         '<i class="far fa-star text-warning"></i>';
                 }
 
-                // Video URL mantiqi
                 var videoContent = review.video_url ?
                     '<a href="' + review.video_url + '" target="_blank" class="text-danger" title="Смотреть на YouTube">' +
                     '<i class="fab fa-youtube fa-2x"></i></a>' :

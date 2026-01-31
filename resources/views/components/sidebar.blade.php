@@ -29,6 +29,9 @@
              <li class="dropdown {{ Request::is('reviews') ? 'active' : '' }}">
                  <a href="{{ route('reviews.index') }}" class="nav-link"><i data-feather="star"></i><span>Отзывы</span></a>
              </li>
+             <li class="dropdown {{ Request::is('features') ? 'active' : '' }}">
+                 <a href="{{ route('features.index') }}" class="nav-link"><i data-feather="list"></i><span>Функции</span></a>
+             </li>
          </ul>
      </aside>
  </div>

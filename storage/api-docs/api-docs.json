@@ -1,0 +1,162 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Travel API",
+        "description": "Sayohat veb-sayti uchun API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/about": {
+            "get": {
+                "tags": [
+                    "About"
+                ],
+                "summary": "Biz haqimizda ma'lumotini olish",
+                "operationId": "c9c8a41eb9893e0f2c10063d6ca06abd",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (languages jadvalidagi tillar)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob"
+                    },
+                    "404": {
+                        "description": "Ma'lumot topilmadi"
+                    }
+                }
+            }
+        },
+        "/contact": {
+            "get": {
+                "tags": [
+                    "Contact"
+                ],
+                "summary": "Bog'lanish ma'lumotlarini olish",
+                "operationId": "fc65a9ced8387969bc5b37c8eeafb9db",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (languages jadvalidagi tillar)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob"
+                    },
+                    "404": {
+                        "description": "Ma'lumot topilmadi"
+                    }
+                }
+            }
+        },
+        "/faq": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Ko'p beriladigan savollar ro'yxatini olish",
+                "operationId": "a2585f9d0b9b4f7607cd21eaf2ae4ddf",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (languages jadvalidagi tillar)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob"
+                    }
+                }
+            }
+        },
+        "/hero-slides": {
+            "get": {
+                "tags": [
+                    "Hero Slides"
+                ],
+                "summary": "Bosh sahifa slaydlarini olish",
+                "operationId": "42b408ec0aece92c4609d91025b72d90",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (languages jadvalidagi tillar)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob"
+                    }
+                }
+            }
+        },
+        "/languages": {
+            "get": {
+                "tags": [
+                    "Languages"
+                ],
+                "summary": "Mavjud tillar ro'yxatini olish",
+                "operationId": "91490910f351598e47e910cb1f5de5fb",
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "About",
+            "description": "About"
+        },
+        {
+            "name": "Contact",
+            "description": "Contact"
+        },
+        {
+            "name": "FAQ",
+            "description": "FAQ"
+        },
+        {
+            "name": "Hero Slides",
+            "description": "Hero Slides"
+        },
+        {
+            "name": "Languages",
+            "description": "Languages"
+        }
+    ]
+}

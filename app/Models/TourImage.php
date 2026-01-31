@@ -4,21 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TourInclusion extends Model
+class TourImage extends Model
 {
     protected $fillable = [
         'tour_id',
-        'is_included',
-        'icon',
+        'image_path',
+        'is_main'
     ];
 
     public function tour()
     {
         return $this->belongsTo(Tour::class);
-    }
-
-    public function translations()
-    {
-        return $this->hasMany(TourInclusionTranslation::class);
     }
 }

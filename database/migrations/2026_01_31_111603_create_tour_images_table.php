@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tour_inclusions', function (Blueprint $table) {
+        Schema::create('tour_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tour_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_included')->default(true);
-            $table->string('icon');
+            $table->string('image_path');
+            $table->boolean('is_main')->default(false);
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tour_inclusions');
+        Schema::dropIfExists('tour_images');
     }
 };

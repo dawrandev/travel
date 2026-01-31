@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(php artisan:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(composer show:*)",
+      "Bash(composer remove:*)"
     ]
   }
 }
