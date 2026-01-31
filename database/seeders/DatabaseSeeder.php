@@ -18,7 +18,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             HeroSlideSeeder::class,
             FAQSeeder::class,
-            AboutSeeder::class
+            AboutSeeder::class,
+            ContactSeeder::class,
+            CategorySeeder::class,
+            TourSeeder::class,
+            ReviewSeeder::class,
         ]);
     }
 }

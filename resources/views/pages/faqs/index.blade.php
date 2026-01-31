@@ -22,9 +22,9 @@
                 <div class="card-header-action">
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
-                            <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
-                                {{ $language->name }}
-                            </option>
+                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
+                            {{ $language->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
@@ -34,7 +34,7 @@
                     <table class="table table-striped" id="faqTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>№</th>
                                 <th>Вопрос</th>
                                 <th>Ответ</th>
                                 <th>Порядок</th>
@@ -45,7 +45,7 @@
                         <tbody id="faqTableBody">
                             @foreach($faqs as $faq)
                             <tr>
-                                <td>{{ $faq->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $faq->translations->first()->question ?? 'N/A' }}</td>
                                 <td>{{ Str::limit($faq->translations->first()->answer ?? 'N/A', 50) }}</td>
                                 <td>{{ $faq->sort_order }}</td>
@@ -60,7 +60,7 @@
                                     <button class="btn btn-sm btn-primary" onclick="editFaq({{ $faq->id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form action="{{ route('faqs.destroy', $faq->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Вы уверены?');">
+                                    <form action="{{ route('faqs.destroy', $faq->id) }}" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="вопрос">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
@@ -86,63 +86,105 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    $('#languageFilter').on('change', function() {
-        var langCode = $(this).val();
+    // Routes - Prettier formatter won't break these
+    const ROUTES = {
+        filter: '{{ route("faqs.filter") }}',
+        translations: '/faqs/{id}/translations',
+        destroy: '/faqs/{id}'
+    };
 
-        $.ajax({
-            url: '{{ route('faqs.filter') }}',
-            type: 'GET',
-            data: { lang_code: langCode },
-            success: function(response) {
-                if (response.success) {
-                    updateTable(response.data);
+    $(document).ready(function() {
+        $('#languageFilter').on('change', function() {
+            var langCode = $(this).val();
+
+            $.ajax({
+                url: ROUTES.filter,
+                type: 'GET',
+                data: {
+                    lang_code: langCode
+                },
+                success: function(response) {
+                    if (response.success) {
+                        updateTable(response.data);
+                    }
+                },
+                error: function() {
+                    alert('Ошибка при загрузке данных');
                 }
-            },
-            error: function() {
-                alert('Ошибка при загрузке данных');
-            }
+            });
         });
+
+        function updateTable(faqs) {
+            var tbody = $('#faqTableBody');
+            tbody.empty();
+
+            if (faqs.length === 0) {
+                tbody.append('<tr><td colspan="6" class="text-center">Нет данных</td></tr>');
+                return;
+            }
+
+            faqs.forEach(function(faq) {
+                var statusBadge = faq.is_active ?
+                    '<span class="badge badge-success">Активен</span>' :
+                    '<span class="badge badge-danger">Неактивен</span>';
+
+                var answer = faq.answer.length > 50 ? faq.answer.substring(0, 50) + '...' : faq.answer;
+
+                var row = '<tr>' +
+                    '<td>' + faq.id + '</td>' +
+                    '<td>' + faq.question + '</td>' +
+                    '<td>' + answer + '</td>' +
+                    '<td>' + faq.sort_order + '</td>' +
+                    '<td>' + statusBadge + '</td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-primary" onclick="editFaq(' + faq.id + ')">' +
+                    '<i class="fas fa-edit"></i>' +
+                    '</button> ' +
+                    '<form action="/faqs/' + faq.id + '" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="вопрос">' +
+                    '@csrf @method("DELETE")' +
+                    '<button type="submit" class="btn btn-sm btn-danger">' +
+                    '<i class="fas fa-trash"></i>' +
+                    '</button>' +
+                    '</form>' +
+                    '</td>' +
+                    '</tr>';
+
+                tbody.append(row);
+            });
+        }
     });
 
-    function updateTable(faqs) {
-        var tbody = $('#faqTableBody');
-        tbody.empty();
+    // Edit FAQ function
+    function editFaq(id) {
+        $.ajax({
+            url: ROUTES.translations.replace('{id}', id),
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    $('#editForm').attr('action', ROUTES.destroy.replace('{id}', id));
+                    $('#edit_sort_order').val(response.faq.sort_order);
+                    $('#edit_is_active').prop('checked', response.faq.is_active);
 
-        if (faqs.length === 0) {
-            tbody.append('<tr><td colspan="6" class="text-center">Нет данных</td></tr>');
-            return;
-        }
+                    // Fill translations for each language
+                    @foreach($languages as $language)
+                    if (response.translations['{{ $language->code }}']) {
+                        $('#edit_question_{{ $language->code }}').val(response.translations['{{ $language->code }}'].question);
+                        $('#edit_answer_{{ $language->code }}').val(response.translations['{{ $language->code }}'].answer);
+                    }
+                    @endforeach
 
-        faqs.forEach(function(faq) {
-            var statusBadge = faq.is_active ?
-                '<span class="badge badge-success">Активен</span>' :
-                '<span class="badge badge-danger">Неактивен</span>';
-
-            var answer = faq.answer.length > 50 ? faq.answer.substring(0, 50) + '...' : faq.answer;
-
-            var row = '<tr>' +
-                '<td>' + faq.id + '</td>' +
-                '<td>' + faq.question + '</td>' +
-                '<td>' + answer + '</td>' +
-                '<td>' + faq.sort_order + '</td>' +
-                '<td>' + statusBadge + '</td>' +
-                '<td>' +
-                    '<button class="btn btn-sm btn-primary" onclick="editFaq(' + faq.id + ')">' +
-                        '<i class="fas fa-edit"></i>' +
-                    '</button> ' +
-                    '<form action="/faqs/' + faq.id + '" method="POST" style="display:inline-block;" onsubmit="return confirm(\'Вы уверены?\')">' +
-                        '@csrf @method("DELETE")' +
-                        '<button type="submit" class="btn btn-sm btn-danger">' +
-                            '<i class="fas fa-trash"></i>' +
-                        '</button>' +
-                    '</form>' +
-                '</td>' +
-            '</tr>';
-
-            tbody.append(row);
+                    $('#editModal').modal('show');
+                }
+            },
+            error: function(xhr) {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Ошибка при загрузке данных',
+                    icon: 'error',
+                    button: 'ОК',
+                });
+            }
         });
     }
-});
 </script>
 @endpush

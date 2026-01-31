@@ -11,6 +11,13 @@ class Review extends Model
         'user_name',
         'rating',
         'video_url',
+        'is_active',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'rating' => 'integer',
     ];
 
     public function tour()

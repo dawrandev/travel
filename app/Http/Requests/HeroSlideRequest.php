@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
 class HeroSlideRequest extends FormRequest
@@ -14,8 +15,6 @@ class HeroSlideRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'title' => 'required|string|max:255',
-            'subtitle' => 'required|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ];
@@ -26,17 +25,30 @@ class HeroSlideRequest extends FormRequest
             $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048';
         }
 
+        // Add validation rules for all languages
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $rules['title_' . $language->code] = 'required|string|max:255';
+            $rules['subtitle_' . $language->code] = 'required|string|max:255';
+        }
+
         return $rules;
     }
 
     public function messages(): array
     {
-        return [
-            'title.required' => 'Заголовок обязателен',
-            'subtitle.required' => 'Подзаголовок обязателен',
+        $messages = [
             'image.required' => 'Изображение обязательно',
             'image.image' => 'Файл должен быть изображением',
             'image.max' => 'Максимальный размер изображения 2MB',
         ];
+
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $messages['title_' . $language->code . '.required'] = 'Заголовок (' . $language->name . ') обязателен';
+            $messages['subtitle_' . $language->code . '.required'] = 'Подзаголовок (' . $language->name . ') обязателен';
+        }
+
+        return $messages;
     }
 }

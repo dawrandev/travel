@@ -6,6 +6,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HeroSlideController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -39,5 +42,32 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [AboutController::class, 'store'])->name('store');
         Route::put('/{id}', [AboutController::class, 'update'])->name('update');
         Route::delete('/{id}', [AboutController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('contacts')->name('contacts.')->group(function () {
+        Route::get('/', [ContactController::class, 'index'])->name('index');
+        Route::get('/filter', [ContactController::class, 'filter'])->name('filter');
+        Route::get('/{id}/translations', [ContactController::class, 'getTranslations'])->name('translations');
+        Route::post('/', [ContactController::class, 'store'])->name('store');
+        Route::put('/{id}', [ContactController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ContactController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('categories')->name('categories.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/filter', [CategoryController::class, 'filter'])->name('filter');
+        Route::get('/{id}/translations', [CategoryController::class, 'getTranslations']);
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::get('/filter', [ReviewController::class, 'filter'])->name('filter');
+        Route::get('/{id}/translations', [ReviewController::class, 'getTranslations']);
+        Route::post('/', [ReviewController::class, 'store'])->name('store');
+        Route::put('/{id}', [ReviewController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
     });
 });

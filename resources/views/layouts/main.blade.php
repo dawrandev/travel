@@ -27,6 +27,7 @@
     @stack('modals')
 
     @include('partials.script')
+    @include('components.sweetalert')
     @stack('scripts')
 </body>
 

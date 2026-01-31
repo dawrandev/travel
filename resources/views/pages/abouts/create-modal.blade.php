@@ -56,7 +56,7 @@
                             <div class="form-group">
                                 <label class="form-label">Статус</label>
                                 <div class="custom-control custom-checkbox mt-2">
-                                    <input type="checkbox" class="custom-control-input" name="is_active" id="is_active_create" checked>
+                                    <input type="checkbox" class="custom-control-input" name="is_active" id="is_active_create" value="1" checked>
                                     <label class="custom-control-label" for="is_active_create">Активен</label>
                                 </div>
                             </div>
@@ -73,13 +73,3 @@
         </div>
     </div>
 </div>
-
-<script>
-document.getElementById('image_create').addEventListener('change', function(e) {
-    if (e.target.files.length > 0) {
-        var fileName = e.target.files[0].name;
-        var label = e.target.nextElementSibling;
-        label.innerText = fileName;
-    }
-});
-</script>

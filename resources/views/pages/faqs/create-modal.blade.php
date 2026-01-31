@@ -52,7 +52,7 @@
                             <div class="form-group">
                                 <label class="form-label">Статус</label>
                                 <div class="custom-control custom-checkbox mt-2">
-                                    <input type="checkbox" class="custom-control-input" name="is_active" id="is_active_create" checked>
+                                    <input type="checkbox" class="custom-control-input" name="is_active" id="is_active_create" value="1" checked>
                                     <label class="custom-control-label" for="is_active_create">Активен</label>
                                 </div>
                             </div>

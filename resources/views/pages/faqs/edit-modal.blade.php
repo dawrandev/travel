@@ -53,7 +53,7 @@
                             <div class="form-group">
                                 <label class="form-label">Статус</label>
                                 <div class="custom-control custom-checkbox mt-2">
-                                    <input type="checkbox" class="custom-control-input" name="is_active" id="edit_is_active">
+                                    <input type="checkbox" class="custom-control-input" name="is_active" id="edit_is_active" value="1">
                                     <label class="custom-control-label" for="edit_is_active">Активен</label>
                                 </div>
                             </div>
@@ -70,32 +70,3 @@
         </div>
     </div>
 </div>
-
-<script>
-function editFaq(id) {
-    $.ajax({
-        url: '/faqs/' + id + '/translations',
-        type: 'GET',
-        success: function(response) {
-            if (response.success) {
-                $('#editForm').attr('action', '/faqs/' + id);
-                $('#edit_sort_order').val(response.faq.sort_order);
-                $('#edit_is_active').prop('checked', response.faq.is_active);
-
-                // Fill translations for each language
-                @foreach($languages as $language)
-                    if (response.translations['{{ $language->code }}']) {
-                        $('#edit_question_{{ $language->code }}').val(response.translations['{{ $language->code }}'].question);
-                        $('#edit_answer_{{ $language->code }}').val(response.translations['{{ $language->code }}'].answer);
-                    }
-                @endforeach
-
-                $('#editModal').modal('show');
-            }
-        },
-        error: function() {
-            alert('Ошибка при загрузке данных');
-        }
-    });
-}
-</script>

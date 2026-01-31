@@ -9,53 +9,43 @@ class ReviewSeeder extends Seeder
 {
     public function run(): void
     {
+        // Bazadagi barcha mavjud turlarning ID-larini olamiz
+        $tourIds = DB::table('tours')->pluck('id')->toArray();
+
+        if (empty($tourIds)) {
+            $this->command->error("Turlar topilmadi! Avval TourSeeder-ni ishga tushiring.");
+            return;
+        }
+
         $reviews = [
             [
                 'user_name' => 'Елена',
-                'rating' => 5,
+                'rating' => 5.0,
                 'video_url' => 'https://www.youtube.com/watch?v=sample1',
-                'tour_id' => 1,
+                // Birinchi mavjud turni biriktiramiz
+                'tour_id' => $tourIds[0],
+                'is_active' => true,
+                'sort_order' => 1,
                 'translations' => [
-                    'ru' => [
-                        'city' => 'Москва',
-                        'comment' => 'Я не ожидала такой красоты. Закат на берегу Арала — это лучший вид в моей жизни. Спасибо Токтарбай-ага и команде, организация на высшем уровне!'
-                    ],
-                    'uz' => [
-                        'city' => 'Moskva',
-                        'comment' => 'Men bunday go‘zallikni kutmagandim. Orol qirg‘og‘idagi quyosh botishi — hayotimdagi eng go‘zal manzara bo‘ldi. To‘xtarboy og‘a va jamoasiga rahmat, tashkilotchilik yuqori darajada!'
-                    ],
-                    'kk' => [
-                        'city' => 'Moskva',
-                        'comment' => 'Men bunday gózzallıqtı kútpegen edim. Aral qırǵaǵındaǵı quyash batısı — ómirimdagi eń gózzal mánzara boldı. Toqtaybay aǵa hám komandasına raxmet, shólkemlestiriw joqarı dárejede!'
-                    ],
-                    'en' => [
-                        'city' => 'Moscow',
-                        'comment' => 'I did not expect such beauty. Sunset on the shores of the Aral Sea is the best view of my life. Thanks to Toktarbay-aga and the team, the organization is top-notch!'
-                    ],
+                    'ru' => ['city' => 'Москва', 'comment' => 'Я не ожидала такой красоты. Закат на берегу Арала — это лучший вид в моей жизни.'],
+                    'uz' => ['city' => 'Moskva', 'comment' => 'Men bunday go‘zallikni kutmagandim. Orol qirg‘og‘idagi quyosh botishi — hayotimdagi eng go‘zal manzara.'],
+                    'kk' => ['city' => 'Moskva', 'comment' => 'Men bunday gózzallıqtı kútpegen edim. Aral qırǵaǵındaǵı quyash batısı — ómirimdagi eń gózzal mánzara.'],
+                    'en' => ['city' => 'Moscow', 'comment' => 'I did not expect such beauty. Sunset on the shores of the Aral Sea is the best view of my life.'],
                 ]
             ],
             [
                 'user_name' => 'Азиз',
-                'rating' => 4,
+                'rating' => 4.8,
                 'video_url' => 'https://www.youtube.com/watch?v=sample2',
-                'tour_id' => 2,
+                // Agar ikkinchi tur bo'lsa shunga, bo'lmasa yana birinchisiga biriktiramiz
+                'tour_id' => $tourIds[1] ?? $tourIds[0],
+                'is_active' => true,
+                'sort_order' => 2,
                 'translations' => [
-                    'ru' => [
-                        'city' => 'Ташкент',
-                        'comment' => 'Отличная поездка! Каракалпакстан открылся для меня с новой стороны. Пустыня и каньоны впечатляют.'
-                    ],
-                    'uz' => [
-                        'city' => 'Toshkent',
-                        'comment' => 'Ajoyib sayohat! Qoraqalpog‘iston men uchun yangi tomondan kashf etildi. Sahro va kanyonlar juda hayratlanarli.'
-                    ],
-                    'kk' => [
-                        'city' => 'Toshkent',
-                        'comment' => 'Ajoyıp sayaxat! Qaraqalpaqstan men ushın jańa tárepten ashıldı. Shól hám kanyonlar júdá hayratlanarlı.'
-                    ],
-                    'en' => [
-                        'city' => 'Tashkent',
-                        'comment' => 'Great trip! Karakalpakstan opened up to me from a new side. The desert and canyons are impressive.'
-                    ],
+                    'ru' => ['city' => 'Ташкент', 'comment' => 'Отличная поездка! Каракалпакстан открылся для меня с новой стороны.'],
+                    'uz' => ['city' => 'Toshkent', 'comment' => 'Ajoyib sayohat! Qoraqalpog‘iston men uchun yangi tomondan kashf etildi.'],
+                    'kk' => ['city' => 'Toshkent', 'comment' => 'Ajoyıp sayaxat! Qaraqalpaqstan men ushın jańa tárepten ashıldı.'],
+                    'en' => ['city' => 'Tashkent', 'comment' => 'Great trip! Karakalpakstan opened up to me from a new side.'],
                 ]
             ],
         ];
@@ -66,6 +56,8 @@ class ReviewSeeder extends Seeder
                 'user_name' => $reviewData['user_name'],
                 'rating' => $reviewData['rating'],
                 'video_url' => $reviewData['video_url'],
+                'is_active' => $reviewData['is_active'],
+                'sort_order' => $reviewData['sort_order'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

@@ -22,9 +22,9 @@
                 <div class="card-header-action">
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
-                            <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
-                                {{ $language->name }}
-                            </option>
+                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
+                            {{ $language->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
@@ -34,7 +34,7 @@
                     <table class="table table-striped" id="aboutTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>№</th>
                                 <th>Изображение</th>
                                 <th>Заголовок</th>
                                 <th>Описание</th>
@@ -45,28 +45,28 @@
                         <tbody id="aboutTableBody">
                             @foreach($abouts as $about)
                             <tr>
-                                <td>{{ $about->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>
                                     @if($about->image)
-                                        <img src="{{ asset('storage/' . $about->image) }}" alt="about" width="100">
+                                    <img src="{{ asset('storage/' . $about->image) }}" alt="about" width="100">
                                     @else
-                                        <span class="badge badge-secondary">Нет изображения</span>
+                                    <span class="badge badge-secondary">Нет изображения</span>
                                     @endif
                                 </td>
                                 <td>{{ $about->translations->first()->title ?? 'N/A' }}</td>
                                 <td>{{ Str::limit($about->translations->first()->description ?? 'N/A', 50) }}</td>
                                 <td>
                                     @if($about->is_active)
-                                        <span class="badge badge-success">Активен</span>
+                                    <span class="badge badge-success">Активен</span>
                                     @else
-                                        <span class="badge badge-danger">Неактивен</span>
+                                    <span class="badge badge-danger">Неактивен</span>
                                     @endif
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-primary" onclick="editAbout({{ $about->id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form action="{{ route('abouts.destroy', $about->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Вы уверены?');">
+                                    <form action="{{ route('abouts.destroy', $about->id) }}" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="запись">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
@@ -86,73 +86,132 @@
 @endsection
 
 @push('modals')
-    @include('pages.abouts.create-modal')
-    @include('pages.abouts.edit-modal')
+@include('pages.abouts.create-modal')
+@include('pages.abouts.edit-modal')
 @endpush
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    $('#languageFilter').on('change', function() {
-        var langCode = $(this).val();
+    // Routes - Prettier formatter won't break these
+    const ROUTES = {
+        filter: '{{ route("abouts.filter") }}',
+        translations: '/abouts/{id}/translations',
+        destroy: '/abouts/{id}'
+    };
 
-        $.ajax({
-            url: '{{ route('abouts.filter') }}',
-            type: 'GET',
-            data: { lang_code: langCode },
-            success: function(response) {
-                if (response.success) {
-                    updateTable(response.data);
-                }
-            },
-            error: function() {
-                alert('Ошибка при загрузке данных');
+    $(document).ready(function() {
+        // Image file input change handler for create modal
+        $('#image_create').on('change', function(e) {
+            if (e.target.files.length > 0) {
+                var fileName = e.target.files[0].name;
+                $(this).next('.custom-file-label').text(fileName);
             }
         });
+
+        // Image file input change handler for edit modal
+        $('#about_image_edit').on('change', function(e) {
+            if (e.target.files.length > 0) {
+                var fileName = e.target.files[0].name;
+                $(this).next('.custom-file-label').text(fileName);
+            }
+        });
+
+        // Language filter
+        $('#languageFilter').on('change', function() {
+            var langCode = $(this).val();
+
+            $.ajax({
+                url: ROUTES.filter,
+                type: 'GET',
+                data: {
+                    lang_code: langCode
+                },
+                success: function(response) {
+                    if (response.success) {
+                        updateTable(response.data);
+                    }
+                },
+                error: function() {
+                    alert('Ошибка при загрузке данных');
+                }
+            });
+        });
+
+        function updateTable(abouts) {
+            var tbody = $('#aboutTableBody');
+            tbody.empty();
+
+            if (abouts.length === 0) {
+                tbody.append('<tr><td colspan="6" class="text-center">Нет данных</td></tr>');
+                return;
+            }
+
+            abouts.forEach(function(about) {
+                var statusBadge = about.is_active ?
+                    '<span class="badge badge-success">Активен</span>' :
+                    '<span class="badge badge-danger">Неактивен</span>';
+
+                var description = about.description.length > 50 ? about.description.substring(0, 50) + '...' : about.description;
+
+                var imageCell = about.image ?
+                    '<img src="/storage/' + about.image + '" alt="about" width="100">' :
+                    '<span class="badge badge-secondary">Нет изображения</span>';
+
+                var row = '<tr>' +
+                    '<td>' + about.id + '</td>' +
+                    '<td>' + imageCell + '</td>' +
+                    '<td>' + about.title + '</td>' +
+                    '<td>' + description + '</td>' +
+                    '<td>' + statusBadge + '</td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-primary" onclick="editAbout(' + about.id + ')">' +
+                    '<i class="fas fa-edit"></i>' +
+                    '</button> ' +
+                    '<form action="/abouts/' + about.id + '" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="запись">' +
+                    '@csrf @method("DELETE")' +
+                    '<button type="submit" class="btn btn-sm btn-danger">' +
+                    '<i class="fas fa-trash"></i>' +
+                    '</button>' +
+                    '</form>' +
+                    '</td>' +
+                    '</tr>';
+
+                tbody.append(row);
+            });
+        }
     });
 
-    function updateTable(abouts) {
-        var tbody = $('#aboutTableBody');
-        tbody.empty();
+    // Edit About function
+    function editAbout(id) {
+        $.ajax({
+            url: ROUTES.translations.replace('{id}', id),
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    $('#editAboutForm').attr('action', ROUTES.destroy.replace('{id}', id));
+                    $('#edit_about_is_active').prop('checked', response.about.is_active);
+                    $('#about_image_edit').next('.custom-file-label').text('Выберите изображение');
 
-        if (abouts.length === 0) {
-            tbody.append('<tr><td colspan="6" class="text-center">Нет данных</td></tr>');
-            return;
-        }
+                    // Fill translations for each language
+                    @foreach($languages as $language)
+                    if (response.translations['{{ $language->code }}']) {
+                        $('#edit_title_{{ $language->code }}').val(response.translations['{{ $language->code }}'].title);
+                        $('#edit_description_{{ $language->code }}').val(response.translations['{{ $language->code }}'].description);
+                    }
+                    @endforeach
 
-        abouts.forEach(function(about) {
-            var statusBadge = about.is_active ?
-                '<span class="badge badge-success">Активен</span>' :
-                '<span class="badge badge-danger">Неактивен</span>';
-
-            var description = about.description.length > 50 ? about.description.substring(0, 50) + '...' : about.description;
-
-            var imageCell = about.image ?
-                '<img src="/storage/' + about.image + '" alt="about" width="100">' :
-                '<span class="badge badge-secondary">Нет изображения</span>';
-
-            var row = '<tr>' +
-                '<td>' + about.id + '</td>' +
-                '<td>' + imageCell + '</td>' +
-                '<td>' + about.title + '</td>' +
-                '<td>' + description + '</td>' +
-                '<td>' + statusBadge + '</td>' +
-                '<td>' +
-                    '<button class="btn btn-sm btn-primary" onclick="editAbout(' + about.id + ')">' +
-                        '<i class="fas fa-edit"></i>' +
-                    '</button> ' +
-                    '<form action="/abouts/' + about.id + '" method="POST" style="display:inline-block;" onsubmit="return confirm(\'Вы уверены?\')">' +
-                        '@csrf @method("DELETE")' +
-                        '<button type="submit" class="btn btn-sm btn-danger">' +
-                            '<i class="fas fa-trash"></i>' +
-                        '</button>' +
-                    '</form>' +
-                '</td>' +
-            '</tr>';
-
-            tbody.append(row);
+                    $('#editAboutModal').modal('show');
+                }
+            },
+            error: function(xhr) {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Ошибка при загрузке данных',
+                    icon: 'error',
+                    button: 'ОК',
+                });
+            }
         });
     }
-});
 </script>
 @endpush

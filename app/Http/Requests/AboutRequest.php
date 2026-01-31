@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AboutRequest extends FormRequest
@@ -14,15 +15,15 @@ class AboutRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
             'is_active' => 'nullable|boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
 
-        if ($this->isMethod('post')) {
-            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048';
-        } else {
-            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048';
+        // Add validation rules for all languages
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $rules['title_' . $language->code] = 'required|string|max:255';
+            $rules['description_' . $language->code] = 'required|string';
         }
 
         return $rules;
@@ -30,11 +31,17 @@ class AboutRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            'title.required' => 'Заголовок обязателен',
-            'description.required' => 'Описание обязательно',
+        $messages = [
             'image.image' => 'Файл должен быть изображением',
             'image.max' => 'Максимальный размер изображения 2MB',
         ];
+
+        $languages = Language::all();
+        foreach ($languages as $language) {
+            $messages['title_' . $language->code . '.required'] = 'Заголовок (' . $language->name . ') обязателен';
+            $messages['description_' . $language->code . '.required'] = 'Описание (' . $language->name . ') обязательно';
+        }
+
+        return $messages;
     }
 }
