@@ -25,10 +25,10 @@
              </li>
              <li class="dropdown {{ Request::is('bookings') ? 'active' : '' }}">
                  <a href="{{ route('bookings.index') }}" class="nav-link">
-                     <i data-feather="calendar"></i>
+                     <i data-feather="calendar" style="width: 20px; height: 20px;"></i>
                      <span>Бронирования</span>
                      @if(isset($pendingBookingsCount) && $pendingBookingsCount > 0)
-                         <span class="badge badge-warning" style="margin-left: 5px;">{{ $pendingBookingsCount }}</span>
+                     <span class="badge badge-warning" style="margin-left: 5px;">{{ $pendingBookingsCount }}</span>
                      @endif
                  </a>
              </li>

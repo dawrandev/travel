@@ -22,7 +22,6 @@ class ReviewSeeder extends Seeder
                 'user_name' => 'Елена',
                 'rating' => 5.0,
                 'video_url' => 'https://www.youtube.com/watch?v=sample1',
-                // Birinchi mavjud turni biriktiramiz
                 'tour_id' => $tourIds[0],
                 'is_active' => true,
                 'sort_order' => 1,
@@ -37,7 +36,6 @@ class ReviewSeeder extends Seeder
                 'user_name' => 'Азиз',
                 'rating' => 4.8,
                 'video_url' => 'https://www.youtube.com/watch?v=sample2',
-                // Agar ikkinchi tur bo'lsa shunga, bo'lmasa yana birinchisiga biriktiramiz
                 'tour_id' => $tourIds[1] ?? $tourIds[0],
                 'is_active' => true,
                 'sort_order' => 2,

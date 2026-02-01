@@ -46,9 +46,10 @@ class ReviewController extends Controller
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
                                     new OA\Property(property: "user_name", type: "string", example: "Alisher Navoiy"),
+                                    new OA\Property(property: "city", type: "string", example: "Toshkent"),
+                                    new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."),
                                     new OA\Property(property: "rating", type: "integer", example: 5),
-                                    new OA\Property(property: "review_text", type: "string", example: "Ajoyib tur edi!"),
-                                    new OA\Property(property: "video_url", type: "string", example: "https://youtube.com/watch?v=xxx"),
+                                    new OA\Property(property: "video_url", type: "string", nullable: true, example: "https://youtube.com/watch?v=xxx"),
                                     new OA\Property(
                                         property: "tour",
                                         type: "object",
@@ -67,6 +68,8 @@ class ReviewController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
+        $lang = $request->header('Accept-Language', 'uz');
+
         $query = Review::with(['translations', 'tour.translations'])
             ->where('is_active', true);
 
@@ -113,14 +116,33 @@ class ReviewController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", type: "object"),
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "user_name", type: "string", example: "Alisher Navoiy"),
+                                new OA\Property(property: "city", type: "string", example: "Toshkent"),
+                                new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."),
+                                new OA\Property(property: "rating", type: "integer", example: 5),
+                                new OA\Property(property: "video_url", type: "string", nullable: true, example: "https://youtube.com/watch?v=xxx"),
+                                new OA\Property(
+                                    property: "tour",
+                                    type: "object",
+                                    properties: [
+                                        new OA\Property(property: "id", type: "integer", example: 1),
+                                        new OA\Property(property: "title", type: "string", example: "Orol dengizi safari"),
+                                    ]
+                                ),
+                            ]
+                        ),
                     ]
                 )
             ),
             new OA\Response(response: 404, description: "Sharh topilmadi")
         ]
     )]
-    public function show(int $id): JsonResponse
+    public function show(Request $request, int $id): JsonResponse
     {
         $review = Review::with(['translations', 'tour.translations'])
             ->where('is_active', true)

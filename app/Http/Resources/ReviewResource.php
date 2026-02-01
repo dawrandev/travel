@@ -16,8 +16,9 @@ class ReviewResource extends JsonResource
         return [
             'id' => $this->id,
             'user_name' => $this->user_name,
+            'city' => $translation?->city ?? '',
+            'comment' => $translation?->comment ?? '',
             'rating' => $this->rating,
-            'review_text' => $translation->review_text ?? '',
             'video_url' => $this->video_url,
             'tour' => $this->when($this->tour, function () use ($lang) {
                 $tourTranslation = $this->tour->translations->firstWhere('lang_code', $lang)
@@ -25,7 +26,7 @@ class ReviewResource extends JsonResource
 
                 return [
                     'id' => $this->tour->id,
-                    'title' => $tourTranslation->title ?? '',
+                    'title' => $tourTranslation?->title ?? '',
                 ];
             }),
         ];

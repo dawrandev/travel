@@ -23,12 +23,10 @@ class TourRequest extends FormRequest
             'max_people' => 'nullable|integer|min:1',
             'is_active' => 'nullable|boolean',
 
-            // Images validation
             'images' => $this->isMethod('post') ? 'required|array|min:1' : 'nullable|array',
             'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120',
             'main_image' => 'nullable|integer',
 
-            // Itineraries validation
             'itineraries' => 'required|array|min:1',
             'itineraries.*.day_number' => 'required|integer|min:1',
             'itineraries.*.event_time' => 'required|date_format:H:i:s,H:i',

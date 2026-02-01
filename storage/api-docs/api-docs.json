@@ -366,17 +366,22 @@
                                                         "type": "string",
                                                         "example": "Alisher Navoiy"
                                                     },
+                                                    "city": {
+                                                        "type": "string",
+                                                        "example": "Toshkent"
+                                                    },
+                                                    "comment": {
+                                                        "type": "string",
+                                                        "example": "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."
+                                                    },
                                                     "rating": {
                                                         "type": "integer",
                                                         "example": 5
                                                     },
-                                                    "review_text": {
-                                                        "type": "string",
-                                                        "example": "Ajoyib tur edi!"
-                                                    },
                                                     "video_url": {
                                                         "type": "string",
-                                                        "example": "https://youtube.com/watch?v=xxx"
+                                                        "example": "https://youtube.com/watch?v=xxx",
+                                                        "nullable": true
                                                     },
                                                     "tour": {
                                                         "properties": {
@@ -452,6 +457,46 @@
                                             "example": true
                                         },
                                         "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user_name": {
+                                                    "type": "string",
+                                                    "example": "Alisher Navoiy"
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "example": "Toshkent"
+                                                },
+                                                "comment": {
+                                                    "type": "string",
+                                                    "example": "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."
+                                                },
+                                                "rating": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "video_url": {
+                                                    "type": "string",
+                                                    "example": "https://youtube.com/watch?v=xxx",
+                                                    "nullable": true
+                                                },
+                                                "tour": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "title": {
+                                                            "type": "string",
+                                                            "example": "Orol dengizi safari"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
                                             "type": "object"
                                         }
                                     },
