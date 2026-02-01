@@ -14,6 +14,7 @@ class HeroSlideTranslation extends Model
         'hero_slide_id',
         'title',
         'subtitle',
+        'description',
         'lang_code',
     ];
 

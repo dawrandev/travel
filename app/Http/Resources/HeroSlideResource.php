@@ -19,6 +19,7 @@ class HeroSlideResource extends JsonResource
             'sort_order' => $this->sort_order,
             'title' => $translation->title ?? '',
             'subtitle' => $translation->subtitle ?? '',
+            'description' => $translation->description ?? null,
         ];
     }
 }

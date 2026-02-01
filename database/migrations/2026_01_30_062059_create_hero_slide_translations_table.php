@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('hero_slide_id')->constrained('hero_slides')->onDelete('cascade');
             $table->string('title');
             $table->string('subtitle');
+            $table->text('description')->nullable();
             $table->string('lang_code', 10);
             $table->timestamps();
         });

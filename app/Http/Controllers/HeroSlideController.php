@@ -42,7 +42,8 @@ class HeroSlideController extends Controller
         foreach ($slide->translations as $translation) {
             $translations[$translation->lang_code] = [
                 'title' => $translation->title,
-                'subtitle' => $translation->subtitle
+                'subtitle' => $translation->subtitle,
+                'description' => $translation->description
             ];
         }
 

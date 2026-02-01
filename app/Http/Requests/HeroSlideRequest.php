@@ -30,6 +30,7 @@ class HeroSlideRequest extends FormRequest
         foreach ($languages as $language) {
             $rules['title_' . $language->code] = 'required|string|max:255';
             $rules['subtitle_' . $language->code] = 'required|string|max:255';
+            $rules['description_' . $language->code] = 'nullable|string|max:1000';
         }
 
         return $rules;

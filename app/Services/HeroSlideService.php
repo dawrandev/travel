@@ -27,6 +27,7 @@ class HeroSlideService
                 'id' => $slide->id,
                 'title' => $translation->title ?? 'N/A',
                 'subtitle' => $translation->subtitle ?? 'N/A',
+                'description' => $translation->description ?? null,
                 'image_path' => $slide->image_path,
                 'sort_order' => $slide->sort_order,
                 'is_active' => $slide->is_active
@@ -57,6 +58,7 @@ class HeroSlideService
             $this->heroSlideRepository->createTranslation($heroSlide->id, [
                 'title' => $data['title_' . $langCode] ?? '',
                 'subtitle' => $data['subtitle_' . $langCode] ?? '',
+                'description' => $data['description_' . $langCode] ?? null,
                 'lang_code' => $langCode,
             ]);
         }
@@ -89,6 +91,7 @@ class HeroSlideService
             $this->heroSlideRepository->createTranslation($heroSlide->id, [
                 'title' => $data['title_' . $langCode] ?? '',
                 'subtitle' => $data['subtitle_' . $langCode] ?? '',
+                'description' => $data['description_' . $langCode] ?? null,
                 'lang_code' => $langCode,
             ]);
         }

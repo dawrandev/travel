@@ -37,6 +37,12 @@
                                         <input type="text" name="subtitle_{{ $language->code }}" id="edit_subtitle_{{ $language->code }}" class="form-control" placeholder="Введите подзаголовок" required>
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Описание ({{ $language->name }})</label>
+                                        <textarea name="description_{{ $language->code }}" id="edit_description_{{ $language->code }}" class="form-control" rows="3" placeholder="Введите описание"></textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         @endforeach

@@ -15,19 +15,23 @@ class HeroSlideSeeder extends Seeder
                 'translations' => [
                     'uz' => [
                         'subtitle' => 'Orol dengizi',
-                        'title' => 'Yo‘qolgan okean qirg‘og‘idagi sarguzashtlar',
+                        'title' => 'Yoqolgan okean qirgogidagi sarguzashtlar',
+                        'description' => 'Orol dengizining o\'ziga xos tabiati va ajoyib manzaralarini kashf eting. Noyob sayohat tajribasini boshdan kechiring.',
                     ],
                     'kk' => [
                         'subtitle' => 'Aral teńizi',
                         'title' => 'Joq bolǵan okean qırǵaǵındaǵı sarguzashtlar',
+                        'description' => 'Aral teńiziniń ózimnnen tábiyaatı jáne ajayıp körinisin asharıńız. Noyób sayaxat tájiribesi jasań.',
                     ],
                     'ru' => [
                         'subtitle' => 'Аральское море',
                         'title' => 'Приключение на берегу исчезнувшего океана',
+                        'description' => 'Откройте для себя уникальную природу и удивительные пейзажи Аральского моря. Испытайте незабываемое путешествие.',
                     ],
                     'en' => [
                         'subtitle' => 'Aral Sea',
                         'title' => 'Adventure on the shores of a vanished ocean',
+                        'description' => 'Discover the unique nature and amazing landscapes of the Aral Sea. Experience an unforgettable journey.',
                     ],
                 ]
             ],
@@ -50,6 +54,7 @@ class HeroSlideSeeder extends Seeder
                     'hero_slide_id' => $slideId,
                     'title' => $content['title'],
                     'subtitle' => $content['subtitle'],
+                    'description' => $content['description'] ?? null,
                     'lang_code' => $langCode,
                     'created_at' => now(),
                     'updated_at' => now(),
