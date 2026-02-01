@@ -20,12 +20,11 @@ class HeroSlideRequest extends FormRequest
         ];
 
         if ($this->isMethod('post')) {
-            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,webp|max:2048';
+            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,webp|max:5120';
         } else {
-            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048';
+            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120';
         }
 
-        // Add validation rules for all languages
         $languages = Language::all();
         foreach ($languages as $language) {
             $rules['title_' . $language->code] = 'required|string|max:255';

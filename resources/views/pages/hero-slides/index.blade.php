@@ -38,6 +38,7 @@
                                 <th>Изображение</th>
                                 <th>Заголовок</th>
                                 <th>Подзаголовок</th>
+                                <th>Описание</th>
                                 <th>Порядок</th>
                                 <th>Статус</th>
                                 <th>Действия</th>
@@ -52,6 +53,7 @@
                                 </td>
                                 <td>{{ $slide->translations->first()->title ?? 'N/A' }}</td>
                                 <td>{{ $slide->translations->first()->subtitle ?? 'N/A' }}</td>
+                                <td>{{ Str::limit($slide->translations->first()->description ?? '-', 50) }}</td>
                                 <td>{{ $slide->sort_order }}</td>
                                 <td>
                                     @if($slide->is_active)
@@ -140,7 +142,7 @@
             tbody.empty();
 
             if (slides.length === 0) {
-                tbody.append('<tr><td colspan="7" class="text-center">Нет данных</td></tr>');
+                tbody.append('<tr><td colspan="8" class="text-center">Нет данных</td></tr>');
                 return;
             }
 
@@ -149,11 +151,14 @@
                     '<span class="badge badge-success">Активен</span>' :
                     '<span class="badge badge-danger">Неактивен</span>';
 
+                var description = slide.description ? slide.description.substring(0, 50) + (slide.description.length > 50 ? '...' : '') : '-';
+
                 var row = '<tr>' +
                     '<td>' + slide.id + '</td>' +
                     '<td><img src="/storage/' + slide.image_path + '" alt="slide" width="100"></td>' +
                     '<td>' + slide.title + '</td>' +
                     '<td>' + slide.subtitle + '</td>' +
+                    '<td>' + description + '</td>' +
                     '<td>' + slide.sort_order + '</td>' +
                     '<td>' + statusBadge + '</td>' +
                     '<td>' +
@@ -191,6 +196,7 @@
                     if (response.translations['{{ $language->code }}']) {
                         $('#edit_title_{{ $language->code }}').val(response.translations['{{ $language->code }}'].title);
                         $('#edit_subtitle_{{ $language->code }}').val(response.translations['{{ $language->code }}'].subtitle);
+                        $('#edit_description_{{ $language->code }}').val(response.translations['{{ $language->code }}'].description || '');
                     }
                     @endforeach
 
