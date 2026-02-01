@@ -8,8 +8,10 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\TourController;
 
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -79,5 +81,20 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [FeatureController::class, 'store'])->name('store');
         Route::put('/{id}', [FeatureController::class, 'update'])->name('update');
         Route::delete('/{id}', [FeatureController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('tours')->name('tours.')->group(function () {
+        Route::get('/', [TourController::class, 'index'])->name('index');
+        Route::get('/{id}', [TourController::class, 'show'])->name('show');
+        Route::get('/{id}/translations', [TourController::class, 'getTranslations']);
+        Route::post('/', [TourController::class, 'store'])->name('store');
+        Route::put('/{id}', [TourController::class, 'update'])->name('update');
+        Route::delete('/{id}', [TourController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('bookings')->name('bookings.')->group(function () {
+        Route::get('/', [BookingController::class, 'index'])->name('index');
+        Route::put('/{id}/status', [BookingController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/{id}', [BookingController::class, 'destroy'])->name('destroy');
     });
 });

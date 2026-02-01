@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\AboutController;
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\HeroSlideController;
 use App\Http\Controllers\Api\LanguageController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\TourController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +21,14 @@ Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/contact', [ContactController::class, 'index']);
 Route::get('/hero-slides', [HeroSlideController::class, 'index']);
+
+// Tours
+Route::get('/tours', [TourController::class, 'index']);
+Route::get('/tours/{id}', [TourController::class, 'show']);
+
+// Reviews
+Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/reviews/{id}', [ReviewController::class, 'show']);
+
+// Bookings
+Route::post('/bookings', [BookingController::class, 'store']);

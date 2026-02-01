@@ -11,9 +11,17 @@ class Tour extends Model
         'price',
         'rating',
         'reviews_count',
-        'duration',
+        'duration_days',
+        'duration_nights',
         'min_age',
-        'max_people'
+        'max_people',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'price' => 'decimal:2',
+        'rating' => 'decimal:1',
     ];
 
     public function category()
@@ -39,5 +47,12 @@ class Tour extends Model
     public function images()
     {
         return $this->hasMany(TourImage::class);
+    }
+
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class, 'tour_inclusions')
+            ->withPivot('is_included')
+            ->withTimestamps();
     }
 }

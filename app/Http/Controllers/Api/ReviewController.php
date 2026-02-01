@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ReviewResource;
+use App\Models\Review;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
+
+class ReviewController extends Controller
+{
+    #[OA\Get(
+        path: "/reviews",
+        tags: ["Reviews"],
+        summary: "Barcha sharhlarni olish",
+        description: "Aktiv sharhlarni ro'yxatini qaytaradi. Tour bo'yicha filter qilish mumkin.",
+        parameters: [
+            new OA\Parameter(
+                name: "Accept-Language",
+                in: "header",
+                description: "Til kodi (uz, ru, kk, en)",
+                required: false,
+                schema: new OA\Schema(type: "string", default: "uz", enum: ["uz", "ru", "kk", "en"])
+            ),
+            new OA\Parameter(
+                name: "tour_id",
+                in: "query",
+                description: "Tur ID (ixtiyoriy)",
+                required: false,
+                schema: new OA\Schema(type: "integer", example: 1)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Muvaffaqiyatli javob",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(
+                            property: "data",
+                            type: "array",
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: "id", type: "integer", example: 1),
+                                    new OA\Property(property: "user_name", type: "string", example: "Alisher Navoiy"),
+                                    new OA\Property(property: "rating", type: "integer", example: 5),
+                                    new OA\Property(property: "review_text", type: "string", example: "Ajoyib tur edi!"),
+                                    new OA\Property(property: "video_url", type: "string", example: "https://youtube.com/watch?v=xxx"),
+                                    new OA\Property(
+                                        property: "tour",
+                                        type: "object",
+                                        properties: [
+                                            new OA\Property(property: "id", type: "integer", example: 1),
+                                            new OA\Property(property: "title", type: "string", example: "Orol dengizi safari"),
+                                        ]
+                                    ),
+                                ]
+                            )
+                        ),
+                    ]
+                )
+            )
+        ]
+    )]
+    public function index(Request $request): JsonResponse
+    {
+        $query = Review::with(['translations', 'tour.translations'])
+            ->where('is_active', true);
+
+        // Filter by tour if provided
+        if ($request->has('tour_id')) {
+            $query->where('tour_id', $request->tour_id);
+        }
+
+        $reviews = $query->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => ReviewResource::collection($reviews)
+        ]);
+    }
+
+    #[OA\Get(
+        path: "/reviews/{id}",
+        tags: ["Reviews"],
+        summary: "Bitta sharhni olish",
+        description: "ID bo'yicha sharhni qaytaradi",
+        parameters: [
+            new OA\Parameter(
+                name: "Accept-Language",
+                in: "header",
+                description: "Til kodi (uz, ru, kk, en)",
+                required: false,
+                schema: new OA\Schema(type: "string", default: "uz", enum: ["uz", "ru", "kk", "en"])
+            ),
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                description: "Sharh ID",
+                required: true,
+                schema: new OA\Schema(type: "integer", example: 1)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Muvaffaqiyatli javob",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(property: "data", type: "object"),
+                    ]
+                )
+            ),
+            new OA\Response(response: 404, description: "Sharh topilmadi")
+        ]
+    )]
+    public function show(int $id): JsonResponse
+    {
+        $review = Review::with(['translations', 'tour.translations'])
+            ->where('is_active', true)
+            ->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => new ReviewResource($review)
+        ]);
+    }
+}

@@ -21,7 +21,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): RedirectResponse
     {
         if ($this->authService->login($request->validated())) {
-            return redirect()->route('dashboard')->with('success', 'Добро пожаловать!');
+            return redirect()->route('dashboard');
         }
         return back()->with('error', 'Неверный email или пароль');
     }

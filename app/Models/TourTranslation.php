@@ -10,9 +10,9 @@ class TourTranslation extends Model
         'tour_id',
         'lang_code',
         'title',
+        'slogan',
         'description',
         'routes',
-        'description',
         'important_info',
     ];
 

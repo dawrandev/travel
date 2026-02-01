@@ -152,28 +152,44 @@
             tbody.empty();
 
             if (contacts.length === 0) {
-                tbody.append('<tr><td colspan="7" class="text-center">Нет данных</td></tr>');
+                // Ustunlar soni 9 ta bo'lgani uchun colspan="9" qilamiz
+                tbody.append('<tr><td colspan="9" class="text-center">Нет данных</td></tr>');
                 return;
             }
 
             contacts.forEach(function(contact, index) {
-                var telegramCell = contact.telegram_username ?
-                    '<a href="' + contact.telegram_url + '" target="_blank">@' + contact.telegram_username + '</a>' :
+                // Telegram mantiqi
+                var telegramCell = contact.telegram_url ?
+                    '<a href="' + contact.telegram_url + '" target="_blank" class="text-info"><i class="fab fa-telegram"></i> ' +
+                    (contact.telegram_username ? '@' + contact.telegram_username : 'Перейти') + '</a>' :
                     '<span class="badge badge-secondary">Нет</span>';
 
+                // Instagram mantiqi
                 var instagramCell = contact.instagram_url ?
-                    '<a href="' + contact.instagram_url + '" target="_blank"><i class="fab fa-instagram"></i></a>' :
+                    '<a href="' + contact.instagram_url + '" target="_blank" style="color: #E1306C;"><i class="fab fa-instagram"></i></a>' :
                     '<span class="badge badge-secondary">Нет</span>';
 
-                var address = contact.address.length > 50 ? contact.address.substring(0, 50) + '...' : contact.address;
+                // Facebook mantiqi (Yangi qo'shildi)
+                var facebookCell = contact.facebook_url ?
+                    '<a href="' + contact.facebook_url + '" target="_blank" class="text-primary"><i class="fab fa-facebook"></i></a>' :
+                    '<span class="badge badge-secondary">Нет</span>';
+
+                // Youtube mantiqi (Yangi qo'shildi)
+                var youtubeCell = contact.youtube_url ?
+                    '<a href="' + contact.youtube_url + '" target="_blank" class="text-danger"><i class="fab fa-youtube"></i></a>' :
+                    '<span class="badge badge-secondary">Нет</span>';
+
+                var address = contact.address ? (contact.address.length > 50 ? contact.address.substring(0, 50) + '...' : contact.address) : 'N/A';
 
                 var row = '<tr>' +
                     '<td>' + (index + 1) + '</td>' +
-                    '<td>' + contact.phone + '</td>' +
-                    '<td>' + contact.email + '</td>' +
+                    '<td>' + (contact.phone || '') + '</td>' +
+                    '<td>' + (contact.email || '') + '</td>' +
                     '<td>' + address + '</td>' +
                     '<td>' + telegramCell + '</td>' +
                     '<td>' + instagramCell + '</td>' +
+                    '<td>' + facebookCell + '</td>' +
+                    '<td>' + youtubeCell + '</td>' +
                     '<td>' +
                     '<button class="btn btn-sm btn-primary" onclick="editContact(' + contact.id + ')">' +
                     '<i class="fas fa-edit"></i>' +

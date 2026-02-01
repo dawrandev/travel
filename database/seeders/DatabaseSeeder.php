@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,8 +21,9 @@ class DatabaseSeeder extends Seeder
             ContactSeeder::class,
             CategorySeeder::class,
             TourSeeder::class,
+            TourItinerarySeeder::class,
             ReviewSeeder::class,
-            // FeatureSeeder::class,
+            FeatureSeeder::class,
         ]);
     }
 }

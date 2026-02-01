@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreFeatureRequest extends FormRequest
+class FeatureRequest extends FormRequest
 {
     public function authorize(): bool
     {

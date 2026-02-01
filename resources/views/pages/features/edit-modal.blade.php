@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="editForm" method="POST">
+            <form id="editForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
@@ -15,20 +15,19 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="form-label">Иконка <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="edit_icon_preview" style="font-size: 24px; width: 60px; justify-content: center;">
-                                            <i class="fas fa-star"></i>
-                                        </span>
-                                    </div>
-                                    <input type="text" name="icon" id="edit_icon" class="form-control" placeholder="fas fa-star" required>
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editIconPickerModal">
-                                            <i class="fas fa-icons"></i> Выбрать иконку
-                                        </button>
-                                    </div>
-                                </div>
-                                <small class="form-text text-muted">Используйте классы FontAwesome (например: fas fa-star, far fa-heart, fab fa-facebook)</small>
+                                <input type="text" name="icon" id="editIconInput" class="form-control" placeholder="fas fa-star" required readonly>
+                                <small class="form-text text-muted">
+                                    Нажмите на кнопку ниже, чтобы изменить иконку
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#iconPickerModal">
+                                    <i class="fas fa-icons"></i> Изменить иконку
+                                </button>
+                            </div>
+                            <div id="editIconPreview" class="text-center mt-2" style="display: none;">
+                                <p class="text-muted mb-2">Текущая иконка:</p>
+                                <i id="editIconPreviewIcon" class="" style="font-size: 48px; color: #6777ef;"></i>
                             </div>
                         </div>
                     </div>
@@ -77,76 +76,3 @@
     </div>
 </div>
 
-<!-- Edit Icon Picker Modal -->
-<div class="modal fade" id="editIconPickerModal" tabindex="-1" role="dialog" aria-labelledby="editIconPickerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editIconPickerModalLabel">Выбрать иконку</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <input type="text" id="editIconSearch" class="form-control" placeholder="Поиск иконки...">
-                </div>
-                <div id="editIconList" style="max-height: 400px; overflow-y: auto;">
-                    <div class="row" id="editIconGrid">
-                        <!-- Icons will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@push('scripts')
-<script>
-    function loadEditIcons() {
-        const iconGrid = $('#editIconGrid');
-        iconGrid.empty();
-
-        popularIcons.forEach(function(icon) {
-            const iconHtml = `
-                <div class="col-2 text-center mb-3">
-                    <button type="button" class="btn btn-light edit-icon-select-btn" data-icon="${icon}" style="width: 100%; padding: 15px;">
-                        <i class="${icon}" style="font-size: 24px;"></i>
-                    </button>
-                </div>
-            `;
-            iconGrid.append(iconHtml);
-        });
-    }
-
-    $(document).ready(function() {
-        $('#editIconPickerModal').on('show.bs.modal', function() {
-            loadEditIcons();
-        });
-
-        $(document).on('click', '.edit-icon-select-btn', function() {
-            const selectedIcon = $(this).data('icon');
-            $('#edit_icon').val(selectedIcon);
-            $('#edit_icon_preview').html('<i class="' + selectedIcon + '"></i>');
-            $('#editIconPickerModal').modal('hide');
-        });
-
-        $('#edit_icon').on('input', function() {
-            const iconClass = $(this).val();
-            $('#edit_icon_preview').html('<i class="' + iconClass + '"></i>');
-        });
-
-        $('#editIconSearch').on('input', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            $('.edit-icon-select-btn').each(function() {
-                const icon = $(this).data('icon').toLowerCase();
-                if (icon.includes(searchTerm)) {
-                    $(this).parent().show();
-                } else {
-                    $(this).parent().hide();
-                }
-            });
-        });
-    });
-</script>
-@endpush

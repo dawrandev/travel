@@ -4,12 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TourItinerary extends Model
+class TourInclusion extends Model
 {
     protected $fillable = [
         'tour_id',
-        'day_number',
-        'event_time',
+        'feature_id',
+        'is_included'
+    ];
+
+    protected $casts = [
+        'is_included' => 'boolean',
     ];
 
     public function tour()
@@ -17,8 +21,8 @@ class TourItinerary extends Model
         return $this->belongsTo(Tour::class);
     }
 
-    public function translations()
+    public function feature()
     {
-        return $this->hasMany(TourItineraryTranslation::class, 'tour_itenerary_id');
+        return $this->belongsTo(Feature::class);
     }
 }

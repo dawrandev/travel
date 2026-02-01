@@ -1,181 +1,77 @@
-@extends('layouts.main')
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Добавить новую функцию</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('features.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Иконка <span class="text-danger">*</span></label>
+                                <input type="text" name="icon" id="iconInput" class="form-control" placeholder="fas fa-star" required readonly>
+                                <small class="form-text text-muted">
+                                    Нажмите на поле ниже, чтобы выбрать иконку из FontAwesome
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#iconPickerModal">
+                                    <i class="fas fa-icons"></i> Выбрать иконку
+                                </button>
+                            </div>
+                            <div id="iconPreview" class="text-center mt-2" style="display: none;">
+                                <p class="text-muted mb-2">Выбранная иконка:</p>
+                                <i id="iconPreviewIcon" class="" style="font-size: 48px; color: #6777ef;"></i>
+                            </div>
+                        </div>
+                    </div>
 
-@section('content')
-<div class="section-header">
-    <h1>Функции</h1>
-    <div class="section-header-breadcrumb">
-        <div class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Панель управления</a></div>
-        <div class="breadcrumb-item active">Функции</div>
-        <div class="breadcrumb-item">
-            <button class="btn btn-warning rounded-pill" data-toggle="modal" data-target="#createModal">
-                <i class="fas fa-plus"></i> Добавить функцию
-            </button>
-        </div>
-    </div>
-</div>
+                    <hr>
 
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h4>Список функций</h4>
-                <div class="card-header-action">
-                    <select class="form-control" id="languageFilter" style="width: 150px;">
-                        @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
-                            {{ $language->name }}
-                        </option>
+                    <ul class="nav nav-pills mb-3" id="languageTabs" role="tablist">
+                        @foreach($languages as $index => $language)
+                        <li class="nav-item">
+                            <a class="nav-link {{ $index == 0 ? 'active' : '' }}" id="tab-{{ $language->code }}" data-toggle="pill" href="#lang-{{ $language->code }}" role="tab">
+                                {{ $language->name }}
+                            </a>
+                        </li>
                         @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped" id="featureTable">
-                        <thead>
-                            <tr>
-                                <th>№</th>
-                                <th>Иконка</th>
-                                <th>Название</th>
-                                <th>Описание</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody id="featureTableBody">
-                            @foreach($features as $feature)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <div style="font-size: 24px; color: #6777ef;">
-                                        <i class="{{ $feature->icon }}"></i>
+                    </ul>
+
+                    <div class="tab-content" id="languageTabsContent">
+                        @foreach($languages as $index => $language)
+                        <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="lang-{{ $language->code }}" role="tabpanel">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Название ({{ $language->name }}) <span class="text-danger">*</span></label>
+                                        <input type="text" name="name_{{ $language->code }}" class="form-control" placeholder="Введите название" required>
                                     </div>
-                                </td>
-                                <td>{{ $feature->translations->first()->name ?? 'N/A' }}</td>
-                                <td>{{ Str::limit($feature->translations->first()->description ?? 'N/A', 60) }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary" onclick="editFeature({{ $feature->id }})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <form action="{{ route('features.destroy', $feature->id) }}" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="функцию">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Описание ({{ $language->name }}) <span class="text-danger">*</span></label>
+                                        <textarea name="description_{{ $language->code }}" class="form-control" rows="4" placeholder="Введите описание" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+                <div class="modal-footer bg-whitesmoke br">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@endsection
 
-@push('modals')
-@include('pages.features.create-modal')
-@include('pages.features.edit-modal')
-@endpush
-
-@push('scripts')
-<script>
-    // Routes - Prettier formatter won't break these
-    const ROUTES = {
-        filter: '{{ route("features.filter") }}',
-        translations: '/features/{id}/translations',
-        destroy: '/features/{id}'
-    };
-
-    $(document).ready(function() {
-        $('#languageFilter').on('change', function() {
-            var langCode = $(this).val();
-
-            $.ajax({
-                url: ROUTES.filter,
-                type: 'GET',
-                data: {
-                    lang_code: langCode
-                },
-                success: function(response) {
-                    if (response.success) {
-                        updateTable(response.data);
-                    }
-                },
-                error: function() {
-                    alert('Ошибка при загрузке данных');
-                }
-            });
-        });
-
-        function updateTable(features) {
-            var tbody = $('#featureTableBody');
-            tbody.empty();
-
-            if (features.length === 0) {
-                tbody.append('<tr><td colspan="5" class="text-center">Нет данных</td></tr>');
-                return;
-            }
-
-            features.forEach(function(feature, index) {
-                var description = feature.description.length > 60 ? feature.description.substring(0, 60) + '...' : feature.description;
-
-                var row = '<tr>' +
-                    '<td>' + (index + 1) + '</td>' +
-                    '<td><div style="font-size: 24px; color: #6777ef;"><i class="' + feature.icon + '"></i></div></td>' +
-                    '<td>' + feature.name + '</td>' +
-                    '<td>' + description + '</td>' +
-                    '<td>' +
-                    '<button class="btn btn-sm btn-primary" onclick="editFeature(' + feature.id + ')">' +
-                    '<i class="fas fa-edit"></i>' +
-                    '</button> ' +
-                    '<form action="/features/' + feature.id + '" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="функцию">' +
-                    '@csrf @method("DELETE")' +
-                    '<button type="submit" class="btn btn-sm btn-danger">' +
-                    '<i class="fas fa-trash"></i>' +
-                    '</button>' +
-                    '</form>' +
-                    '</td>' +
-                    '</tr>';
-
-                tbody.append(row);
-            });
-        }
-    });
-
-    // Edit Feature function
-    function editFeature(id) {
-        $.ajax({
-            url: ROUTES.translations.replace('{id}', id),
-            type: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    $('#editForm').attr('action', ROUTES.destroy.replace('{id}', id));
-                    $('#edit_icon').val(response.feature.icon);
-                    $('#edit_icon_preview').html('<i class="' + response.feature.icon + '"></i>');
-
-                    // Fill translations for each language
-                    @foreach($languages as $language)
-                    if (response.translations['{{ $language->code }}']) {
-                        $('#edit_name_{{ $language->code }}').val(response.translations['{{ $language->code }}'].name);
-                        $('#edit_description_{{ $language->code }}').val(response.translations['{{ $language->code }}'].description);
-                    }
-                    @endforeach
-
-                    $('#editModal').modal('show');
-                }
-            },
-            error: function(xhr) {
-                swal({
-                    title: 'Ошибка!',
-                    text: 'Ошибка при загрузке данных',
-                    icon: 'error',
-                    button: 'ОК',
-                });
-            }
-        });
-    }
-</script>
-@endpush

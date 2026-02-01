@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Language;
 use App\Repositories\FeatureRepository;
+use Illuminate\Support\Facades\Storage;
 
 class FeatureService
 {
@@ -60,7 +61,6 @@ class FeatureService
 
         $this->featureRepository->update($feature, $data);
 
-        // Delete old translations and create new ones
         $feature->translations()->delete();
 
         $languages = Language::all();
@@ -79,6 +79,7 @@ class FeatureService
     public function delete(int $id)
     {
         $feature = $this->featureRepository->findById($id);
+
         return $this->featureRepository->delete($feature);
     }
 }

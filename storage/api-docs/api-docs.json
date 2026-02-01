@@ -45,6 +45,173 @@
                 }
             }
         },
+        "/bookings": {
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Yangi bron yaratish",
+                "description": "Foydalanuvchi tur uchun bron qiladi. Barcha kerakli ma'lumotlarni to'ldirish shart.",
+                "operationId": "166547aa028b063e31d6efe9c093aa88",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tour_id",
+                                    "full_name",
+                                    "phone_primary",
+                                    "booking_date",
+                                    "people_count"
+                                ],
+                                "properties": {
+                                    "tour_id": {
+                                        "description": "Tur ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "full_name": {
+                                        "description": "To'liq ism",
+                                        "type": "string",
+                                        "example": "Alisher Navoiy"
+                                    },
+                                    "phone_primary": {
+                                        "description": "Asosiy telefon raqam",
+                                        "type": "string",
+                                        "example": "+998901234567"
+                                    },
+                                    "phone_secondary": {
+                                        "description": "Qo'shimcha telefon raqam (ixtiyoriy)",
+                                        "type": "string",
+                                        "example": "+998909876543"
+                                    },
+                                    "booking_date": {
+                                        "description": "Bron qilish sanasi (YYYY-MM-DD)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-02-15"
+                                    },
+                                    "people_count": {
+                                        "description": "Odamlar soni (narx avtomatik hisoblanadi)",
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example": 2
+                                    },
+                                    "comment": {
+                                        "description": "Izoh (ixtiyoriy)",
+                                        "type": "string",
+                                        "example": "Men vegetarian ovqat xohlayman"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bron muvaffaqiyatli yaratildi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Booking created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "tour_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "full_name": {
+                                                    "type": "string",
+                                                    "example": "Alisher Navoiy"
+                                                },
+                                                "phone_primary": {
+                                                    "type": "string",
+                                                    "example": "+998901234567"
+                                                },
+                                                "phone_secondary": {
+                                                    "type": "string",
+                                                    "example": "+998909876543"
+                                                },
+                                                "booking_date": {
+                                                    "type": "string",
+                                                    "example": "2026-02-15"
+                                                },
+                                                "people_count": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "total_price": {
+                                                    "description": "Avtomatik hisoblangan umumiy narx",
+                                                    "type": "number",
+                                                    "example": 1500000
+                                                },
+                                                "price_per_person": {
+                                                    "description": "Har bir kishi uchun narx",
+                                                    "type": "number",
+                                                    "example": 750000
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "pending"
+                                                },
+                                                "comment": {
+                                                    "type": "string",
+                                                    "example": "Men vegetarian ovqat xohlayman"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validatsiya xatosi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "phone_primary": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "Primary phone number is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/contact": {
             "get": {
                 "tags": [
@@ -139,12 +306,384 @@
                     }
                 }
             }
+        },
+        "/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Barcha sharhlarni olish",
+                "description": "Aktiv sharhlarni ro'yxatini qaytaradi. Tour bo'yicha filter qilish mumkin.",
+                "operationId": "1977cd84258463d927b22fbdb185d50b",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (uz, ru, kk, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz",
+                            "enum": [
+                                "uz",
+                                "ru",
+                                "kk",
+                                "en"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "tour_id",
+                        "in": "query",
+                        "description": "Tur ID (ixtiyoriy)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "user_name": {
+                                                        "type": "string",
+                                                        "example": "Alisher Navoiy"
+                                                    },
+                                                    "rating": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "review_text": {
+                                                        "type": "string",
+                                                        "example": "Ajoyib tur edi!"
+                                                    },
+                                                    "video_url": {
+                                                        "type": "string",
+                                                        "example": "https://youtube.com/watch?v=xxx"
+                                                    },
+                                                    "tour": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Orol dengizi safari"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reviews/{id}": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Bitta sharhni olish",
+                "description": "ID bo'yicha sharhni qaytaradi",
+                "operationId": "acf25d40c9352f206d9be8f3285fe724",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (uz, ru, kk, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz",
+                            "enum": [
+                                "uz",
+                                "ru",
+                                "kk",
+                                "en"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Sharh ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Sharh topilmadi"
+                    }
+                }
+            }
+        },
+        "/tours": {
+            "get": {
+                "tags": [
+                    "Tours"
+                ],
+                "summary": "Barcha turlarni olish",
+                "description": "Aktiv turlarni ro'yxatini qaytaradi. Category bo'yicha filter qilish mumkin.",
+                "operationId": "fee1453175a1fa9b6f205a3265be39eb",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (uz, ru, kk, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz",
+                            "enum": [
+                                "uz",
+                                "ru",
+                                "kk",
+                                "en"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Kategoriya ID (ixtiyoriy)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Orol dengizi safari"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Ajoyib sayohat..."
+                                                    },
+                                                    "routes": {
+                                                        "type": "string",
+                                                        "example": "Toshkent - Nukus - Moynaq"
+                                                    },
+                                                    "important_info": {
+                                                        "type": "string",
+                                                        "example": "Pasport talab qilinadi"
+                                                    },
+                                                    "price": {
+                                                        "type": "number",
+                                                        "example": 1500000
+                                                    },
+                                                    "duration_days": {
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "duration_nights": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "min_age": {
+                                                        "type": "integer",
+                                                        "example": 18
+                                                    },
+                                                    "max_people": {
+                                                        "type": "integer",
+                                                        "example": 15
+                                                    },
+                                                    "rating": {
+                                                        "type": "number",
+                                                        "example": 4.5
+                                                    },
+                                                    "reviews_count": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "category": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Tabiiy safari"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "main_image": {
+                                                        "type": "string",
+                                                        "example": "http://example.com/storage/tours/image.jpg"
+                                                    },
+                                                    "images": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "itineraries": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "features": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tours/{id}": {
+            "get": {
+                "tags": [
+                    "Tours"
+                ],
+                "summary": "Bitta turni olish",
+                "description": "ID bo'yicha turni batafsil ma'lumotlari bilan qaytaradi",
+                "operationId": "fa8aa004421412a6e82a7d725bb7eba1",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (uz, ru, kk, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz",
+                            "enum": [
+                                "uz",
+                                "ru",
+                                "kk",
+                                "en"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tur ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tur topilmadi"
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
             "name": "About",
             "description": "About"
+        },
+        {
+            "name": "Bookings",
+            "description": "Bookings"
         },
         {
             "name": "Contact",
@@ -161,6 +700,14 @@
         {
             "name": "Languages",
             "description": "Languages"
+        },
+        {
+            "name": "Reviews",
+            "description": "Reviews"
+        },
+        {
+            "name": "Tours",
+            "description": "Tours"
         }
     ]
 }

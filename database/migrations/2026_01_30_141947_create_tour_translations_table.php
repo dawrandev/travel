@@ -16,9 +16,10 @@ return new class extends Migration
             $table->foreignId('tour_id')->constrained()->onDelete('cascade');
             $table->string('lang_code', 5);
             $table->string('title');
+            $table->string('slogan')->nullable();
             $table->text('description');
             $table->text('routes');
-            $table->text('important_info');
+            $table->text('important_info')->nullable();
             $table->timestamps();
         });
     }
