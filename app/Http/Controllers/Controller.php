@@ -10,8 +10,12 @@ use OpenApi\Attributes as OA;
     description: "Sayohat veb-sayti uchun API"
 )]
 #[OA\Server(
-    url: "/api",
-    description: "API Server"
+    url: "http://toqtarbay.dbc.uz/api",
+    description: "Production Server"
+)]
+#[OA\Server(
+    url: "http://travel.test/api",
+    description: "Local Development Server"
 )]
 abstract class Controller
 {

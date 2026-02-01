@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             LanguageSeeder::class,
             UserSeeder::class,
             HeroSlideSeeder::class,
-            FAQSeeder::class,
+            FaqSeeder::class,
             AboutSeeder::class,
             ContactSeeder::class,
             CategorySeeder::class,

@@ -7,8 +7,12 @@
     },
     "servers": [
         {
-            "url": "/api",
-            "description": "API Server"
+            "url": "http://toqtarbay.dbc.uz/api",
+            "description": "Production Server"
+        },
+        {
+            "url": "http://travel.test/api",
+            "description": "Local Development Server"
         }
     ],
     "paths": {
