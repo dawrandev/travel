@@ -20,7 +20,7 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
 
-    <link rel='shortcut icon' type='image/x-icon' href="{{ asset('assets/img/favicon.ico') }}" />
+    <link rel='shortcut icon' type='image/x-icon' href="{{ asset('assets/img/logo.svg') }}" />
 
     <style>
         /* Agar loader xalaqit bersa, uni majburiy yashiramiz */

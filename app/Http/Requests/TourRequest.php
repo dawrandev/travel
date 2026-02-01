@@ -31,7 +31,7 @@ class TourRequest extends FormRequest
             // Itineraries validation
             'itineraries' => 'required|array|min:1',
             'itineraries.*.day_number' => 'required|integer|min:1',
-            'itineraries.*.event_time' => 'required|date_format:H:i',
+            'itineraries.*.event_time' => 'required|date_format:H:i:s,H:i',
         ];
 
         // Add validation rules for all languages
