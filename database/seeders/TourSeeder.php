@@ -9,7 +9,7 @@ class TourSeeder extends Seeder
 {
     public function run(): void
     {
-        // Kategoriyani aniqlab olamiz (Kategoriyalar mavjud bo'lishi shart)
+        // Kategoriyani aniqlab olamiz
         $categoryId = DB::table('categories')->first()->id ?? 1;
 
         // 1. Asosiy tur ma'lumotlarini yaratish
@@ -27,28 +27,32 @@ class TourSeeder extends Seeder
             'updated_at'      => now(),
         ]);
 
-        // 2. Tarjimalar massivi
+        // 2. Tarjimalar massivi (Slogan qo'shilgan holda)
         $translations = [
             'ru' => [
                 'title' => 'Экспедиция к Аральскому морю и кладбищу кораблей',
+                'slogan' => 'Путешествие в затерянный мир Арала',
                 'description' => 'Уникальный тур по дну высохшего океана, посещение легендарного кладбища кораблей и ночевка в юртовом лагере.',
                 'routes' => 'Нукус — Муйнак — Плато Устюрт — Аральское море',
                 'important_info' => 'Возьмите с собой удобную обувь, солнцезащитные очки и теплую одежду для ночевки.'
             ],
             'uz' => [
                 'title' => 'Orol dengizi va kemalar qabristoniga ekspeditsiya',
+                'slogan' => 'Orolning unutilgan dunyosiga sayohat',
                 'description' => 'Qurigan okean tubi bo‘ylab noyob sayohat, afsonaviy kemalar qabristonini ziyorat qilish va o‘tov lagerida tunash.',
                 'routes' => 'Nukus — Mo‘ynoq — Ustyurt platosi — Orol dengizi',
                 'important_info' => 'O‘zingiz bilan qulay poyabzal, quyoshdan saqlovchi ko‘zoynak va tunash uchun issiq kiyim oling.'
             ],
             'kk' => [
                 'title' => 'Aral teńizi hám kemeler qabristanına ekspediciya',
+                'slogan' => 'Araldıń umıtılǵan dúnyasına sayaxat',
                 'description' => 'Qurıǵan okean túbi boylap kemeler qabristanına sayaxat hám otaw lagerinde túnep qalıw.',
                 'routes' => 'Nókis — Moynaq — Ústirt platoso — Aral teńizi',
                 'important_info' => 'Ózińiz benen qolaylı ayaq kiyim, quyashtan qorǵawshı kózáynek hám túnep qalıw ushın jıllı kiyim alıń.'
             ],
             'en' => [
                 'title' => 'Expedition to the Aral Sea and Ship Graveyard',
+                'slogan' => 'Journey to the Lost World of Aral',
                 'description' => 'A unique tour across the bottom of a dried-up ocean, visiting the legendary ship graveyard and staying in a yurt camp.',
                 'routes' => 'Nukus — Muynak — Ustyurt Plateau — Aral Sea',
                 'important_info' => 'Bring comfortable shoes, sunglasses, and warm clothes for the overnight stay.'
@@ -60,6 +64,7 @@ class TourSeeder extends Seeder
                 'tour_id'        => $tourId,
                 'lang_code'      => $lang,
                 'title'          => $data['title'],
+                'slogan'         => $data['slogan'], // Yangi maydon
                 'description'    => $data['description'],
                 'routes'         => $data['routes'],
                 'important_info' => $data['important_info'],

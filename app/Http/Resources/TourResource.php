@@ -38,11 +38,11 @@ class TourResource extends JsonResource
                 'id' => $this->category->id,
                 'name' => $categoryTranslation->name ?? '',
             ],
-            'main_image' => $mainImage ? asset('storage/' . $mainImage->image_path) : null,
+            'main_image' => $mainImage ? $this->formatImagePath($mainImage->image_path) : null,
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
-                    'url' => asset('storage/' . $image->image_path),
+                    'url' => $this->formatImagePath($image->image_path),
                     'is_main' => (bool) $image->is_main,
                 ];
             }),
@@ -69,5 +69,33 @@ class TourResource extends JsonResource
                 ];
             }),
         ];
+    }
+
+    /**
+     * Format image path - remove domain if exists, ensure it starts with /storage/
+     */
+    private function formatImagePath(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        // If it's already a full URL, extract the path part
+        if (preg_match('#https?://[^/]+(/storage/.+)#', $path, $matches)) {
+            return $matches[1];
+        }
+
+        // If it already starts with /storage/, return as is
+        if (strpos($path, '/storage/') === 0) {
+            return $path;
+        }
+
+        // If it starts with storage/ (without leading slash), add leading slash
+        if (strpos($path, 'storage/') === 0) {
+            return '/' . $path;
+        }
+
+        // Otherwise, prepend /storage/
+        return '/storage/' . $path;
     }
 }

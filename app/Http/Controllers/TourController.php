@@ -100,13 +100,40 @@ class TourController extends Controller
 
     public function store(TourRequest $request): RedirectResponse
     {
-        $this->tourService->create($request->validated());
+        // Merge validated data with feature fields
+        $data = $request->validated();
+        $allData = $request->all();
+        
+        // Add feature fields to data
+        foreach ($allData as $key => $value) {
+            if (str_starts_with($key, 'feature_')) {
+                $data[$key] = $value;
+            }
+        }
+        
+        $this->tourService->create($data);
         return redirect()->route('tours.index')->with('success', 'Тур успешно создан');
     }
 
     public function update(TourRequest $request, int $id): RedirectResponse
     {
-        $this->tourService->update($id, $request->validated());
+        // Merge validated data with feature fields
+        $data = $request->validated();
+        $allData = $request->all();
+        
+        // Add feature fields to data
+        foreach ($allData as $key => $value) {
+            if (str_starts_with($key, 'feature_')) {
+                $data[$key] = $value;
+            }
+        }
+        
+        // Also add main_image_id if present
+        if ($request->has('main_image_id')) {
+            $data['main_image_id'] = $request->input('main_image_id');
+        }
+        
+        $this->tourService->update($id, $data);
         return redirect()->route('tours.index')->with('success', 'Тур успешно обновлен');
     }
 

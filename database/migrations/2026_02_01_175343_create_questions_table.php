@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tour_translations', function (Blueprint $table) {
+        Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tour_id')->constrained()->onDelete('cascade');
-            $table->string('lang_code', 5);
-            $table->string('title');
-            $table->string('slogan');
-            $table->text('description');
-            $table->text('routes');
-            $table->text('important_info')->nullable();
+            $table->string('user_name');
+            $table->string('email');
+            $table->string('phone_primary');
+            $table->string('phone_secondary')->nullable();
+            $table->text('comment');
+            $table->enum('status', ['pending', 'answered'])->default('pending');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tour_translations');
+        Schema::dropIfExists('questions');
     }
 };

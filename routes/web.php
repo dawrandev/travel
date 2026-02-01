@@ -9,6 +9,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TourController;
@@ -94,7 +95,15 @@ Route::middleware('admin')->group(function () {
 
     Route::prefix('bookings')->name('bookings.')->group(function () {
         Route::get('/', [BookingController::class, 'index'])->name('index');
+        Route::get('/{id}/show', [BookingController::class, 'show'])->name('show');
         Route::put('/{id}/status', [BookingController::class, 'updateStatus'])->name('updateStatus');
         Route::delete('/{id}', [BookingController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('questions')->name('questions.')->group(function () {
+        Route::get('/', [QuestionController::class, 'index'])->name('index');
+        Route::get('/{id}/show', [QuestionController::class, 'show'])->name('show');
+        Route::put('/{id}/status', [QuestionController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/{id}', [QuestionController::class, 'destroy'])->name('destroy');
     });
 });

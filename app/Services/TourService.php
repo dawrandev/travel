@@ -217,7 +217,7 @@ class TourService
         // Extract all feature_* fields from request
         foreach ($data as $key => $value) {
             if (str_starts_with($key, 'feature_')) {
-                $featureId = str_replace('feature_', '', $key);
+                $featureId = (int) str_replace('feature_', '', $key);
 
                 // Only sync if a selection was made (included or excluded)
                 if (in_array($value, ['included', 'excluded'])) {
@@ -227,6 +227,13 @@ class TourService
                 }
             }
         }
+
+        // Log for debugging
+        \Log::info('Sync Features Data', [
+            'tour_id' => $tourId,
+            'features_data' => $featuresData,
+            'all_data_keys' => array_keys($data)
+        ]);
 
         // Sync features with pivot data
         $this->tourRepository->syncFeaturesWithPivot($tourId, $featuresData);

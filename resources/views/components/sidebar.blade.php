@@ -23,18 +23,30 @@
              <li class="dropdown {{ Request::is('reviews') ? 'active' : '' }}">
                  <a href="{{ route('reviews.index') }}" class="nav-link"><i data-feather="star"></i><span>Отзывы</span></a>
              </li>
-             <li class="dropdown {{ Request::is('bookings') ? 'active' : '' }}">
-                 <a href="{{ route('bookings.index') }}" class="nav-link">
-                     <i data-feather="calendar" style="width: 20px; height: 20px;"></i>
-                     <span>Бронирования</span>
-                     @if(isset($pendingBookingsCount) && $pendingBookingsCount > 0)
-                     <span class="badge badge-warning" style="margin-left: 5px;">{{ $pendingBookingsCount }}</span>
-                     @endif
-                 </a>
-             </li>
-             <li class="dropdown {{ Request::is('hero-slides') ? 'active' : '' }}">
-                 <a href="{{ route('hero-slides.index') }}" class="nav-link"><i data-feather="image"></i><span>Слайды Баннера</span></a>
-             </li>
+            <li class="dropdown {{ Request::is('bookings') ? 'active' : '' }}">
+                <a href="{{ route('bookings.index') }}" class="nav-link">
+                    <i data-feather="calendar" style="width: 20px; height: 20px;"></i>
+                    <span>Бронирования</span>
+                    @if(isset($pendingBookingsCount) && $pendingBookingsCount > 0)
+                    <span class="badge badge-warning" style="margin-left: 5px;">{{ $pendingBookingsCount }}</span>
+                    @endif
+                </a>
+            </li>
+            <li class="dropdown {{ Request::is('questions') ? 'active' : '' }}">
+                <a href="{{ route('questions.index') }}" class="nav-link">
+                    <i data-feather="message-circle" style="width: 20px; height: 20px;"></i>
+                    <span>Вопросы</span>
+                    @php
+                        $pendingQuestionsCount = \App\Models\Question::where('status', 'pending')->count();
+                    @endphp
+                    @if($pendingQuestionsCount > 0)
+                    <span class="badge badge-warning" style="margin-left: 5px;">{{ $pendingQuestionsCount }}</span>
+                    @endif
+                </a>
+            </li>
+            <li class="dropdown {{ Request::is('hero-slides') ? 'active' : '' }}">
+                <a href="{{ route('hero-slides.index') }}" class="nav-link"><i data-feather="image"></i><span>Слайды Баннера</span></a>
+            </li>
              <li class="dropdown {{ Request::is('faqs') ? 'active' : '' }}">
                  <a href="{{ route('faqs.index') }}" class="nav-link"><i data-feather="help-circle"></i><span>Вопросы и ответы</span></a>
              </li>

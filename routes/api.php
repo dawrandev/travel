@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Api\AboutController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\HeroSlideController;
 use App\Http\Controllers\Api\LanguageController;
+use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\TourController;
 use Illuminate\Http\Request;
@@ -22,8 +24,12 @@ Route::get('/about', [AboutController::class, 'index']);
 Route::get('/contact', [ContactController::class, 'index']);
 Route::get('/hero-slides', [HeroSlideController::class, 'index']);
 
+// Categories
+Route::get('/categories', [CategoryController::class, 'index']);
+
 // Tours
 Route::get('/tours', [TourController::class, 'index']);
+Route::get('/tours/top-rated', [TourController::class, 'topRated']);
 Route::get('/tours/{id}', [TourController::class, 'show']);
 
 // Reviews
@@ -32,3 +38,6 @@ Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 
 // Bookings
 Route::post('/bookings', [BookingController::class, 'store']);
+
+// Questions
+Route::post('/questions', [QuestionController::class, 'store']);

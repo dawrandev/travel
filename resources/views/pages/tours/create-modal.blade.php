@@ -122,7 +122,7 @@
                         <i class="fas fa-plus"></i> Добавить день
                     </button>
                     <small class="text-muted d-block mb-2">
-                        <i class="fas fa-info-circle"></i> Необходимо добавить минимум 1 день
+                        <i class="fas fa-info-circle"></i> Необходимо добавить минимум 1 день. В каждом дне можно добавить несколько временных точек.
                     </small>
                     <div id="itinerariesContainer"></div>
 
@@ -222,9 +222,9 @@
                 return false;
             }
 
-            // Check if at least one itinerary is added
-            const itinerariesCount = $('.itinerary-item').length;
-            if (itinerariesCount === 0) {
+            // Check if at least one day is added
+            const daysCount = $('.itinerary-day').length;
+            if (daysCount === 0) {
                 swal({
                     title: 'Ошибка!',
                     text: 'Добавьте хотя бы один день в маршрут',
@@ -233,6 +233,24 @@
                 });
                 return false;
             }
+
+            // Reindex all itineraries before submit
+            let globalItineraryIndex = 0;
+            $('.itinerary-day').each(function() {
+                const dayNumber = $(this).data('day');
+                $(this).find('.time-item').each(function() {
+                    globalItineraryIndex++;
+                    const timeItem = $(this);
+                    timeItem.find('input, textarea').each(function() {
+                        const name = $(this).attr('name');
+                        if (name && name.includes('itineraries[')) {
+                            // Replace day_X_time_Y with sequential index
+                            const newName = name.replace(/itineraries\[day_\d+_time_\d+\]/, `itineraries[${globalItineraryIndex}]`);
+                            $(this).attr('name', newName);
+                        }
+                    });
+                });
+            });
 
             // Create FormData from form
             const formData = new FormData(this);
@@ -247,6 +265,24 @@
                 console.log('Adding image:', file.name);
             });
             formData.append('main_image', 0); // First image is main
+
+            // Add feature radio buttons to FormData
+            // Remove any existing feature fields first
+            const existingFeatureKeys = [];
+            for (let key of formData.keys()) {
+                if (key.startsWith('feature_')) {
+                    existingFeatureKeys.push(key);
+                }
+            }
+            existingFeatureKeys.forEach(key => formData.delete(key));
+
+            // Add selected feature radio buttons
+            $('input[type="radio"][name^="feature_"]:checked').each(function() {
+                const name = $(this).attr('name');
+                const value = $(this).val();
+                formData.append(name, value);
+                console.log('Adding feature:', name, '=', value);
+            });
 
             console.log('Form data prepared, submitting...');
 
@@ -284,47 +320,135 @@
             });
         });
 
-        // Add Itinerary
+        // Add Itinerary (Day)
         $('#addItinerary').click(function() {
             itineraryCounter++;
+            addDay(itineraryCounter);
+        });
+
+        // Add Time to Day
+        function addTimeToDay(dayNumber, timeCounter) {
+            const timeId = `day_${dayNumber}_time_${timeCounter}`;
+            const languages = @json($languages);
+            let tabsHtml = '';
+            let contentHtml = '';
+            
+            languages.forEach((language, index) => {
+                const isActive = index === 0 ? 'active' : '';
+                const showActive = index === 0 ? 'show active' : '';
+                tabsHtml += `
+                    <li class="nav-item">
+                        <a class="nav-link ${isActive}" data-toggle="pill" href="#${timeId}_lang_${language.code}">
+                            ${language.name}
+                        </a>
+                    </li>
+                `;
+                contentHtml += `
+                    <div class="tab-pane fade ${showActive}" id="${timeId}_lang_${language.code}">
+                        <div class="form-group">
+                            <label>Активность (${language.name}) <span class="text-danger">*</span></label>
+                            <input type="text" name="itineraries[${timeId}][activity_title_${language.code}]" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Описание (${language.name}) <span class="text-danger">*</span></label>
+                            <textarea name="itineraries[${timeId}][activity_description_${language.code}]" class="form-control" rows="2" required></textarea>
+                        </div>
+                    </div>
+                `;
+            });
+            
             let html = `
-                <div class="mb-3 p-3 itinerary-item" style="border: 1px solid #e0e0e0; border-radius: 4px; position: relative;">
-                    <button type="button" class="btn btn-sm btn-danger remove-itinerary" style="position: absolute; top: 10px; right: 10px;">
+                <div class="mb-3 p-3 time-item" data-day="${dayNumber}" data-time="${timeCounter}" style="border: 1px solid #d0d0d0; border-radius: 4px; background: #f9f9f9; position: relative;">
+                    <button type="button" class="btn btn-sm btn-danger remove-time" style="position: absolute; top: 10px; right: 10px;">
                         <i class="fas fa-times"></i>
                     </button>
-                    <h6 class="mb-3" style="color: #6777ef;">День ${itineraryCounter}</h6>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Номер дня <span class="text-danger">*</span></label>
-                                <input type="number" name="itineraries[${itineraryCounter}][day_number]" class="form-control" value="${itineraryCounter}" min="1" required>
-                            </div>
-                        </div>
+                    <h6 class="mb-3" style="color: #6777ef;">Время ${timeCounter}</h6>
+                    <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Время <span class="text-danger">*</span></label>
-                                <input type="time" name="itineraries[${itineraryCounter}][event_time]" class="form-control" value="09:00" required>
+                                <input type="time" name="itineraries[${timeId}][event_time]" class="form-control" value="09:00" required>
                             </div>
                         </div>
                     </div>
-                    @foreach($languages as $language)
-                    <div class="form-group">
-                        <label>Активность ({{ $language->name }}) <span class="text-danger">*</span></label>
-                        <input type="text" name="itineraries[${itineraryCounter}][activity_title_{{ $language->code }}]" class="form-control" required>
+                    <input type="hidden" name="itineraries[${timeId}][day_number]" value="${dayNumber}">
+                    
+                    <!-- Language Tabs -->
+                    <ul class="nav nav-pills mb-3" role="tablist">
+                        ${tabsHtml}
+                    </ul>
+                    <div class="tab-content">
+                        ${contentHtml}
                     </div>
-                    <div class="form-group">
-                        <label>Описание ({{ $language->name }}) <span class="text-danger">*</span></label>
-                        <textarea name="itineraries[${itineraryCounter}][activity_description_{{ $language->code }}]" class="form-control" rows="2" required></textarea>
+                </div>
+            `;
+            return html;
+        }
+
+        // Add Day
+        function addDay(dayNumber) {
+            let dayTimeCounter = 1;
+            const dayId = `day_${dayNumber}`;
+            let html = `
+                <div class="mb-4 p-3 itinerary-day" data-day="${dayNumber}" style="border: 2px solid #6777ef; border-radius: 4px; position: relative;">
+                    <button type="button" class="btn btn-sm btn-danger remove-day" style="position: absolute; top: 10px; right: 10px;">
+                        <i class="fas fa-times"></i> Удалить день
+                    </button>
+                    <h5 class="mb-3" style="color: #6777ef;">
+                        <i class="fas fa-calendar-day"></i> День ${dayNumber}
+                    </h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Номер дня <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control day-number-input" value="${dayNumber}" min="1" required readonly>
+                            </div>
+                        </div>
                     </div>
-                    @endforeach
+                    <div class="times-container" data-day="${dayNumber}">
+                        ${addTimeToDay(dayNumber, dayTimeCounter)}
+                    </div>
+                    <button type="button" class="btn btn-sm btn-success add-time-to-day" data-day="${dayNumber}">
+                        <i class="fas fa-plus"></i> Добавить время
+                    </button>
                 </div>
             `;
             $('#itinerariesContainer').append(html);
+        }
+
+        // Add Time to specific Day
+        $(document).on('click', '.add-time-to-day', function() {
+            const dayNumber = $(this).data('day');
+            const dayContainer = $(this).closest('.itinerary-day');
+            const timesContainer = dayContainer.find('.times-container');
+            const timeCounter = timesContainer.find('.time-item').length + 1;
+            const html = addTimeToDay(dayNumber, timeCounter);
+            timesContainer.append(html);
         });
 
-        // Remove Itinerary
-        $(document).on('click', '.remove-itinerary', function() {
-            $(this).closest('.itinerary-item').remove();
+        // Remove Day
+        $(document).on('click', '.remove-day', function() {
+            $(this).closest('.itinerary-day').remove();
+        });
+
+        // Remove Time
+        $(document).on('click', '.remove-time', function() {
+            const timeItem = $(this).closest('.time-item');
+            const dayContainer = timeItem.closest('.itinerary-day');
+            const timesContainer = dayContainer.find('.times-container');
+            
+            // Don't allow removing if it's the last time in the day
+            if (timesContainer.find('.time-item').length <= 1) {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'В каждом дне должно быть минимум одно время',
+                    icon: 'error',
+                    button: 'ОК',
+                });
+                return;
+            }
+            
+            timeItem.remove();
         });
 
         // Reset on modal close
@@ -337,3 +461,4 @@
     });
 </script>
 @endpush
+
