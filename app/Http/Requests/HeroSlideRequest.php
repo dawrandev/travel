@@ -20,9 +20,9 @@ class HeroSlideRequest extends FormRequest
         ];
 
         if ($this->isMethod('post')) {
-            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,webp|max:5120';
+            $rules['image'] = 'required|image|mimes:jpeg,png,jpg,webp|max:10240';
         } else {
-            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120';
+            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240';
         }
 
         $languages = Language::all();
@@ -40,7 +40,7 @@ class HeroSlideRequest extends FormRequest
         $messages = [
             'image.required' => 'Изображение обязательно',
             'image.image' => 'Файл должен быть изображением',
-            'image.max' => 'Максимальный размер изображения 2MB',
+            'image.max' => 'Максимальный размер изображения 10MB',
         ];
 
         $languages = Language::all();

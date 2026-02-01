@@ -24,7 +24,7 @@ class TourRequest extends FormRequest
             'is_active' => 'nullable|boolean',
 
             'images' => $this->isMethod('post') ? 'required|array|min:1' : 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120',
+            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:10240',
             'main_image' => 'nullable|integer',
 
             'itineraries' => 'required|array|min:1',
@@ -57,7 +57,7 @@ class TourRequest extends FormRequest
             'price.required' => 'Цена обязательна',
             'duration_days.required' => 'Продолжительность (дни) обязательна',
             'images.required' => 'Загрузите хотя бы одно изображение',
-            'images.*.max' => 'Размер изображения не должен превышать 5MB',
+            'images.*.max' => 'Размер изображения не должен превышать 10MB',
             'itineraries.required' => 'Добавьте хотя бы один день в маршрут',
             'itineraries.min' => 'Добавьте хотя бы один день в маршрут',
         ];

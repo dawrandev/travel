@@ -16,7 +16,7 @@ class AboutRequest extends FormRequest
     {
         $rules = [
             'is_active' => 'nullable|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ];
 
         // Add validation rules for all languages
@@ -33,7 +33,7 @@ class AboutRequest extends FormRequest
     {
         $messages = [
             'image.image' => 'Файл должен быть изображением',
-            'image.max' => 'Максимальный размер изображения 2MB',
+            'image.max' => 'Максимальный размер изображения 10MB',
         ];
 
         $languages = Language::all();
