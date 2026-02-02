@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             TourItinerarySeeder::class,
             ReviewSeeder::class,
             FeatureSeeder::class,
+            TourInclusionSeeder::class,
         ]);
     }
 }

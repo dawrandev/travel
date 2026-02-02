@@ -34,9 +34,16 @@ class CategorySeeder extends Seeder
                 'ru' => 'Семейные',
                 'en' => 'Family',
             ],
+            [
+                'uz' => 'Ekspeditsiya',
+                'kk' => 'Ekspediciya',
+                'ru' => 'Экспедиция',
+                'en' => 'Expedition',
+            ],
         ];
 
         foreach ($categories as $index => $translations) {
+            // 1. Asosiy kategoriyani yaratish
             $categoryId = DB::table('categories')->insertGetId([
                 'sort_order' => $index + 1,
                 'is_active' => true,
@@ -44,6 +51,7 @@ class CategorySeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
+            // 2. Tarjimalarni yaratish
             foreach ($translations as $langCode => $name) {
                 DB::table('category_translations')->insert([
                     'category_id' => $categoryId,
