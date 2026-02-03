@@ -27,7 +27,7 @@
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "Til kodi (languages jadvalidagi tillar)",
+                        "description": "Til kodi (uz, ru, en)",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -37,10 +37,81 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Muvaffaqiyatli javob"
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "example": "/storage/uploads/main-team.jpg"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Sarguzashtlar olami"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Biz haqimizda batafsil..."
+                                                },
+                                                "images": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "image_path": {
+                                                                "type": "string",
+                                                                "example": "/storage/uploads/gallery-1.jpg"
+                                                            },
+                                                            "sort_order": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Ma'lumot topilmadi"
+                        "description": "Ma'lumot topilmadi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ma'lumot topilmadi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }

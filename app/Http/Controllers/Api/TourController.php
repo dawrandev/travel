@@ -64,7 +64,7 @@ class TourController extends Controller
                                             new OA\Property(property: "name", type: "string", example: "Tabiiy safari"),
                                         ]
                                     ),
-                                    new OA\Property(property: "main_image", type: "string", example: "/storage/tours/image.jpg"),
+                                    new OA\Property(property: "main_image", type: "string", example: "/storage/uploads/image.jpg"),
                                     new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
@@ -187,7 +187,7 @@ class TourController extends Controller
                                             new OA\Property(property: "name", type: "string", example: "Tabiiy safari"),
                                         ]
                                     ),
-                                    new OA\Property(property: "main_image", type: "string", example: "/storage/tours/image.jpg"),
+                                    new OA\Property(property: "main_image", type: "string", example: "/storage/image.jpg"),
                                     new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),

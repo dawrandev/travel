@@ -18,13 +18,36 @@ class HeroSlideController extends Controller
             new OA\Parameter(
                 name: "Accept-Language",
                 in: "header",
-                description: "Til kodi (languages jadvalidagi tillar)",
+                description: "Til kodi (kk, uz, ru, en)",
                 required: false,
                 schema: new OA\Schema(type: "string", default: "uz")
             )
         ],
         responses: [
-            new OA\Response(response: 200, description: "Muvaffaqiyatli javob")
+            new OA\Response(
+                response: 200,
+                description: "Muvaffaqiyatli javob",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(
+                            property: "data",
+                            type: "array",
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: "id", type: "integer", example: 1),
+                                    // Rasm yo'li standart ko'rinishda namuna
+                                    new OA\Property(property: "image_path", type: "string", example: "/storage/uploads/hero-banner-1.jpg"),
+                                    new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                    new OA\Property(property: "title", type: "string", example: "Sayohatni biz bilan boshlang"),
+                                    new OA\Property(property: "subtitle", type: "string", example: "Eng unutilmas lahzalar"),
+                                    new OA\Property(property: "description", type: "string", nullable: true, example: "Ekspeditsiyalar haqida qisqacha ma'lumot")
+                                ]
+                            )
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function index(): JsonResponse
