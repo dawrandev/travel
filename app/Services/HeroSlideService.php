@@ -43,7 +43,7 @@ class HeroSlideService
     public function create(array $data)
     {
         if (isset($data['image'])) {
-            $data['image_path'] = $data['image']->store('hero-slides', 'public');
+            $data['image_path'] = $data['image']->store('uploads', 'public');
             unset($data['image']);
         }
 
@@ -74,7 +74,7 @@ class HeroSlideService
             if ($heroSlide->image_path) {
                 Storage::disk('public')->delete($heroSlide->image_path);
             }
-            $data['image_path'] = $data['image']->store('hero-slides', 'public');
+            $data['image_path'] = $data['image']->store('uploads', 'public');
             unset($data['image']);
         }
 

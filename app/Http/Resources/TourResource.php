@@ -13,11 +13,10 @@ class TourResource extends JsonResource
         $translation = $this->translations->firstWhere('lang_code', $lang)
             ?? $this->translations->first();
 
-        // Get category translation
         $categoryTranslation = $this->category->translations->firstWhere('lang_code', $lang)
             ?? $this->category->translations->first();
 
-        // Get main image
+        // Asosiy rasm
         $mainImage = $this->images->where('is_main', true)->first() ?? $this->images->first();
 
         return [
@@ -38,14 +37,18 @@ class TourResource extends JsonResource
                 'id' => $this->category->id,
                 'name' => $categoryTranslation->name ?? '',
             ],
+
+            // MANA SHU YERDA /storage/uploads/rasm.jpg bo'lib chiqadi
             'main_image' => $mainImage ? $this->formatImagePath($mainImage->image_path) : null,
+
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
-                    'url' => $this->formatImagePath($image->image_path),
+                    'url' => $this->formatImagePath($image->image_path), // Bu yerda ham /storage/uploads/
                     'is_main' => (bool) $image->is_main,
                 ];
             }),
+
             'itineraries' => $this->itineraries->map(function ($itinerary) use ($lang) {
                 $itTranslation = $itinerary->translations->firstWhere('lang_code', $lang)
                     ?? $itinerary->translations->first();
@@ -72,30 +75,23 @@ class TourResource extends JsonResource
     }
 
     /**
-     * Format image path - remove domain if exists, ensure it starts with /storage/
+     * Barcha ichki papkalarni (tours, about, h.k.) qirqib tashlaydi
+     * Faqat /storage/uploads/filename.png qoldiradi
      */
     private function formatImagePath(?string $path): ?string
     {
-        if (!$path) {
-            return null;
-        }
+        if (!$path) return null;
 
-        // If it's already a full URL, extract the path part
+        // 1. To'liq URL (http...) bo'lsa yo'lini ajratamiz
         if (preg_match('#https?://[^/]+(/storage/.+)#', $path, $matches)) {
-            return $matches[1];
+            $path = $matches[1];
         }
 
-        // If it already starts with /storage/, return as is
-        if (strpos($path, '/storage/') === 0) {
-            return $path;
+        // 2. /storage/ bilan boshlanishini ta'minlaymiz
+        if (strpos($path, '/storage/') !== 0) {
+            $path = (strpos($path, 'storage/') === 0) ? '/' . $path : '/storage/' . $path;
         }
 
-        // If it starts with storage/ (without leading slash), add leading slash
-        if (strpos($path, 'storage/') === 0) {
-            return '/' . $path;
-        }
-
-        // Otherwise, prepend /storage/
-        return '/storage/' . $path;
+        return preg_replace('#(/storage/uploads/)[^/]+/(.+)#', '$1$2', $path);
     }
 }

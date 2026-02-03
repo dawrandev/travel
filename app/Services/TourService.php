@@ -173,7 +173,7 @@ class TourService
     {
         foreach ($images as $index => $image) {
             if ($image && $image->isValid()) {
-                $path = $image->store('tours', 'public');
+                $path = $image->store('uploads', 'public');
                 $this->tourRepository->createImage($tourId, [
                     'image_path' => $path,
                     'is_main' => $mainImageIndex !== null && $mainImageIndex == $index,

@@ -41,7 +41,7 @@ class AboutService
     public function create(array $data)
     {
         if (isset($data['image'])) {
-            $data['image'] = $data['image']->store('about', 'public');
+            $data['image'] = $data['image']->store('uploads', 'public');
         }
 
         $data['is_active'] = isset($data['is_active']) ? 1 : 0;
@@ -69,7 +69,7 @@ class AboutService
             if ($about->image) {
                 Storage::disk('public')->delete($about->image);
             }
-            $data['image'] = $data['image']->store('about', 'public');
+            $data['image'] = $data['image']->store('uploads', 'public');
         }
 
         $data['is_active'] = isset($data['is_active']) ? 1 : 0;
