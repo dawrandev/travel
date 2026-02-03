@@ -75,23 +75,16 @@ class TourResource extends JsonResource
     }
 
     /**
-     * Barcha ichki papkalarni (tours, about, h.k.) qirqib tashlaydi
-     * Faqat /storage/uploads/filename.png qoldiradi
+     * Barcha holatlarda /storage/uploads/filename.png formatini qaytaradi
      */
     private function formatImagePath(?string $path): ?string
     {
         if (!$path) return null;
 
-        // 1. To'liq URL (http...) bo'lsa yo'lini ajratamiz
-        if (preg_match('#https?://[^/]+(/storage/.+)#', $path, $matches)) {
-            $path = $matches[1];
-        }
+        // 1. Fayl nomini o'zini ajratib olamiz (masalan: rasm.jpg)
+        $filename = basename($path);
 
-        // 2. /storage/ bilan boshlanishini ta'minlaymiz
-        if (strpos($path, '/storage/') !== 0) {
-            $path = (strpos($path, 'storage/') === 0) ? '/' . $path : '/storage/' . $path;
-        }
-
-        return preg_replace('#(/storage/uploads/)[^/]+/(.+)#', '$1$2', $path);
+        // 2. To'g'ridan-to'g'ri /storage/uploads/ prefiksini ulab qaytaramiz
+        return '/storage/uploads/' . $filename;
     }
 }
