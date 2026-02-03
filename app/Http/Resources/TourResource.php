@@ -11,11 +11,11 @@ class TourResource extends JsonResource
     {
         $lang = $request->header('Accept-Language', 'uz');
         $translation = $this->translations->firstWhere('lang_code', $lang)
-                    ?? $this->translations->first();
+            ?? $this->translations->first();
 
         // Get category translation
         $categoryTranslation = $this->category->translations->firstWhere('lang_code', $lang)
-                    ?? $this->category->translations->first();
+            ?? $this->category->translations->first();
 
         // Get main image
         $mainImage = $this->images->where('is_main', true)->first() ?? $this->images->first();
@@ -48,7 +48,7 @@ class TourResource extends JsonResource
             }),
             'itineraries' => $this->itineraries->map(function ($itinerary) use ($lang) {
                 $itTranslation = $itinerary->translations->firstWhere('lang_code', $lang)
-                            ?? $itinerary->translations->first();
+                    ?? $itinerary->translations->first();
 
                 return [
                     'day_number' => $itinerary->day_number,
@@ -59,7 +59,7 @@ class TourResource extends JsonResource
             }),
             'features' => $this->features->map(function ($feature) use ($lang) {
                 $featureTranslation = $feature->translations->firstWhere('lang_code', $lang)
-                            ?? $feature->translations->first();
+                    ?? $feature->translations->first();
 
                 return [
                     'id' => $feature->id,

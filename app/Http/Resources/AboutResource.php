@@ -11,7 +11,7 @@ class AboutResource extends JsonResource
     {
         $lang = $request->header('Accept-Language', 'uz');
         $translation = $this->translations->firstWhere('lang_code', $lang)
-                    ?? $this->translations->first();
+            ?? $this->translations->first();
 
         return [
             'id' => $this->id,
@@ -33,26 +33,18 @@ class AboutResource extends JsonResource
      */
     private function formatImagePath(?string $path): ?string
     {
-        if (!$path) {
-            return null;
-        }
+        if (!$path) return null;
 
-        // If it's already a full URL, extract the path part
         if (preg_match('#https?://[^/]+(/storage/.+)#', $path, $matches)) {
-            return $matches[1];
+            $path = $matches[1];
         }
 
-        // If it already starts with /storage/, return as is
-        if (strpos($path, '/storage/') === 0) {
-            return $path;
+        if (strpos($path, '/storage/') !== 0) {
+            $path = (strpos($path, 'storage/') === 0) ? '/' . $path : '/storage/' . $path;
         }
 
-        // If it starts with storage/ (without leading slash), add leading slash
-        if (strpos($path, 'storage/') === 0) {
-            return '/' . $path;
-        }
+        $cleanPath = preg_replace('#(/storage/uploads/)[^/]+/(.+)#', '$1$2', $path);
 
-        // Otherwise, prepend /storage/
-        return '/storage/' . $path;
+        return $cleanPath;
     }
 }

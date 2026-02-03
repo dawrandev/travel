@@ -11,7 +11,7 @@ class HeroSlideResource extends JsonResource
     {
         $lang = $request->header('Accept-Language', 'uz');
         $translation = $this->translations->firstWhere('lang_code', $lang)
-                    ?? $this->translations->first();
+            ?? $this->translations->first();
 
         return [
             'id' => $this->id,
@@ -24,7 +24,7 @@ class HeroSlideResource extends JsonResource
     }
 
     /**
-     * Format image path - remove domain if exists, ensure it starts with /storage/
+     * Rasmni /storage/uploads/filename.png formatiga keltiradi
      */
     private function formatImagePath(?string $path): ?string
     {
@@ -32,22 +32,22 @@ class HeroSlideResource extends JsonResource
             return null;
         }
 
-        // If it's already a full URL, extract the path part
+        // 1. To'liq URL bo'lsa yo'lini ajratib olamiz
         if (preg_match('#https?://[^/]+(/storage/.+)#', $path, $matches)) {
-            return $matches[1];
+            $path = $matches[1];
         }
 
-        // If it already starts with /storage/, return as is
-        if (strpos($path, '/storage/') === 0) {
-            return $path;
+        // 2. /storage/ bilan boshlanishini ta'minlaymiz
+        if (strpos($path, '/storage/') !== 0) {
+            if (strpos($path, 'storage/') === 0) {
+                $path = '/' . $path;
+            } else {
+                $path = '/storage/' . $path;
+            }
         }
 
-        // If it starts with storage/ (without leading slash), add leading slash
-        if (strpos($path, 'storage/') === 0) {
-            return '/' . $path;
-        }
-
-        // Otherwise, prepend /storage/
-        return '/storage/' . $path;
+        // 3. /uploads/ dan keyingi har qanday ichki papkani olib tashlaymiz
+        // Masalan: /storage/uploads/heroslides/slide1.jpg -> /storage/uploads/slide1.jpg
+        return preg_replace('#(/storage/uploads/)[^/]+/(.+)#', '$1$2', $path);
     }
 }
