@@ -51,6 +51,16 @@
                         </div>
                     </div>
 
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Ссылка на отзыв</label>
+                                <input type="url" name="review_url" class="form-control" placeholder="https://tripadvisor.com/...">
+                                <small class="form-text text-muted">Ссылка на источник отзыва (TripAdvisor, Google Reviews и т.д.)</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <hr>
 
                     <ul class="nav nav-pills mb-3" id="languageTabs" role="tablist">

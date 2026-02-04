@@ -98,6 +98,7 @@
                                 <th>Тур</th>
                                 <th>Рейтинг</th>
                                 <th class="text-center">Видео</th>
+                                <th class="text-center">Ссылка</th>
                                 <th>Комментарий</th>
                                 <th>Порядок</th>
                                 <th>Статус</th>
@@ -131,6 +132,16 @@
                                     @endif
                                 </td>
 
+                                <td class="text-center">
+                                    @if($review->review_url)
+                                    <a href="{{ $review->review_url }}" target="_blank" class="btn btn-sm btn-info" title="Перейти к отзыву">
+                                        <i class="fas fa-external-link-alt"></i> Ссылка
+                                    </a>
+                                    @else
+                                    <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+
                                 <td>{{ Str::limit($review->translations->first()->comment ?? 'N/A', 50) }}</td>
                                 <td>{{ $review->sort_order }}</td>
                                 <td>
@@ -141,13 +152,16 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary" onclick="editReview({{ $review->id }})">
+                                    <button class="btn btn-sm btn-info" onclick="showReview({{ $review->id }})" title="Просмотр">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" onclick="editReview({{ $review->id }})" title="Редактировать">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="отзыв">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Удалить">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -168,6 +182,7 @@
 @include('pages.reviews.banner-edit-modal')
 @include('pages.reviews.create-modal')
 @include('pages.reviews.edit-modal')
+@include('pages.reviews.show-modal')
 @endpush
 
 @push('scripts')
@@ -204,7 +219,7 @@
             tbody.empty();
 
             if (reviews.length === 0) {
-                tbody.append('<tr><td colspan="10" class="text-center">Нет данных</td></tr>');
+                tbody.append('<tr><td colspan="11" class="text-center">Нет данных</td></tr>');
                 return;
             }
 
@@ -225,6 +240,11 @@
                     '<i class="fab fa-youtube fa-2x"></i></a>' :
                     '<span class="text-muted">Нет видео</span>';
 
+                var reviewLinkContent = review.review_url ?
+                    '<a href="' + review.review_url + '" target="_blank" class="btn btn-sm btn-info" title="Перейти к отзыву">' +
+                    '<i class="fas fa-external-link-alt"></i> Ссылка</a>' :
+                    '<span class="text-muted">-</span>';
+
                 var comment = review.comment && review.comment.length > 50 ?
                     review.comment.substring(0, 50) + '...' :
                     (review.comment || 'N/A');
@@ -236,16 +256,20 @@
                     '<td>' + (review.tour_name || 'N/A') + '</td>' +
                     '<td>' + stars + '</td>' +
                     '<td class="text-center">' + videoContent + '</td>' +
+                    '<td class="text-center">' + reviewLinkContent + '</td>' +
                     '<td>' + comment + '</td>' +
                     '<td>' + review.sort_order + '</td>' +
                     '<td>' + statusBadge + '</td>' +
                     '<td>' +
-                    '<button class="btn btn-sm btn-primary" onclick="editReview(' + review.id + ')">' +
+                    '<button class="btn btn-sm btn-info" onclick="showReview(' + review.id + ')" title="Просмотр">' +
+                    '<i class="fas fa-eye"></i>' +
+                    '</button> ' +
+                    '<button class="btn btn-sm btn-primary" onclick="editReview(' + review.id + ')" title="Редактировать">' +
                     '<i class="fas fa-edit"></i>' +
                     '</button> ' +
                     '<form action="/reviews/' + review.id + '" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="отзыв">' +
                     '@csrf @method("DELETE")' +
-                    '<button type="submit" class="btn btn-sm btn-danger">' +
+                    '<button type="submit" class="btn btn-sm btn-danger" title="Удалить">' +
                     '<i class="fas fa-trash"></i>' +
                     '</button>' +
                     '</form>' +
@@ -256,6 +280,79 @@
             });
         }
     });
+
+    function showReview(id) {
+        $.ajax({
+            url: ROUTES.translations.replace('{id}', id),
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    $('#show_user_name').text(response.review.user_name);
+
+                    // Get tour name from first available translation
+                    var tourName = 'N/A';
+                    @foreach($tours as $tour)
+                    if ({{ $tour->id }} == response.review.tour_id) {
+                        tourName = '{{ $tour->translations->first()->title ?? "N/A" }}';
+                    }
+                    @endforeach
+                    $('#show_tour_name').text(tourName);
+
+                    // Rating stars
+                    var stars = '';
+                    for (var i = 1; i <= 5; i++) {
+                        stars += (i <= response.review.rating) ?
+                            '<i class="fas fa-star text-warning"></i> ' :
+                            '<i class="far fa-star text-warning"></i> ';
+                    }
+                    $('#show_rating').html(stars);
+
+                    // Video URL
+                    if (response.review.video_url) {
+                        $('#show_video_url').html('<a href="' + response.review.video_url + '" target="_blank" class="btn btn-sm btn-danger"><i class="fab fa-youtube"></i> Смотреть видео</a>');
+                    } else {
+                        $('#show_video_url').html('<span class="text-muted">Нет видео</span>');
+                    }
+
+                    // Review URL
+                    if (response.review.review_url) {
+                        $('#show_review_url').html('<a href="' + response.review.review_url + '" target="_blank" class="btn btn-sm btn-info"><i class="fas fa-external-link-alt"></i> Перейти к отзыву</a>');
+                    } else {
+                        $('#show_review_url').html('<span class="text-muted">Нет ссылки</span>');
+                    }
+
+                    $('#show_sort_order').text(response.review.sort_order);
+
+                    // Status
+                    var statusBadge = response.review.is_active ?
+                        '<span class="badge badge-success badge-lg">Активен</span>' :
+                        '<span class="badge badge-danger badge-lg">Неактивен</span>';
+                    $('#show_status').html(statusBadge);
+
+                    // Translations
+                    @foreach($languages as $language)
+                    if (response.translations['{{ $language->code }}']) {
+                        $('#show_city_{{ $language->code }}').text(response.translations['{{ $language->code }}'].city || 'N/A');
+                        $('#show_comment_{{ $language->code }}').text(response.translations['{{ $language->code }}'].comment || 'N/A');
+                    } else {
+                        $('#show_city_{{ $language->code }}').text('N/A');
+                        $('#show_comment_{{ $language->code }}').text('N/A');
+                    }
+                    @endforeach
+
+                    $('#showModal').modal('show');
+                }
+            },
+            error: function() {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Ошибка при загрузке данных',
+                    icon: 'error',
+                    button: 'ОК'
+                });
+            }
+        });
+    }
 
     function editReview(id) {
         $.ajax({
@@ -268,6 +365,7 @@
                     $('#edit_user_name').val(response.review.user_name);
                     $('#edit_rating').val(response.review.rating);
                     $('#edit_video_url').val(response.review.video_url);
+                    $('#edit_review_url').val(response.review.review_url);
                     $('#edit_sort_order').val(response.review.sort_order);
                     $('#edit_is_active').prop('checked', response.review.is_active);
 

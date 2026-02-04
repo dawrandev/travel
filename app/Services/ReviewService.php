@@ -28,6 +28,8 @@ class ReviewService
                 'city' => $translation->city ?? 'N/A',
                 'comment' => $translation->comment ?? 'N/A',
                 'rating' => $review->rating,
+                'video_url' => $review->video_url,
+                'review_url' => $review->review_url,
                 'tour_name' => $review->tour->translations->where('lang_code', $langCode)->first()->title ?? 'N/A',
                 'sort_order' => $review->sort_order,
                 'is_active' => $review->is_active

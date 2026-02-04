@@ -19,6 +19,7 @@ class StoreReviewRequest extends FormRequest
             'user_name' => 'required|string|max:255',
             'rating' => 'required|integer|min:1|max:5',
             'video_url' => 'nullable|url|max:500',
+            'review_url' => 'nullable|url|max:500',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ];
@@ -43,6 +44,7 @@ class StoreReviewRequest extends FormRequest
             'rating.min' => 'Минимальный рейтинг 1',
             'rating.max' => 'Максимальный рейтинг 5',
             'video_url.url' => 'Некорректный URL видео',
+            'review_url.url' => 'Некорректный URL отзыва',
         ];
 
         $languages = Language::all();

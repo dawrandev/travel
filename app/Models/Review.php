@@ -11,6 +11,7 @@ class Review extends Model
         'user_name',
         'rating',
         'video_url',
+        'review_url',
         'is_active',
         'sort_order',
     ];

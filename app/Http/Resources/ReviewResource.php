@@ -20,6 +20,7 @@ class ReviewResource extends JsonResource
             'comment' => $translation?->comment ?? '',
             'rating' => $this->rating,
             'video_url' => $this->video_url,
+            'review_url' => $this->review_url,
             'tour' => $this->when($this->tour, function () use ($lang) {
                 $tourTranslation = $this->tour->translations->firstWhere('lang_code', $lang)
                             ?? $this->tour->translations->first();

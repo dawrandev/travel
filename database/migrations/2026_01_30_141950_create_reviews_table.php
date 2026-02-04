@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('user_name');
             $table->integer('rating')->default(5);
             $table->string('video_url')->nullable();
+            $table->string('review_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
             $table->timestamps();

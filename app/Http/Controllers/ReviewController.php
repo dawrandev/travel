@@ -61,6 +61,7 @@ class ReviewController extends Controller
                 'user_name' => $review->user_name,
                 'rating' => $review->rating,
                 'video_url' => $review->video_url,
+                'review_url' => $review->review_url,
                 'sort_order' => $review->sort_order,
                 'is_active' => $review->is_active
             ],
