@@ -47,8 +47,11 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    @if($about->image)
-                                    <img src="{{ asset('storage/' . $about->image) }}" alt="about" width="100">
+                                    @php
+                                    $firstImage = $about->images->sortBy('sort_order')->first();
+                                    @endphp
+                                    @if($firstImage)
+                                    <img src="{{ asset('storage/' . $firstImage->image_path) }}" alt="about" width="100" style="height: 60px; object-fit: cover;">
                                     @else
                                     <span class="badge badge-secondary">Нет изображения</span>
                                     @endif
@@ -92,30 +95,13 @@
 
 @push('scripts')
 <script>
-    // Routes - Prettier formatter won't break these
     const ROUTES = {
         filter: '{{ route("abouts.filter") }}',
-        translations: '/abouts/{id}/translations',
+        getTranslations: '/abouts/{id}/translations', // yoki route name bilan: '{{ route("abouts.translations", ":id") }}'.replace(':id', '{id}')
         destroy: '/abouts/{id}'
     };
 
     $(document).ready(function() {
-        // Image file input change handler for create modal
-        $('#image_create').on('change', function(e) {
-            if (e.target.files.length > 0) {
-                var fileName = e.target.files[0].name;
-                $(this).next('.custom-file-label').text(fileName);
-            }
-        });
-
-        // Image file input change handler for edit modal
-        $('#about_image_edit').on('change', function(e) {
-            if (e.target.files.length > 0) {
-                var fileName = e.target.files[0].name;
-                $(this).next('.custom-file-label').text(fileName);
-            }
-        });
-
         // Language filter
         $('#languageFilter').on('change', function() {
             var langCode = $(this).val();
@@ -153,8 +139,8 @@
 
                 var description = about.description.length > 50 ? about.description.substring(0, 50) + '...' : about.description;
 
-                var imageCell = about.image ?
-                    '<img src="/storage/' + about.image + '" alt="about" width="100">' :
+                var imageCell = about.first_image ?
+                    '<img src="/storage/' + about.first_image + '" alt="about" width="100" style="height: 60px; object-fit: cover;">' :
                     '<span class="badge badge-secondary">Нет изображения</span>';
 
                 var row = '<tr>' +
@@ -184,22 +170,11 @@
     // Edit About function
     function editAbout(id) {
         $.ajax({
-            url: ROUTES.translations.replace('{id}', id),
+            url: ROUTES.getTranslations.replace('{id}', id),
             type: 'GET',
             success: function(response) {
                 if (response.success) {
-                    $('#editAboutForm').attr('action', ROUTES.destroy.replace('{id}', id));
-                    $('#edit_about_is_active').prop('checked', response.about.is_active);
-                    $('#about_image_edit').next('.custom-file-label').text('Выберите изображение');
-
-                    // Fill translations for each language
-                    @foreach($languages as $language)
-                    if (response.translations['{{ $language->code }}']) {
-                        $('#edit_title_{{ $language->code }}').val(response.translations['{{ $language->code }}'].title);
-                        $('#edit_description_{{ $language->code }}').val(response.translations['{{ $language->code }}'].description);
-                    }
-                    @endforeach
-
+                    populateEditAboutModal(response);
                     $('#editAboutModal').modal('show');
                 }
             },

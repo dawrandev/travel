@@ -40,13 +40,19 @@ class AboutService
 
     public function create(array $data)
     {
-        if (isset($data['image'])) {
-            $data['image'] = $data['image']->store('uploads', 'public');
-        }
-
         $data['is_active'] = isset($data['is_active']) ? 1 : 0;
 
         $about = $this->aboutRepository->create($data);
+
+        if (isset($data['images']) && is_array($data['images'])) {
+            foreach ($data['images'] as $index => $image) {
+                $imagePath = $image->store('uploads', 'public');
+                $this->aboutRepository->createImage($about->id, [
+                    'image_path' => $imagePath,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
 
         $languages = Language::all();
         foreach ($languages as $language) {
@@ -65,19 +71,26 @@ class AboutService
     {
         $about = $this->aboutRepository->findById($id);
 
-        if (isset($data['image'])) {
-            if ($about->image) {
-                Storage::disk('public')->delete($about->image);
-            }
-            $data['image'] = $data['image']->store('uploads', 'public');
-        }
-
         $data['is_active'] = isset($data['is_active']) ? 1 : 0;
 
         $this->aboutRepository->update($about, $data);
 
-        $about->translations()->delete();
+        if (isset($data['images']) && is_array($data['images']) && count($data['images']) > 0) {
+            foreach ($about->images as $oldImage) {
+                Storage::disk('public')->delete($oldImage->image_path);
+            }
+            $about->images()->delete();
 
+            foreach ($data['images'] as $index => $image) {
+                $imagePath = $image->store('uploads', 'public');
+                $this->aboutRepository->createImage($about->id, [
+                    'image_path' => $imagePath,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
+
+        $about->translations()->delete();
         $languages = Language::all();
         foreach ($languages as $language) {
             $langCode = $language->code;

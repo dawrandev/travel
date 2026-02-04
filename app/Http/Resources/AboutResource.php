@@ -15,36 +15,34 @@ class AboutResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'image' => $this->formatImagePath($this->image),
             'title' => $translation->title ?? '',
             'description' => $translation->description ?? '',
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
                     'image_path' => $this->formatImagePath($image->image_path),
-                    'sort_order' => $image->sort_order,
                 ];
             }),
         ];
     }
 
     /**
-     * Format image path - remove domain if exists, ensure it starts with /storage/
+     * Format image path - ensure it starts with /storage/
      */
     private function formatImagePath(?string $path): ?string
     {
         if (!$path) return null;
 
+        // Remove domain if exists
         if (preg_match('#https?://[^/]+(/storage/.+)#', $path, $matches)) {
-            $path = $matches[1];
+            return $matches[1];
         }
 
+        // Ensure path starts with /storage/
         if (strpos($path, '/storage/') !== 0) {
-            $path = (strpos($path, 'storage/') === 0) ? '/' . $path : '/storage/' . $path;
+            return '/storage/' . ltrim($path, '/');
         }
 
-        $cleanPath = preg_replace('#(/storage/uploads/)[^/]+/(.+)#', '$1$2', $path);
-
-        return $cleanPath;
+        return $path;
     }
 }

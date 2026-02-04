@@ -11,7 +11,6 @@ class About extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image',
         'is_active',
     ];
 

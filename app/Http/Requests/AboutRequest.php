@@ -14,12 +14,14 @@ class AboutRequest extends FormRequest
 
     public function rules(): array
     {
+        $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
+
         $rules = [
             'is_active' => 'nullable|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'images' => $isUpdate ? 'nullable|array' : 'required|array|min:1',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ];
 
-        // Add validation rules for all languages
         $languages = Language::all();
         foreach ($languages as $language) {
             $rules['title_' . $language->code] = 'required|string|max:255';
@@ -32,8 +34,9 @@ class AboutRequest extends FormRequest
     public function messages(): array
     {
         $messages = [
-            'image.image' => 'Файл должен быть изображением',
-            'image.max' => 'Максимальный размер изображения 10MB',
+            'images.required' => 'Загрузите хотя бы одно изображение',
+            'images.*.image' => 'Файл должен быть изображением',
+            'images.*.max' => 'Максимальный размер изображения 5MB',
         ];
 
         $languages = Language::all();

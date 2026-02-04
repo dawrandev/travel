@@ -17,6 +17,11 @@ class AboutRepository
         return About::with(['translations', 'images'])->find($id);
     }
 
+    public function createImage(int $aboutId, array $data): void
+    {
+        About::find($aboutId)->images()->create($data);
+    }
+
     public function create(array $data): About
     {
         return About::create($data);

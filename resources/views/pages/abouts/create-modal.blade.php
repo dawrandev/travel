@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('abouts.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('abouts.store') }}" method="POST" enctype="multipart/form-data" id="createAboutForm">
                 @csrf
                 <div class="modal-body">
                     <ul class="nav nav-pills mb-3" id="languageTabs" role="tablist">
@@ -41,18 +41,19 @@
                         @endforeach
                     </div>
 
-                    <div class="row mt-3">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="form-label">Изображение</label>
-                                <div class="custom-file">
-                                    <input type="file" name="image" class="custom-file-input" id="image_create" accept="image/*">
-                                    <label class="custom-file-label" for="image_create">Выберите изображение</label>
-                                </div>
-                                <small class="form-text text-muted">Форматы: JPG, PNG, GIF (макс. 2MB)</small>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                    <hr>
+
+                    <!-- Images Section with Dropzone -->
+                    <h6 class="mb-3">Изображения <span class="text-danger">*</span></h6>
+                    <div class="form-group">
+                        <div id="dropzone-create-about" class="dropzone"></div>
+                        <small class="text-muted">Макс. 5MB на изображение. Можно загрузить несколько изображений.</small>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label class="form-label">Статус</label>
                                 <div class="custom-control custom-checkbox mt-2">
@@ -73,3 +74,103 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
+@endpush
+
+@push('scripts')
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script>
+    Dropzone.autoDiscover = false;
+
+    let createAboutDropzone;
+
+    $(document).ready(function() {
+        // Initialize Dropzone for About
+        createAboutDropzone = new Dropzone("#dropzone-create-about", {
+            url: "#",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            paramName: "images",
+            maxFilesize: 5,
+            acceptedFiles: "image/*",
+            addRemoveLinks: true,
+            dictDefaultMessage: "Перетащите изображения сюда или нажмите для выбора",
+            dictRemoveFile: "Удалить",
+            dictCancelUpload: "Отменить",
+        });
+
+        // Handle form submit
+        $('#createAboutForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const files = createAboutDropzone.getAcceptedFiles();
+            if (files.length === 0) {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Загрузите хотя бы одно изображение',
+                    icon: 'error',
+                    button: 'ОК',
+                });
+                return false;
+            }
+
+            // Create FormData from form
+            const formData = new FormData(this);
+
+            // Remove any existing image fields
+            formData.delete('images[]');
+            formData.delete('images');
+            formData.delete('image');
+
+            // Add images to FormData
+            files.forEach((file, index) => {
+                formData.append('images[]', file);
+                console.log('Adding image:', file.name);
+            });
+
+            console.log('Form data prepared, submitting...');
+
+            // Submit via AJAX
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    swal({
+                        title: 'Успешно!',
+                        text: 'О нас успешно создано',
+                        icon: 'success',
+                        button: 'ОК',
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    let errorMsg = 'Ошибка при создании';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
+                    }
+                    swal({
+                        title: 'Ошибка!',
+                        text: errorMsg,
+                        icon: 'error',
+                        button: 'ОК',
+                    });
+                }
+            });
+        });
+
+        // Reset on modal close
+        $('#createModal').on('hidden.bs.modal', function() {
+            $('#createAboutForm')[0].reset();
+            createAboutDropzone.removeAllFiles();
+        });
+    });
+</script>
+@endpush

@@ -27,7 +27,7 @@
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "Til kodi (uz, ru, en)",
+                        "description": "Til kodi (kk, uz, ru, en)",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -52,10 +52,6 @@
                                                     "type": "integer",
                                                     "example": 1
                                                 },
-                                                "image": {
-                                                    "type": "string",
-                                                    "example": "/storage/uploads/main-team.jpg"
-                                                },
                                                 "title": {
                                                     "type": "string",
                                                     "example": "Sarguzashtlar olami"
@@ -65,6 +61,7 @@
                                                     "example": "Biz haqimizda batafsil..."
                                                 },
                                                 "images": {
+                                                    "description": "Rasmlar ro'yxati (sort_order bo'yicha tartiblangan)",
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
@@ -74,11 +71,11 @@
                                                             },
                                                             "image_path": {
                                                                 "type": "string",
-                                                                "example": "/storage/uploads/gallery-1.jpg"
+                                                                "example": "/storage/abouts/gallery-1.jpg"
                                                             },
                                                             "sort_order": {
                                                                 "type": "integer",
-                                                                "example": 1
+                                                                "example": 0
                                                             }
                                                         },
                                                         "type": "object"
@@ -419,7 +416,7 @@
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "Til kodi (languages jadvalidagi tillar)",
+                        "description": "Til kodi (kk, uz, ru, en)",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -429,7 +426,53 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Muvaffaqiyatli javob"
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "image_path": {
+                                                        "type": "string",
+                                                        "example": "/storage/uploads/hero-banner-1.jpg"
+                                                    },
+                                                    "sort_order": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Sayohatni biz bilan boshlang"
+                                                    },
+                                                    "subtitle": {
+                                                        "type": "string",
+                                                        "example": "Eng unutilmas lahzalar"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Ekspeditsiyalar haqida qisqacha ma'lumot",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -948,7 +991,7 @@
                                                     },
                                                     "main_image": {
                                                         "type": "string",
-                                                        "example": "/storage/tours/image.jpg"
+                                                        "example": "/storage/uploads/image.jpg"
                                                     },
                                                     "images": {
                                                         "type": "array",
@@ -1148,7 +1191,7 @@
                                                     },
                                                     "main_image": {
                                                         "type": "string",
-                                                        "example": "/storage/tours/image.jpg"
+                                                        "example": "/storage/image.jpg"
                                                     },
                                                     "images": {
                                                         "type": "array",

@@ -28,17 +28,28 @@ class AboutController extends Controller
         $langCode = $request->get('lang_code', 'en');
         $abouts = $this->aboutService->getAllByLanguage($langCode);
 
+        $result = $abouts->map(function ($about) {
+            $firstImage = $about->images()->orderBy('sort_order')->first();
+
+            return [
+                'id' => $about->id,
+                'title' => $about->title,
+                'description' => $about->description,
+                'is_active' => $about->is_active,
+                'first_image' => $firstImage ? $firstImage->image_path : null,
+            ];
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $abouts
+            'data' => $result
         ]);
     }
-
     public function getTranslations(int $id): JsonResponse
     {
         $about = $this->aboutService->findById($id);
-        $translations = [];
 
+        $translations = [];
         foreach ($about->translations as $translation) {
             $translations[$translation->lang_code] = [
                 'title' => $translation->title,
@@ -46,16 +57,24 @@ class AboutController extends Controller
             ];
         }
 
+        $images = $about->images->sortBy('sort_order')->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'image_path' => $image->image_path,
+                'sort_order' => $image->sort_order,
+            ];
+        })->values()->toArray();
+
         return response()->json([
             'success' => true,
             'about' => [
                 'id' => $about->id,
                 'is_active' => $about->is_active
             ],
-            'translations' => $translations
+            'translations' => $translations,
+            'images' => $images
         ]);
     }
-
     public function store(AboutRequest $request): RedirectResponse
     {
         $this->aboutService->create($request->validated());

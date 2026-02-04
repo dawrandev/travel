@@ -35,19 +35,18 @@ class AboutController extends Controller
                             type: "object",
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
-                                // Rasm yo'li standart ko'rinishda
-                                new OA\Property(property: "image", type: "string", example: "/storage/uploads/main-team.jpg"),
                                 new OA\Property(property: "title", type: "string", example: "Sarguzashtlar olami"),
                                 new OA\Property(property: "description", type: "string", example: "Biz haqimizda batafsil..."),
                                 new OA\Property(
                                     property: "images",
                                     type: "array",
+                                    description: "Rasmlar ro'yxati (tartiblangan)",
                                     items: new OA\Items(
                                         properties: [
                                             new OA\Property(property: "id", type: "integer", example: 1),
-                                            new OA\Property(property: "image_path", type: "string", example: "/storage/uploads/gallery-1.jpg"),
-                                            new OA\Property(property: "sort_order", type: "integer", example: 1)
-                                        ]
+                                            new OA\Property(property: "image_path", type: "string", example: "/storage/uploads/gallery-1.jpg")
+                                        ],
+                                        type: "object"
                                     )
                                 )
                             ]

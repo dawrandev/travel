@@ -16,7 +16,6 @@ class TourResource extends JsonResource
         $categoryTranslation = $this->category->translations->firstWhere('lang_code', $lang)
             ?? $this->category->translations->first();
 
-        // Asosiy rasm
         $mainImage = $this->images->where('is_main', true)->first() ?? $this->images->first();
 
         return [
@@ -38,13 +37,12 @@ class TourResource extends JsonResource
                 'name' => $categoryTranslation->name ?? '',
             ],
 
-            // MANA SHU YERDA /storage/uploads/rasm.jpg bo'lib chiqadi
             'main_image' => $mainImage ? $this->formatImagePath($mainImage->image_path) : null,
 
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
-                    'url' => $this->formatImagePath($image->image_path), // Bu yerda ham /storage/uploads/
+                    'url' => $this->formatImagePath($image->image_path),
                     'is_main' => (bool) $image->is_main,
                 ];
             }),
@@ -74,17 +72,12 @@ class TourResource extends JsonResource
         ];
     }
 
-    /**
-     * Barcha holatlarda /storage/uploads/filename.png formatini qaytaradi
-     */
     private function formatImagePath(?string $path): ?string
     {
         if (!$path) return null;
 
-        // 1. Fayl nomini o'zini ajratib olamiz (masalan: rasm.jpg)
         $filename = basename($path);
 
-        // 2. To'g'ridan-to'g'ri /storage/uploads/ prefiksini ulab qaytaramiz
         return '/storage/uploads/' . $filename;
     }
 }
