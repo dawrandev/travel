@@ -211,90 +211,78 @@
 <script src="{{ asset('assets/js/chart/apex-chart/apex-chart.js') }}"></script>
 <script>
     $(document).ready(function() {
+        // Clear any existing charts first
+        $('#chart7').empty();
+        $('#chart6').empty();
+
         // Chart 1: Tours by Category (Pie Chart)
-        function chart7() {
-            var options = {
-                chart: {
-                    width: 360,
-                    type: 'pie',
-                },
-                labels: @json($charts['tours_by_category']['labels']),
-                series: @json($charts['tours_by_category']['data']),
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
+        var chart7Options = {
+            chart: {
+                width: 360,
+                type: 'pie',
+            },
+            labels: @json($charts['tours_by_category']['labels']),
+            series: @json($charts['tours_by_category']['data']),
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
                     }
-                }],
-                colors: ['#7366ff', '#f73164', '#51bb25', '#ffc107', '#a927f9', '#f8d62b']
-            }
+                }
+            }],
+            colors: ['#7366ff', '#f73164', '#51bb25', '#ffc107', '#a927f9', '#f8d62b']
+        };
 
-            var chart = new ApexCharts(
-                document.querySelector("#chart7"),
-                options
-            );
-
-            chart.render();
-        }
+        var chart7 = new ApexCharts(document.querySelector("#chart7"), chart7Options);
+        chart7.render();
 
         // Chart 2: Bookings by Month (Area Chart)
-        function chart6() {
-            var options = {
-                chart: {
-                    height: 350,
-                    type: 'area',
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    curve: 'smooth'
-                },
-                series: [{
-                    name: 'Бронирования',
-                    data: @json($charts['bookings_by_month']['data'])
-                }],
-                xaxis: {
-                    categories: @json($charts['bookings_by_month']['labels']),
-                    labels: {
-                        style: {
-                            colors: '#9aa0ac',
-                        }
+        var chart6Options = {
+            chart: {
+                height: 350,
+                type: 'area',
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            series: [{
+                name: 'Бронирования',
+                data: @json($charts['bookings_by_month']['data'])
+            }],
+            xaxis: {
+                categories: @json($charts['bookings_by_month']['labels']),
+                labels: {
+                    style: {
+                        colors: '#9aa0ac',
                     }
-                },
-                yaxis: {
-                    labels: {
-                        style: {
-                            color: '#9aa0ac',
-                        }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        color: '#9aa0ac',
                     }
-                },
-                tooltip: {
-                    y: {
-                        formatter: function(val) {
-                            return val + " бронирований"
-                        }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return val + " бронирований"
                     }
-                },
-                colors: ['#7366ff']
-            }
+                }
+            },
+            colors: ['#7366ff']
+        };
 
-            var chart = new ApexCharts(
-                document.querySelector("#chart6"),
-                options
-            );
-
-            chart.render();
-        }
-
-        // Initialize charts
-        chart7();
-        chart6();
+        var chart6 = new ApexCharts(document.querySelector("#chart6"), chart6Options);
+        chart6.render();
     });
 </script>
 @endpush
