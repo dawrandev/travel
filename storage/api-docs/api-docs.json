@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://toqtarbay.dbc.uz/api",
+            "url": "https://toqtarbay.dbc.uz/api",
             "description": "Production Server"
         },
         {

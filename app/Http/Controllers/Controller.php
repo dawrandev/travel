@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
     description: "Sayohat veb-sayti uchun API"
 )]
 #[OA\Server(
-    url: "http://toqtarbay.dbc.uz/api",
+    url: "https://toqtarbay.dbc.uz/api",
     description: "Production Server"
 )]
 #[OA\Server(
