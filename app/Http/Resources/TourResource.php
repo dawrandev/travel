@@ -67,6 +67,7 @@ class TourResource extends JsonResource
                     'name' => $featureTranslation->name ?? '',
                     'description' => $featureTranslation->description ?? '',
                     'icon' => $feature->icon,
+                    'is_included' => (bool) $feature->pivot->is_included,
                 ];
             }),
         ];

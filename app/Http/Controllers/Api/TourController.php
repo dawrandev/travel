@@ -81,7 +81,6 @@ class TourController extends Controller
         $query = Tour::with(['translations', 'category.translations', 'images', 'itineraries.translations', 'features.translations'])
             ->where('is_active', true);
 
-        // Filter by category if provided
         if ($request->has('category_id')) {
             $query->where('category_id', $request->category_id);
         }
