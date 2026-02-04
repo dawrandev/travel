@@ -14,6 +14,64 @@
     </div>
 </div>
 
+<!-- Banner Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-image"></i> Баннер страницы</h4>
+                <div class="card-header-action">
+                    @if($banner)
+                    <button class="btn btn-primary" onclick="editBanner({{ $banner->id }})">
+                        <i class="fas fa-edit"></i> Редактировать баннер
+                    </button>
+                    @else
+                    <button class="btn btn-success" data-toggle="modal" data-target="#createBannerModal">
+                        <i class="fas fa-plus"></i> Создать баннер
+                    </button>
+                    @endif
+                </div>
+            </div>
+            <div class="card-body">
+                @if($banner)
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ asset('storage/' . $banner->image) }}" class="img-fluid rounded" alt="Banner">
+                    </div>
+                    <div class="col-md-8">
+                        <h5>Заголовки баннера:</h5>
+                        <ul class="list-group">
+                            @foreach($banner->translations as $translation)
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><strong>{{ strtoupper($translation->lang_code) }}:</strong> {{ $translation->title }}</span>
+                            </li>
+                            @endforeach
+                        </ul>
+                        <div class="mt-3">
+                            <span class="badge badge-{{ $banner->is_active ? 'success' : 'danger' }} badge-lg">
+                                {{ $banner->is_active ? 'Активен' : 'Неактивен' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                @else
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-image fa-3x text-warning"></i>
+                    </div>
+                    <h5>Баннер не создан</h5>
+                    <p class="text-muted">Создайте баннер для страницы "Отзывы"</p>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#createBannerModal">
+                        <i class="fas fa-plus"></i> Создать баннер
+                    </button>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reviews Section -->
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -106,6 +164,8 @@
 @endsection
 
 @push('modals')
+@include('pages.reviews.banner-create-modal')
+@include('pages.reviews.banner-edit-modal')
 @include('pages.reviews.create-modal')
 @include('pages.reviews.edit-modal')
 @endpush
@@ -227,6 +287,27 @@
                     text: 'Ошибка при загрузке данных',
                     icon: 'error',
                     button: 'ОК'
+                });
+            }
+        });
+    }
+
+    function editBanner(id) {
+        $.ajax({
+            url: '/reviews/banner/' + id + '/translations',
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    populateEditBannerModal(response);
+                    $('#editBannerModal').modal('show');
+                }
+            },
+            error: function(xhr) {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Ошибка при загрузке данных баннера',
+                    icon: 'error',
+                    button: 'ОК',
                 });
             }
         });

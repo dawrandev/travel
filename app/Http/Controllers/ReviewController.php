@@ -2,27 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewBannerRequest;
+use App\Http\Requests\StoreReviewRequest;
 use App\Models\Language;
+use App\Models\ReviewBanner;
 use App\Models\Tour;
+use App\Services\ReviewBannerService;
 use App\Services\ReviewService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Http\Requests\StoreReviewRequest;
 
 class ReviewController extends Controller
 {
     public function __construct(
-        protected ReviewService $reviewService
+        protected ReviewService $reviewService,
+        protected ReviewBannerService $reviewBannerService
     ) {}
 
     public function index(): View
     {
         $reviews = $this->reviewService->getAll();
+        $banner = ReviewBanner::first();
         $languages = Language::all();
         $tours = Tour::with('translations')->get();
-        return view('pages.reviews.index', compact('reviews', 'languages', 'tours'));
+        return view('pages.reviews.index', compact('reviews', 'banner', 'languages', 'tours'));
     }
 
     public function filter(Request $request): JsonResponse
@@ -79,5 +84,39 @@ class ReviewController extends Controller
     {
         $this->reviewService->delete($id);
         return redirect()->route('reviews.index')->with('success', 'Отзыв успешно удален');
+    }
+
+    public function storeBanner(ReviewBannerRequest $request): RedirectResponse
+    {
+        $this->reviewBannerService->create($request->validated());
+        return redirect()->route('reviews.index')->with('success', 'Баннер успешно создан');
+    }
+
+    public function updateBanner(ReviewBannerRequest $request, int $id): RedirectResponse
+    {
+        $this->reviewBannerService->update($id, $request->validated());
+        return redirect()->route('reviews.index')->with('success', 'Баннер успешно обновлен');
+    }
+
+    public function getBannerTranslations(int $id): JsonResponse
+    {
+        $banner = $this->reviewBannerService->findById($id);
+
+        $translations = [];
+        foreach ($banner->translations as $translation) {
+            $translations[$translation->lang_code] = [
+                'title' => $translation->title,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'banner' => [
+                'id' => $banner->id,
+                'image' => $banner->image,
+                'is_active' => $banner->is_active
+            ],
+            'translations' => $translations
+        ]);
     }
 }

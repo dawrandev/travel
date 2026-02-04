@@ -46,6 +46,9 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [AboutController::class, 'store'])->name('store');
         Route::put('/{id}', [AboutController::class, 'update'])->name('update');
         Route::delete('/{id}', [AboutController::class, 'destroy'])->name('destroy');
+        Route::post('/banner', [AboutController::class, 'storeBanner'])->name('banner.store');
+        Route::put('/banner/{id}', [AboutController::class, 'updateBanner'])->name('banner.update');
+        Route::get('/banner/{id}/translations', [AboutController::class, 'getBannerTranslations'])->name('banner.translations');
     });
 
     Route::prefix('contacts')->name('contacts.')->group(function () {
@@ -73,6 +76,9 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [ReviewController::class, 'store'])->name('store');
         Route::put('/{id}', [ReviewController::class, 'update'])->name('update');
         Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
+        Route::post('/banner', [ReviewController::class, 'storeBanner'])->name('banner.store');
+        Route::put('/banner/{id}', [ReviewController::class, 'updateBanner'])->name('banner.update');
+        Route::get('/banner/{id}/translations', [ReviewController::class, 'getBannerTranslations'])->name('banner.translations');
     });
 
     Route::prefix('features')->name('features.')->group(function () {

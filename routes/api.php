@@ -21,6 +21,7 @@ Route::get('/user', function (Request $request) {
 Route::get('/languages', [LanguageController::class, 'index']);
 Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);
+Route::get('/about/banner', [AboutController::class, 'banner']);
 Route::get('/contact', [ContactController::class, 'index']);
 Route::get('/hero-slides', [HeroSlideController::class, 'index']);
 
@@ -34,6 +35,7 @@ Route::get('/tours/{id}', [TourController::class, 'show']);
 
 // Reviews
 Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/reviews/banner', [ReviewController::class, 'banner']);
 Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 
 // Bookings

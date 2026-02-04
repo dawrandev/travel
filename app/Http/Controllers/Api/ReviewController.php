@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReviewBannerResource;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
+use App\Models\ReviewBanner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -151,6 +153,60 @@ class ReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => new ReviewResource($review)
+        ]);
+    }
+
+    #[OA\Get(
+        path: "/reviews/banner",
+        tags: ["Reviews"],
+        summary: "Reviews sahifasi bannerini olish",
+        parameters: [
+            new OA\Parameter(
+                name: "Accept-Language",
+                in: "header",
+                description: "Til kodi (kk, uz, ru, en)",
+                required: false,
+                schema: new OA\Schema(type: "string", default: "uz")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Muvaffaqiyatli javob",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "title", type: "string", example: "Mijozlar sharhlari"),
+                                new OA\Property(property: "image", type: "string", example: "/storage/uploads/review-banner.jpg")
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 404, description: "Banner topilmadi")
+        ]
+    )]
+    public function banner(): JsonResponse
+    {
+        $banner = ReviewBanner::with('translations')
+            ->where('is_active', true)
+            ->first();
+
+        if (!$banner) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Banner topilmadi'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => new ReviewBannerResource($banner)
         ]);
     }
 }

@@ -10,7 +10,6 @@ class AboutSeeder extends Seeder
     public function run(): void
     {
         $aboutId = DB::table('abouts')->insertGetId([
-            'image' => 'uploads/about/main-team.jpg',
             'is_active' => true,
             'created_at' => now(),
             'updated_at' => now(),
@@ -47,9 +46,9 @@ class AboutSeeder extends Seeder
         }
 
         $galleryImages = [
-            ['path' => 'uploads/about/gallery-1.jpg', 'order' => 1],
-            ['path' => 'uploads/about/gallery-2.jpg', 'order' => 2],
-            ['path' => 'uploads/about/gallery-3.jpg', 'order' => 3],
+            ['path' => 'gallery-1.jpg', 'order' => 1],
+            ['path' => 'gallery-2.jpg', 'order' => 2],
+            ['path' => 'gallery-3.jpg', 'order' => 3],
         ];
 
         foreach ($galleryImages as $img) {

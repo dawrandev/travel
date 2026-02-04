@@ -61,7 +61,7 @@
                                                     "example": "Biz haqimizda batafsil..."
                                                 },
                                                 "images": {
-                                                    "description": "Rasmlar ro'yxati (sort_order bo'yicha tartiblangan)",
+                                                    "description": "Rasmlar ro'yxati (tartiblangan)",
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
@@ -71,11 +71,7 @@
                                                             },
                                                             "image_path": {
                                                                 "type": "string",
-                                                                "example": "/storage/abouts/gallery-1.jpg"
-                                                            },
-                                                            "sort_order": {
-                                                                "type": "integer",
-                                                                "example": 0
+                                                                "example": "/storage/uploads/gallery-1.jpg"
                                                             }
                                                         },
                                                         "type": "object"
@@ -91,24 +87,66 @@
                         }
                     },
                     "404": {
-                        "description": "Ma'lumot topilmadi",
+                        "description": "Ma'lumot topilmadi"
+                    }
+                }
+            }
+        },
+        "/about/banner": {
+            "get": {
+                "tags": [
+                    "About"
+                ],
+                "summary": "About sahifasi bannerini olish",
+                "operationId": "fa236f7b0e07e57aab528e3a8af1a854",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (kk, uz, ru, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
-                                            "example": false
+                                            "example": true
                                         },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Ma'lumot topilmadi"
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Biz haqimizda"
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "example": "/storage/uploads/banners/about-banner.jpg"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Banner topilmadi"
                     }
                 }
             }
@@ -873,6 +911,65 @@
                     },
                     "404": {
                         "description": "Sharh topilmadi"
+                    }
+                }
+            }
+        },
+        "/reviews/banner": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Reviews sahifasi bannerini olish",
+                "operationId": "0427635b8566022c09983e196197c107",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (kk, uz, ru, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Mijozlar sharhlari"
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "example": "/storage/uploads/review-banner.jpg"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Banner topilmadi"
                     }
                 }
             }
