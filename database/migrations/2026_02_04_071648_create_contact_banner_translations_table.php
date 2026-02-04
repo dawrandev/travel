@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('contact_banner_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('contact_banner_id')->constrained()->onDelete('cascade');
+            $table->string('lang_code', 5);
+            $table->string('title');
+            $table->timestamps();
+
+            $table->unique(['contact_banner_id', 'lang_code']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('contact_banner_translations');
+    }
+};

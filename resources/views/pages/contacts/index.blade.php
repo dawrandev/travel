@@ -14,97 +14,175 @@
     </div>
 </div>
 
+<!-- Banner Section -->
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4>Список контактов</h4>
+                <h4><i class="fas fa-image"></i> Баннер страницы</h4>
                 <div class="card-header-action">
-                    <select class="form-control" id="languageFilter" style="width: 150px;">
-                        @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
-                            {{ $language->name }}
-                        </option>
-                        @endforeach
-                    </select>
+                    @if($banner)
+                    <button class="btn btn-primary" onclick="editBanner({{ $banner->id }})">
+                        <i class="fas fa-edit"></i> Редактировать баннер
+                    </button>
+                    @else
+                    <button class="btn btn-success" data-toggle="modal" data-target="#createBannerModal">
+                        <i class="fas fa-plus"></i> Создать баннер
+                    </button>
+                    @endif
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped" id="contactTable">
-                        <thead>
-                            <tr>
-                                <th>№</th>
-                                <th>Телефон</th>
-                                <th>Эл. почта</th>
-                                <th>Адрес</th>
-                                <th>Телеграм</th>
-                                <th>Инстаграм</th>
-                                <th>Фейсбук</th>
-                                <th>Ютуб</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody id="contactTableBody">
-                            @foreach($contacts as $contact)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $contact->phone }}</td>
-                                <td>{{ $contact->email }}</td>
-                                <td>{{ Str::limit($contact->translations->first()->address ?? 'N/A', 50) }}</td>
-
-                                <td>
-                                    @if($contact->telegram_url)
-                                    <a href="{{ $contact->telegram_url }}" target="_blank" class="text-info">
-                                        <i class="fab fa-telegram"></i>
-                                        {{ $contact->telegram_username ? '@' . $contact->telegram_username : 'Перейти' }}
-                                    </a>
-                                    @else
-                                    <span class="badge badge-secondary">Нет</span>
-                                    @endif
-                                </td>
-
-                                <td>
-                                    @if($contact->instagram_url)
-                                    <a href="{{ $contact->instagram_url }}" target="_blank" style="color: #E1306C;"><i class="fab fa-instagram"></i></a>
-                                    @else
-                                    <span class="badge badge-secondary">Нет</span>
-                                    @endif
-                                </td>
-
-                                <td>
-                                    @if($contact->facebook_url)
-                                    <a href="{{ $contact->facebook_url }}" target="_blank" class="text-primary"><i class="fab fa-facebook"></i></a>
-                                    @else
-                                    <span class="badge badge-secondary">Нет</span>
-                                    @endif
-                                </td>
-
-                                <td>
-                                    @if($contact->youtube_url)
-                                    <a href="{{ $contact->youtube_url }}" target="_blank" class="text-danger"><i class="fab fa-youtube"></i></a>
-                                    @else
-                                    <span class="badge badge-secondary">Нет</span>
-                                    @endif
-                                </td>
-
-                                <td>
-                                    <button class="btn btn-sm btn-primary" onclick="editContact({{ $contact->id }})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <form action="{{ route('contacts.destroy', $contact->id) }}" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="контакт">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                @if($banner)
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ asset('storage/' . $banner->image) }}" class="img-fluid rounded" alt="Banner">
+                    </div>
+                    <div class="col-md-8">
+                        <h5>Заголовки баннера:</h5>
+                        <ul class="list-group">
+                            @foreach($banner->translations as $translation)
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><strong>{{ strtoupper($translation->lang_code) }}:</strong> {{ $translation->title }}</span>
+                            </li>
                             @endforeach
-                        </tbody>
-                    </table>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="badge badge-{{ $banner->is_active ? 'success' : 'danger' }} badge-lg">
+                                {{ $banner->is_active ? 'Активен' : 'Неактивен' }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
+                @else
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-image fa-3x text-warning"></i>
+                    </div>
+                    <h5>Баннер не создан</h5>
+                    <p class="text-muted">Создайте баннер для страницы "Контакты"</p>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#createBannerModal">
+                        <i class="fas fa-plus"></i> Создать баннер
+                    </button>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contacts Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-address-book"></i> Контактная информация</h4>
+                <div class="card-header-action">
+                    @if($contacts->first())
+                    <button class="btn btn-primary" onclick="editContact({{ $contacts->first()->id }})">
+                        <i class="fas fa-edit"></i> Редактировать
+                    </button>
+                    @else
+                    <button class="btn btn-success" data-toggle="modal" data-target="#createModal">
+                        <i class="fas fa-plus"></i> Создать контакт
+                    </button>
+                    @endif
+                </div>
+            </div>
+            <div class="card-body">
+                @if($contacts->first())
+                @php $contact = $contacts->first(); @endphp
+                <div class="row">
+                    <!-- Contact Details -->
+                    <div class="col-md-6">
+                        <h5 class="mb-3"><i class="fas fa-info-circle text-primary"></i> Основная информация</h5>
+
+                        <div class="mb-3">
+                            <label class="font-weight-bold"><i class="fas fa-phone text-success"></i> Телефон:</label>
+                            <p class="ml-4"><a href="tel:{{ $contact->phone }}" class="text-dark">{{ $contact->phone }}</a></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="font-weight-bold"><i class="fas fa-envelope text-danger"></i> Эл. почта:</label>
+                            <p class="ml-4"><a href="mailto:{{ $contact->email }}" class="text-dark">{{ $contact->email }}</a></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="font-weight-bold"><i class="fas fa-map-marker-alt text-warning"></i> Местоположение:</label>
+                            <div class="ml-4 mt-2">
+                                <div id="contactMap" style="height: 250px; border-radius: 8px;"></div>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="fas fa-map-pin"></i> {{ $contact->latitude }}, {{ $contact->longitude }}
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="font-weight-bold"><i class="fas fa-share-alt text-info"></i> Социальные сети:</label>
+                            <div class="ml-4 mt-2">
+                                @if($contact->telegram_url)
+                                <a href="{{ $contact->telegram_url }}" target="_blank" class="btn btn-primary btn-sm mr-2 mb-2">
+                                    <i class="fab fa-telegram"></i>
+                                    {{ $contact->telegram_username ? '@' . $contact->telegram_username : 'Telegram' }}
+                                </a>
+                                @endif
+
+                                @if($contact->instagram_url)
+                                <a href="{{ $contact->instagram_url }}" target="_blank" class="btn btn-sm mr-2 mb-2" style="background-color: #E1306C; color: white;">
+                                    <i class="fab fa-instagram"></i> Instagram
+                                </a>
+                                @endif
+
+                                @if($contact->facebook_url)
+                                <a href="{{ $contact->facebook_url }}" target="_blank" class="btn btn-primary btn-sm mr-2 mb-2">
+                                    <i class="fab fa-facebook"></i> Facebook
+                                </a>
+                                @endif
+
+                                @if($contact->youtube_url)
+                                <a href="{{ $contact->youtube_url }}" target="_blank" class="btn btn-info btn-sm mr-2 mb-2">
+                                    <i class="fab fa-youtube"></i> YouTube
+                                </a>
+                                @endif
+
+                                @if(!$contact->telegram_url && !$contact->instagram_url && !$contact->facebook_url && !$contact->youtube_url)
+                                <span class="badge badge-secondary">Не указаны</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Addresses by Language -->
+                    <div class="col-md-6">
+                        <h5 class="mb-3"><i class="fas fa-map-marked-alt text-primary"></i> Адреса</h5>
+                        <div class="list-group">
+                            @foreach($contact->translations as $translation)
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">
+                                            <span class="badge badge-primary">{{ strtoupper($translation->lang_code) }}</span>
+                                        </h6>
+                                        <p class="mb-0 text-muted">{{ $translation->address }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @else
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-address-book fa-3x text-info"></i>
+                    </div>
+                    <h5>Контакт не создан</h5>
+                    <p class="text-muted">Создайте контактную информацию для вашего сайта</p>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#createModal">
+                        <i class="fas fa-plus"></i> Создать контакт
+                    </button>
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -112,105 +190,48 @@
 @endsection
 
 @push('modals')
+@include('pages.contacts.banner-create-modal')
+@include('pages.contacts.banner-edit-modal')
 @include('pages.contacts.create-modal')
 @include('pages.contacts.edit-modal')
 @endpush
 
 @push('scripts')
 <script>
-    // Routes - Prettier formatter won't break these
+    // Routes
     const ROUTES = {
-        filter: '{{ route("contacts.filter") }}',
         translations: '/contacts/{id}/translations',
         destroy: '/contacts/{id}'
     };
 
-    $(document).ready(function() {
-        // Language filter
-        $('#languageFilter').on('change', function() {
-            var langCode = $(this).val();
-
-            $.ajax({
-                url: ROUTES.filter,
-                type: 'GET',
-                data: {
-                    lang_code: langCode
-                },
-                success: function(response) {
-                    if (response.success) {
-                        updateTable(response.data);
-                    }
-                },
-                error: function() {
-                    alert('Ошибка при загрузке данных');
-                }
-            });
-        });
-
-        function updateTable(contacts) {
-            var tbody = $('#contactTableBody');
-            tbody.empty();
-
-            if (contacts.length === 0) {
-                // Ustunlar soni 9 ta bo'lgani uchun colspan="9" qilamiz
-                tbody.append('<tr><td colspan="9" class="text-center">Нет данных</td></tr>');
-                return;
-            }
-
-            contacts.forEach(function(contact, index) {
-                // Telegram mantiqi
-                var telegramCell = contact.telegram_url ?
-                    '<a href="' + contact.telegram_url + '" target="_blank" class="text-info"><i class="fab fa-telegram"></i> ' +
-                    (contact.telegram_username ? '@' + contact.telegram_username : 'Перейти') + '</a>' :
-                    '<span class="badge badge-secondary">Нет</span>';
-
-                // Instagram mantiqi
-                var instagramCell = contact.instagram_url ?
-                    '<a href="' + contact.instagram_url + '" target="_blank" style="color: #E1306C;"><i class="fab fa-instagram"></i></a>' :
-                    '<span class="badge badge-secondary">Нет</span>';
-
-                // Facebook mantiqi (Yangi qo'shildi)
-                var facebookCell = contact.facebook_url ?
-                    '<a href="' + contact.facebook_url + '" target="_blank" class="text-primary"><i class="fab fa-facebook"></i></a>' :
-                    '<span class="badge badge-secondary">Нет</span>';
-
-                // Youtube mantiqi (Yangi qo'shildi)
-                var youtubeCell = contact.youtube_url ?
-                    '<a href="' + contact.youtube_url + '" target="_blank" class="text-danger"><i class="fab fa-youtube"></i></a>' :
-                    '<span class="badge badge-secondary">Нет</span>';
-
-                var address = contact.address ? (contact.address.length > 50 ? contact.address.substring(0, 50) + '...' : contact.address) : 'N/A';
-
-                var row = '<tr>' +
-                    '<td>' + (index + 1) + '</td>' +
-                    '<td>' + (contact.phone || '') + '</td>' +
-                    '<td>' + (contact.email || '') + '</td>' +
-                    '<td>' + address + '</td>' +
-                    '<td>' + telegramCell + '</td>' +
-                    '<td>' + instagramCell + '</td>' +
-                    '<td>' + facebookCell + '</td>' +
-                    '<td>' + youtubeCell + '</td>' +
-                    '<td>' +
-                    '<button class="btn btn-sm btn-primary" onclick="editContact(' + contact.id + ')">' +
-                    '<i class="fas fa-edit"></i>' +
-                    '</button> ' +
-                    '<form action="/contacts/' + contact.id + '" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="контакт">' +
-                    '@csrf @method("DELETE")' +
-                    '<button type="submit" class="btn btn-sm btn-danger">' +
-                    '<i class="fas fa-trash"></i>' +
-                    '</button>' +
-                    '</form>' +
-                    '</td>' +
-                    '</tr>';
-
-                tbody.append(row);
-            });
-        }
-    });
-
     // Leaflet Maps
-    let createMap, editMap;
-    let createMarker, editMarker;
+    let createMap, editMap, contactMap;
+    let createMarker, editMarker, contactMarker;
+
+    // Initialize Contact Map (read-only)
+    @if($contacts->first())
+    $(document).ready(function() {
+        @php $contact = $contacts->first(); @endphp
+        const lat = {{ $contact->latitude }};
+        const lng = {{ $contact->longitude }};
+
+        contactMap = L.map('contactMap', {
+            scrollWheelZoom: false,
+            dragging: true,
+            touchZoom: true,
+            doubleClickZoom: true,
+            zoomControl: true
+        }).setView([lat, lng], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(contactMap);
+
+        // Add marker
+        contactMarker = L.marker([lat, lng]).addTo(contactMap);
+        contactMarker.bindPopup('<b>Местоположение</b><br>Широта: ' + lat + '<br>Долгота: ' + lng).openPopup();
+    });
+    @endif
 
     // Initialize Create Map
     $('#createModal').on('shown.bs.modal', function() {
@@ -346,5 +367,26 @@
             editMarker = null;
         }
     });
+
+    function editBanner(id) {
+        $.ajax({
+            url: '/contacts/banner/' + id + '/translations',
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    populateEditBannerModal(response);
+                    $('#editBannerModal').modal('show');
+                }
+            },
+            error: function(xhr) {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Ошибка при загрузке данных баннера',
+                    icon: 'error',
+                    button: 'ОК',
+                });
+            }
+        });
+    }
 </script>
 @endpush

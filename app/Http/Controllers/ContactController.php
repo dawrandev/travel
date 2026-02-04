@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ContactBannerRequest;
 use App\Http\Requests\ContactRequest;
+use App\Models\ContactBanner;
 use App\Models\Language;
+use App\Services\ContactBannerService;
 use App\Services\ContactService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -13,14 +16,16 @@ use Illuminate\View\View;
 class ContactController extends Controller
 {
     public function __construct(
-        protected ContactService $contactService
+        protected ContactService $contactService,
+        protected ContactBannerService $contactBannerService
     ) {}
 
     public function index(): View
     {
         $contacts = $this->contactService->getAll();
+        $banner = ContactBanner::first();
         $languages = Language::all();
-        return view('pages.contacts.index', compact('contacts', 'languages'));
+        return view('pages.contacts.index', compact('contacts', 'banner', 'languages'));
     }
 
     public function filter(Request $request): JsonResponse
@@ -79,5 +84,39 @@ class ContactController extends Controller
     {
         $this->contactService->delete($id);
         return redirect()->route('contacts.index')->with('success', 'Контакт успешно удален');
+    }
+
+    public function storeBanner(ContactBannerRequest $request): RedirectResponse
+    {
+        $this->contactBannerService->create($request->validated());
+        return redirect()->route('contacts.index')->with('success', 'Баннер успешно создан');
+    }
+
+    public function updateBanner(ContactBannerRequest $request, int $id): RedirectResponse
+    {
+        $this->contactBannerService->update($id, $request->validated());
+        return redirect()->route('contacts.index')->with('success', 'Баннер успешно обновлен');
+    }
+
+    public function getBannerTranslations(int $id): JsonResponse
+    {
+        $banner = $this->contactBannerService->findById($id);
+
+        $translations = [];
+        foreach ($banner->translations as $translation) {
+            $translations[$translation->lang_code] = [
+                'title' => $translation->title,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'banner' => [
+                'id' => $banner->id,
+                'image' => $banner->image,
+                'is_active' => $banner->is_active
+            ],
+            'translations' => $translations
+        ]);
     }
 }

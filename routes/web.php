@@ -58,6 +58,9 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [ContactController::class, 'store'])->name('store');
         Route::put('/{id}', [ContactController::class, 'update'])->name('update');
         Route::delete('/{id}', [ContactController::class, 'destroy'])->name('destroy');
+        Route::post('/banner', [ContactController::class, 'storeBanner'])->name('banner.store');
+        Route::put('/banner/{id}', [ContactController::class, 'updateBanner'])->name('banner.update');
+        Route::get('/banner/{id}/translations', [ContactController::class, 'getBannerTranslations'])->name('banner.translations');
     });
 
     Route::prefix('categories')->name('categories.')->group(function () {

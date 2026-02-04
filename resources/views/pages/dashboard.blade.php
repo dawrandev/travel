@@ -176,32 +176,28 @@
                 </div>
             </div>
 
-            <!-- Charts Row -->
-            <div class="row clearfix">
+            <!-- Charts Section -->
+            <div class="row">
                 <!-- Chart 1: Tours by Category (Pie Chart) -->
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Туры по категориям</h4>
+                <div class="col-lg-6 col-md-12 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white border-bottom">
+                            <h5 class="mb-0"><i class="fas fa-chart-pie text-primary"></i> Туры по категориям</h5>
                         </div>
                         <div class="card-body">
-                            <div class="recent-report__chart">
-                                <div id="chart7"></div>
-                            </div>
+                            <div id="chart7"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Chart 2: Bookings by Month (Area Chart) -->
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Бронирования по месяцам</h4>
+                <div class="col-lg-6 col-md-12 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white border-bottom">
+                            <h5 class="mb-0"><i class="fas fa-chart-area text-success"></i> Бронирования по месяцам</h5>
                         </div>
                         <div class="card-body">
-                            <div class="recent-report__chart">
-                                <div id="chart6"></div>
-                            </div>
+                            <div id="chart6"></div>
                         </div>
                     </div>
                 </div>

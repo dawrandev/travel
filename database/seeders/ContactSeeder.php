@@ -18,7 +18,7 @@ class ContactSeeder extends Seeder
             'latitude' => '42.4603',
             'longitude' => '59.6121',
             'telegram_url' => 'https://t.me/welcome_to_karakalpakistan',
-            'telegram_username' => '@welcome_to_karakalpakistan',
+            'telegram_username' => 'welcome_to_karakalpakistan',
             'instagram_url' => 'https://instagram.com/karakalpakistan',
             'facebook_url' => 'https://facebook.com/karakalpakistan',
             'youtube_url' => 'https://youtube.com/@toktarbay_aga',

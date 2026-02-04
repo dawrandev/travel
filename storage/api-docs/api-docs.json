@@ -417,6 +417,65 @@
                 }
             }
         },
+        "/contact/banner": {
+            "get": {
+                "tags": [
+                    "Contact"
+                ],
+                "summary": "Contact sahifasi bannerini olish",
+                "operationId": "e9633877715fe78c912e9bfde2b84ec6",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (kk, uz, ru, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Biz bilan bog'laning"
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "example": "/storage/uploads/contact-banner.jpg"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Banner topilmadi"
+                    }
+                }
+            }
+        },
         "/faq": {
             "get": {
                 "tags": [

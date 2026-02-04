@@ -23,6 +23,7 @@ Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/about/banner', [AboutController::class, 'banner']);
 Route::get('/contact', [ContactController::class, 'index']);
+Route::get('/contact/banner', [ContactController::class, 'banner']);
 Route::get('/hero-slides', [HeroSlideController::class, 'index']);
 
 // Categories
