@@ -175,10 +175,6 @@
                     let html = `
                         <table class="table table-bordered">
                             <tr>
-                                <th style="width: 40%;">ID</th>
-                                <td>${booking.id}</td>
-                            </tr>
-                            <tr>
                                 <th>Тур</th>
                                 <td>${tourTitle}</td>
                             </tr>
@@ -187,32 +183,36 @@
                                 <td>${booking.full_name}</td>
                             </tr>
                             <tr>
+                                <th>Email</th>
+                                <td>${booking.email}</td>
+                            </tr>
+                            <tr>
                                 <th>Телефон 1</th>
-                                <td>${booking.phone_primary}</td>
+                                <td>${booking.primary_phone}</td>
                             </tr>
                             <tr>
                                 <th>Телефон 2</th>
-                                <td>${booking.phone_secondary || '-'}</td>
+                                <td>${booking.secondary_phone || '-'}</td>
                             </tr>
                             <tr>
                                 <th>Количество людей</th>
-                                <td>${booking.people_count}</td>
+                                <td>${booking.max_people}</td>
                             </tr>
                             <tr>
-                                <th>Общая цена</th>
-                                <td>${parseFloat(booking.total_price).toLocaleString('ru-RU')} сўм</td>
+                                <th>Дата начала</th>
+                                <td>${new Date(booking.starting_date).toLocaleDateString('ru-RU')}</td>
                             </tr>
                             <tr>
-                                <th>Дата бронирования</th>
-                                <td>${new Date(booking.booking_date).toLocaleDateString('ru-RU')}</td>
+                                <th>Дата окончания</th>
+                                <td>${new Date(booking.ending_date).toLocaleDateString('ru-RU')}</td>
                             </tr>
                             <tr>
                                 <th>Статус</th>
                                 <td>${statusLabels[booking.status] || booking.status}</td>
                             </tr>
                             <tr>
-                                <th>Комментарий</th>
-                                <td>${booking.comment || '<span class="text-muted">Нет комментария</span>'}</td>
+                                <th>Сообщение</th>
+                                <td>${booking.message || '<span class="text-muted">Нет сообщения</span>'}</td>
                             </tr>
                             <tr>
                                 <th>Создано</th>

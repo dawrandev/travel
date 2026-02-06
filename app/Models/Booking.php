@@ -12,19 +12,20 @@ class Booking extends Model
     protected $fillable = [
         'tour_id',
         'full_name',
-        'phone_primary',
-        'phone_secondary',
-        'booking_date',
-        'people_count',
-        'comment',
-        'total_price',
+        'max_people',
+        'starting_date',
+        'ending_date',
+        'primary_phone',
+        'secondary_phone',
+        'email',
+        'message',
         'status',
     ];
 
     protected $casts = [
-        'booking_date' => 'date',
-        'people_count' => 'integer',
-        'total_price' => 'decimal:2',
+        'starting_date' => 'date',
+        'ending_date' => 'date',
+        'max_people' => 'integer',
     ];
 
     public function tour()

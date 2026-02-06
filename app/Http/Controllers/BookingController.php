@@ -18,8 +18,9 @@ class BookingController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('phone_primary', 'like', "%{$search}%")
-                  ->orWhere('phone_secondary', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('primary_phone', 'like', "%{$search}%")
+                  ->orWhere('secondary_phone', 'like', "%{$search}%");
             });
         }
 

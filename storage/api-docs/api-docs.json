@@ -167,9 +167,11 @@
                                 "required": [
                                     "tour_id",
                                     "full_name",
-                                    "phone_primary",
-                                    "booking_date",
-                                    "people_count"
+                                    "max_people",
+                                    "starting_date",
+                                    "ending_date",
+                                    "primary_phone",
+                                    "email"
                                 ],
                                 "properties": {
                                     "tour_id": {
@@ -182,30 +184,42 @@
                                         "type": "string",
                                         "example": "Alisher Navoiy"
                                     },
-                                    "phone_primary": {
-                                        "description": "Asosiy telefon raqam",
-                                        "type": "string",
-                                        "example": "+998901234567"
-                                    },
-                                    "phone_secondary": {
-                                        "description": "Qo'shimcha telefon raqam (ixtiyoriy)",
-                                        "type": "string",
-                                        "example": "+998909876543"
-                                    },
-                                    "booking_date": {
-                                        "description": "Bron qilish sanasi (YYYY-MM-DD)",
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2026-02-15"
-                                    },
-                                    "people_count": {
-                                        "description": "Odamlar soni (narx avtomatik hisoblanadi)",
+                                    "max_people": {
+                                        "description": "Maksimal odamlar soni (narx avtomatik hisoblanadi)",
                                         "type": "integer",
                                         "minimum": 1,
                                         "example": 2
                                     },
-                                    "comment": {
-                                        "description": "Izoh (ixtiyoriy)",
+                                    "starting_date": {
+                                        "description": "Boshlanish sanasi (YYYY-MM-DD)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-02-15"
+                                    },
+                                    "ending_date": {
+                                        "description": "Tugash sanasi (YYYY-MM-DD)",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-02-20"
+                                    },
+                                    "primary_phone": {
+                                        "description": "Asosiy telefon raqam",
+                                        "type": "string",
+                                        "example": "+998901234567"
+                                    },
+                                    "secondary_phone": {
+                                        "description": "Qo'shimcha telefon raqam (ixtiyoriy)",
+                                        "type": "string",
+                                        "example": "+998909876543"
+                                    },
+                                    "email": {
+                                        "description": "Email manzil",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "alisher@example.com"
+                                    },
+                                    "message": {
+                                        "description": "Xabar/izoh (ixtiyoriy)",
                                         "type": "string",
                                         "example": "Men vegetarian ovqat xohlayman"
                                     }
@@ -244,39 +258,37 @@
                                                     "type": "string",
                                                     "example": "Alisher Navoiy"
                                                 },
-                                                "phone_primary": {
-                                                    "type": "string",
-                                                    "example": "+998901234567"
-                                                },
-                                                "phone_secondary": {
-                                                    "type": "string",
-                                                    "example": "+998909876543"
-                                                },
-                                                "booking_date": {
-                                                    "type": "string",
-                                                    "example": "2026-02-15"
-                                                },
-                                                "people_count": {
+                                                "max_people": {
                                                     "type": "integer",
                                                     "example": 2
                                                 },
-                                                "total_price": {
-                                                    "description": "Avtomatik hisoblangan umumiy narx",
-                                                    "type": "number",
-                                                    "example": 1500000
+                                                "starting_date": {
+                                                    "type": "string",
+                                                    "example": "2026-02-15"
                                                 },
-                                                "price_per_person": {
-                                                    "description": "Har bir kishi uchun narx",
-                                                    "type": "number",
-                                                    "example": 750000
+                                                "ending_date": {
+                                                    "type": "string",
+                                                    "example": "2026-02-20"
+                                                },
+                                                "primary_phone": {
+                                                    "type": "string",
+                                                    "example": "+998901234567"
+                                                },
+                                                "secondary_phone": {
+                                                    "type": "string",
+                                                    "example": "+998909876543"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "alisher@example.com"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Men vegetarian ovqat xohlayman"
                                                 },
                                                 "status": {
                                                     "type": "string",
                                                     "example": "pending"
-                                                },
-                                                "comment": {
-                                                    "type": "string",
-                                                    "example": "Men vegetarian ovqat xohlayman"
                                                 }
                                             },
                                             "type": "object"
@@ -299,7 +311,7 @@
                                         },
                                         "errors": {
                                             "properties": {
-                                                "phone_primary": {
+                                                "primary_phone": {
                                                     "type": "array",
                                                     "items": {
                                                         "type": "string",
@@ -603,9 +615,9 @@
                             "schema": {
                                 "required": [
                                     "tour_id",
-                                    "user_name",
+                                    "full_name",
                                     "email",
-                                    "phone_primary",
+                                    "phone",
                                     "comment"
                                 ],
                                 "properties": {
@@ -614,8 +626,8 @@
                                         "type": "integer",
                                         "example": 1
                                     },
-                                    "user_name": {
-                                        "description": "Foydalanuvchi ismi",
+                                    "full_name": {
+                                        "description": "To'liq ism",
                                         "type": "string",
                                         "example": "Alisher Navoiy"
                                     },
@@ -625,16 +637,10 @@
                                         "format": "email",
                                         "example": "alisher@example.com"
                                     },
-                                    "phone_primary": {
-                                        "description": "Asosiy telefon raqam",
+                                    "phone": {
+                                        "description": "Telefon raqam",
                                         "type": "string",
                                         "example": "+998901234567"
-                                    },
-                                    "phone_secondary": {
-                                        "description": "Qo'shimcha telefon raqam (ixtiyoriy)",
-                                        "type": "string",
-                                        "example": "+998909876543",
-                                        "nullable": true
                                     },
                                     "comment": {
                                         "description": "Savol matni (maksimal 2000 belgi)",
@@ -672,7 +678,7 @@
                                                     "type": "integer",
                                                     "example": 1
                                                 },
-                                                "user_name": {
+                                                "full_name": {
                                                     "type": "string",
                                                     "example": "Alisher Navoiy"
                                                 },
@@ -680,14 +686,9 @@
                                                     "type": "string",
                                                     "example": "alisher@example.com"
                                                 },
-                                                "phone_primary": {
+                                                "phone": {
                                                     "type": "string",
                                                     "example": "+998901234567"
-                                                },
-                                                "phone_secondary": {
-                                                    "type": "string",
-                                                    "example": "+998909876543",
-                                                    "nullable": true
                                                 },
                                                 "comment": {
                                                     "type": "string",

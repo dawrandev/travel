@@ -172,28 +172,20 @@
                     let html = `
                         <table class="table table-bordered">
                             <tr>
-                                <th style="width: 40%;">ID</th>
-                                <td>${question.id}</td>
-                            </tr>
-                            <tr>
                                 <th>Тур</th>
                                 <td>${tourTitle}</td>
                             </tr>
                             <tr>
                                 <th>Имя</th>
-                                <td>${question.user_name}</td>
+                                <td>${question.full_name}</td>
                             </tr>
                             <tr>
                                 <th>Email</th>
                                 <td>${question.email}</td>
                             </tr>
                             <tr>
-                                <th>Телефон 1</th>
-                                <td>${question.phone_primary}</td>
-                            </tr>
-                            <tr>
-                                <th>Телефон 2</th>
-                                <td>${question.phone_secondary || '-'}</td>
+                                <th>Телефон</th>
+                                <td>${question.phone}</td>
                             </tr>
                             <tr>
                                 <th>Вопрос</th>
@@ -260,4 +252,3 @@
     });
 </script>
 @endpush
-

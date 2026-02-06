@@ -8,10 +8,9 @@ class Question extends Model
 {
     protected $fillable = [
         'tour_id',
-        'user_name',
+        'full_name',
         'email',
-        'phone_primary',
-        'phone_secondary',
+        'phone',
         'comment',
         'status',
     ];

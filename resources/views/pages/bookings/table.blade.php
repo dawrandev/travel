@@ -5,11 +5,12 @@
                 <th>№</th>
                 <th>Тур</th>
                 <th>Клиент</th>
+                <th>Email</th>
                 <th>Телефон 1</th>
                 <th>Телефон 2</th>
                 <th>Людей</th>
-                <th>Цена</th>
-                <th>Дата брони</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
                 <th>Статус</th>
                 <th>Создано</th>
                 <th>Действия</th>
@@ -27,11 +28,12 @@
                     @endif
                 </td>
                 <td>{{ $booking->full_name }}</td>
-                <td>{{ $booking->phone_primary }}</td>
-                <td>{{ $booking->phone_secondary ?? '-' }}</td>
-                <td>{{ $booking->people_count }}</td>
-                <td>{{ number_format($booking->total_price, 0, ',', ' ') }} сўм</td>
-                <td>{{ \Carbon\Carbon::parse($booking->booking_date)->format('d.m.Y') }}</td>
+                <td>{{ $booking->email }}</td>
+                <td>{{ $booking->primary_phone }}</td>
+                <td>{{ $booking->secondary_phone ?? '-' }}</td>
+                <td>{{ $booking->max_people }}</td>
+                <td>{{ \Carbon\Carbon::parse($booking->starting_date)->format('d.m.Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($booking->ending_date)->format('d.m.Y') }}</td>
                 <td>
                     @php
                         $statusLabels = [
@@ -62,7 +64,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="11" class="text-center text-muted">Бронирований не найдено</td>
+                <td colspan="12" class="text-center text-muted">Бронирований не найдено</td>
             </tr>
             @endforelse
         </tbody>

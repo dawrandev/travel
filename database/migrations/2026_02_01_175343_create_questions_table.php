@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tour_id')->constrained()->onDelete('cascade');
-            $table->string('user_name');
+            $table->string('full_name');
             $table->string('email');
-            $table->string('phone_primary');
-            $table->string('phone_secondary')->nullable();
+            $table->string('phone');
             $table->text('comment');
             $table->enum('status', ['pending', 'answered'])->default('pending');
             $table->timestamps();

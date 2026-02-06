@@ -16,19 +16,6 @@
                       class="user-img-radious-style"> <span class="d-sm-none d-lg-inline-block"></span></a>
               <div class="dropdown-menu dropdown-menu-right pullDown">
                   <div class="dropdown-title">Toktarbay aga</div>
-                  <a href="profile.html" class="dropdown-item has-icon"> <i class="far
-										fa-user"></i> Profile
-                  </a> <a href="timeline.html" class="dropdown-item has-icon"> <i class="fas fa-bolt"></i>
-                      Activities
-                  </a> <a href="#" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
-                      Settings
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a href="{{ route('logout') }}" class="dropdown-item has-icon text-danger"
-                      onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                      <i class="fas fa-sign-out-alt"></i> Выйти
-                  </a>
-
                   <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                       @csrf
                   </form>

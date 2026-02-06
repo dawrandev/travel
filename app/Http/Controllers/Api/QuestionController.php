@@ -18,7 +18,7 @@ class QuestionController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ["tour_id", "user_name", "email", "phone_primary", "comment"],
+                required: ["tour_id", "full_name", "email", "phone", "comment"],
                 properties: [
                     new OA\Property(
                         property: "tour_id",
@@ -27,9 +27,9 @@ class QuestionController extends Controller
                         example: 1
                     ),
                     new OA\Property(
-                        property: "user_name",
+                        property: "full_name",
                         type: "string",
-                        description: "Foydalanuvchi ismi",
+                        description: "To'liq ism",
                         example: "Alisher Navoiy"
                     ),
                     new OA\Property(
@@ -40,17 +40,10 @@ class QuestionController extends Controller
                         example: "alisher@example.com"
                     ),
                     new OA\Property(
-                        property: "phone_primary",
+                        property: "phone",
                         type: "string",
-                        description: "Asosiy telefon raqam",
+                        description: "Telefon raqam",
                         example: "+998901234567"
-                    ),
-                    new OA\Property(
-                        property: "phone_secondary",
-                        type: "string",
-                        description: "Qo'shimcha telefon raqam (ixtiyoriy)",
-                        example: "+998909876543",
-                        nullable: true
                     ),
                     new OA\Property(
                         property: "comment",
@@ -75,10 +68,9 @@ class QuestionController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "tour_id", type: "integer", example: 1),
-                                new OA\Property(property: "user_name", type: "string", example: "Alisher Navoiy"),
+                                new OA\Property(property: "full_name", type: "string", example: "Alisher Navoiy"),
                                 new OA\Property(property: "email", type: "string", example: "alisher@example.com"),
-                                new OA\Property(property: "phone_primary", type: "string", example: "+998901234567"),
-                                new OA\Property(property: "phone_secondary", type: "string", nullable: true, example: "+998909876543"),
+                                new OA\Property(property: "phone", type: "string", example: "+998901234567"),
                                 new OA\Property(property: "comment", type: "string", example: "Bu tur qaysi oyda eng yaxshi vaqt?"),
                                 new OA\Property(property: "status", type: "string", example: "pending", description: "pending yoki answered"),
                                 new OA\Property(property: "created_at", type: "string", format: "date-time", example: "2026-02-01T12:00:00.000000Z"),
@@ -148,10 +140,9 @@ class QuestionController extends Controller
             'data' => [
                 'id' => $question->id,
                 'tour_id' => $question->tour_id,
-                'user_name' => $question->user_name,
+                'full_name' => $question->full_name,
                 'email' => $question->email,
-                'phone_primary' => $question->phone_primary,
-                'phone_secondary' => $question->phone_secondary,
+                'phone' => $question->phone,
                 'comment' => $question->comment,
                 'status' => $question->status,
                 'created_at' => $question->created_at,

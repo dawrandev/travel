@@ -17,10 +17,9 @@ class QuestionController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('user_name', 'like', "%{$search}%")
+                $q->where('full_name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone_primary', 'like', "%{$search}%")
-                  ->orWhere('phone_secondary', 'like', "%{$search}%");
+                  ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 

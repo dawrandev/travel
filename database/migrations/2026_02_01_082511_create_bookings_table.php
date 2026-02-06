@@ -16,14 +16,14 @@ return new class extends Migration
             $table->foreignId('tour_id')->constrained()->onDelete('cascade');
 
             $table->string('full_name');
-            $table->string('phone_primary');
-            $table->string('phone_secondary')->nullable();
+            $table->integer('max_people')->default(1);
+            $table->date('starting_date');
+            $table->date('ending_date');
+            $table->string('primary_phone');
+            $table->string('secondary_phone')->nullable();
+            $table->string('email');
+            $table->text('message')->nullable();
 
-            $table->date('booking_date');
-            $table->integer('people_count')->default(1);
-            $table->text('comment')->nullable();
-
-            $table->decimal('total_price', 15, 2);
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
 
             $table->timestamps();
