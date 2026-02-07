@@ -107,7 +107,12 @@ class AboutController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Biz haqimizda"),
-                                new OA\Property(property: "image", type: "string", example: "/storage/uploads/banners/about-banner.jpg")
+                                new OA\Property(
+                                    property: "images",
+                                    type: "array",
+                                    description: "Banner rasmlari massivi (tartiblangan)",
+                                    items: new OA\Items(type: "string", example: "/storage/uploads/banners/about-banner-1.jpg")
+                                )
                             ]
                         )
                     ]
@@ -121,7 +126,9 @@ class AboutController extends Controller
     )]
     public function banner(): JsonResponse
     {
-        $banner = AboutBanner::with('translations')
+        $banner = AboutBanner::with(['translations', 'images' => function ($q) {
+            $q->orderBy('sort_order');
+        }])
             ->where('is_active', true)
             ->first();
 

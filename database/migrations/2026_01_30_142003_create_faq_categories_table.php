@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('faqs', function (Blueprint $table) {
+        Schema::create('faq_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tour_id')->nullable()->constrained('tours')->onDelete('cascade');
-            $table->foreignId('faq_category_id')->nullable()->constrained('faq_categories')->onDelete('set null');
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('faqs');
+        Schema::dropIfExists('faq_categories');
     }
 };

@@ -79,7 +79,7 @@
                 <h4><i class="fas fa-address-book"></i> Контактная информация</h4>
                 <div class="card-header-action">
                     @if($contacts->first())
-                    <button class="btn btn-primary" onclick="editContact({{ $contacts->first()->id }})">
+                    <button class="btn btn-primary" data-contact-id="{{ $contacts->first()->id }}" id="editContactBtn">
                         <i class="fas fa-edit"></i> Редактировать
                     </button>
                     @else
@@ -206,8 +206,23 @@
 @include('pages.contacts.create-modal')
 @include('pages.contacts.edit-modal')
 @endpush
-
 @push('scripts')
+{{-- Leaflet CSS --}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+{{-- PHP variables for JavaScript --}}
+@php
+$hasContact = $contacts->first();
+$contactData = $hasContact ? [
+'lat' => $contacts->first()->latitude,
+'lng' => $contacts->first()->longitude
+] : null;
+$languageCodes = $languages->pluck('code')->toArray();
+@endphp
+
+{{-- Leaflet JS --}}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
     // Routes
     const ROUTES = {
@@ -219,39 +234,47 @@
     let createMap, editMap, contactMap;
     let createMarker, editMarker, contactMarker;
 
-    // Initialize Contact Map (read-only)
-    @if($contacts - > first())
+    // Contact data from PHP
+    const hasContact = {
+        {
+            $hasContact ? 'true' : 'false'
+        }
+    };
+    const contactData = {
+        !!json_encode($contactData) !!
+    };
+
+    // Languages array for translations
+    const languages = {
+        !!json_encode($languageCodes) !!
+    };
+
     $(document).ready(function() {
-        @php $contact = $contacts - > first();
-        @endphp
-        const lat = {
-            {
-                $contact - > latitude
-            }
-        };
-        const lng = {
-            {
-                $contact - > longitude
-            }
-        };
+        // Initialize Contact Map (read-only)
+        if (hasContact && contactData) {
+            contactMap = L.map('contactMap', {
+                scrollWheelZoom: false,
+                dragging: true,
+                touchZoom: true,
+                doubleClickZoom: true,
+                zoomControl: true
+            }).setView([contactData.lat, contactData.lng], 15);
 
-        contactMap = L.map('contactMap', {
-            scrollWheelZoom: false,
-            dragging: true,
-            touchZoom: true,
-            doubleClickZoom: true,
-            zoomControl: true
-        }).setView([lat, lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(contactMap);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(contactMap);
+            // Add marker
+            contactMarker = L.marker([contactData.lat, contactData.lng]).addTo(contactMap);
+            contactMarker.bindPopup('<b>Местоположение</b><br>Широта: ' + contactData.lat + '<br>Долгота: ' + contactData.lng).openPopup();
+        }
 
-        // Add marker
-        contactMarker = L.marker([lat, lng]).addTo(contactMap);
-        contactMarker.bindPopup('<b>Местоположение</b><br>Широта: ' + lat + '<br>Долгота: ' + lng).openPopup();
+        // Event listener for edit contact button
+        $('#editContactBtn').on('click', function() {
+            const contactId = $(this).data('contact-id');
+            editContact(contactId);
+        });
     });
-    @endif
 
     // Initialize Create Map
     $('#createModal').on('shown.bs.modal', function() {
@@ -306,69 +329,27 @@
             success: function(response) {
                 if (response.success) {
                     $('#editContactForm').attr('action', ROUTES.destroy.replace('{id}', id));
-                    $('#edit_phone').val(response.contact.phone);
-                    $('#edit_email').val(response.contact.email);
-                    $('#edit_longitude').val(response.contact.longitude);
-                    $('#edit_latitude').val(response.contact.latitude);
-                    $('#edit_whatsapp_phone').val(response.contact.whatsapp_phone); // QOSHILDI
-                    $('#edit_telegram_url').val(response.contact.telegram_url);
-                    $('#edit_telegram_username').val(response.contact.telegram_username);
-                    $('#edit_instagram_url').val(response.contact.instagram_url);
-                    $('#edit_facebook_url').val(response.contact.facebook_url);
-                    $('#edit_facebook_name').val(response.contact.facebook_name); // QOSHILDI
-                    $('#edit_youtube_url').val(response.contact.youtube_url);
+                    $('#edit_phone').val(response.contact.phone || '');
+                    $('#edit_email').val(response.contact.email || '');
+                    $('#edit_longitude').val(response.contact.longitude || '');
+                    $('#edit_latitude').val(response.contact.latitude || '');
+                    $('#edit_whatsapp_phone').val(response.contact.whatsapp_phone || '');
+                    $('#edit_telegram_url').val(response.contact.telegram_url || '');
+                    $('#edit_telegram_username').val(response.contact.telegram_username || '');
+                    $('#edit_instagram_url').val(response.contact.instagram_url || '');
+                    $('#edit_facebook_url').val(response.contact.facebook_url || '');
+                    $('#edit_facebook_name').val(response.contact.facebook_name || '');
+                    $('#edit_youtube_url').val(response.contact.youtube_url || '');
 
                     // Fill translations for each language
-                    @foreach($languages as $language)
-                    if (response.translations['{{ $language->code }}']) {
-                        $('#edit_address_{{ $language->code }}').val(response.translations['{{ $language->code }}'].address);
-                    }
-                    @endforeach
+                    languages.forEach(function(langCode) {
+                        if (response.translations[langCode]) {
+                            $('#edit_address_' + langCode).val(response.translations[langCode].address);
+                        }
+                    });
 
-                    // Initialize edit map
+                    // Show modal first
                     $('#editContactModal').modal('show');
-
-                    // Wait for modal to be fully shown
-                    setTimeout(() => {
-                        if (!editMap) {
-                            editMap = L.map('editMap').setView([41.311081, 69.240562], 13);
-
-                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            }).addTo(editMap);
-
-                            editMap.on('click', function(e) {
-                                const lat = e.latlng.lat;
-                                const lng = e.latlng.lng;
-
-                                if (editMarker) {
-                                    editMap.removeLayer(editMarker);
-                                }
-
-                                editMarker = L.marker([lat, lng]).addTo(editMap);
-                                $('#edit_latitude').val(lat);
-                                $('#edit_longitude').val(lng);
-                                $('#edit_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
-                            });
-                        }
-
-                        // Set existing coordinates if available
-                        if (response.contact.latitude && response.contact.longitude) {
-                            const lat = parseFloat(response.contact.latitude);
-                            const lng = parseFloat(response.contact.longitude);
-
-                            editMap.setView([lat, lng], 15);
-
-                            if (editMarker) {
-                                editMap.removeLayer(editMarker);
-                            }
-
-                            editMarker = L.marker([lat, lng]).addTo(editMap);
-                            $('#edit_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
-                        }
-
-                        editMap.invalidateSize();
-                    }, 300);
                 }
             },
             error: function(xhr) {
@@ -382,6 +363,50 @@
         });
     }
 
+    // Initialize edit map when modal is shown
+    $('#editContactModal').on('shown.bs.modal', function() {
+        setTimeout(() => {
+            if (!editMap) {
+                editMap = L.map('editMap').setView([41.311081, 69.240562], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(editMap);
+
+                editMap.on('click', function(e) {
+                    const lat = e.latlng.lat;
+                    const lng = e.latlng.lng;
+
+                    if (editMarker) {
+                        editMap.removeLayer(editMarker);
+                    }
+
+                    editMarker = L.marker([lat, lng]).addTo(editMap);
+                    $('#edit_latitude').val(lat);
+                    $('#edit_longitude').val(lng);
+                    $('#edit_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
+                });
+            }
+
+            // Set existing coordinates if available
+            const lat = parseFloat($('#edit_latitude').val());
+            const lng = parseFloat($('#edit_longitude').val());
+
+            if (lat && lng) {
+                editMap.setView([lat, lng], 15);
+
+                if (editMarker) {
+                    editMap.removeLayer(editMarker);
+                }
+
+                editMarker = L.marker([lat, lng]).addTo(editMap);
+                $('#edit_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
+            }
+
+            editMap.invalidateSize();
+        }, 300);
+    });
+
     // Reset edit map on modal close
     $('#editContactModal').on('hidden.bs.modal', function() {
         if (editMarker) {
@@ -390,6 +415,7 @@
         }
     });
 
+    // Edit Banner function
     function editBanner(id) {
         $.ajax({
             url: '/contacts/banner/' + id + '/translations',
@@ -410,5 +436,13 @@
             }
         });
     }
+
+    // Event listener for edit banner button (if exists)
+    $(document).on('click', '[onclick*="editBanner"]', function(e) {
+        e.preventDefault();
+        const onclickAttr = $(this).attr('onclick');
+        const id = onclickAttr.match(/\d+/)[0];
+        editBanner(id);
+    });
 </script>
 @endpush

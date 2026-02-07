@@ -36,7 +36,8 @@ class TourSeeder extends Seeder
             [
                 'main' => [
                     'category_id' => $oneDayCat,
-                    'price' => 450000.00,
+                    'price' => '150$',
+                    'phone' => '+998 99 999 99 99',
                     'rating' => 4.8,
                     'reviews_count' => 12,
                     'duration_days' => 1,
@@ -81,7 +82,8 @@ class TourSeeder extends Seeder
             [
                 'main' => [
                     'category_id' => $oneDayCat,
-                    'price' => 850000.00,
+                    'price' => '500$',
+                    'phone' => '+998888888888',
                     'rating' => 5.0,
                     'reviews_count' => 18,
                     'duration_days' => 1,
@@ -126,7 +128,8 @@ class TourSeeder extends Seeder
             [
                 'main' => [
                     'category_id' => $oneDayCat,
-                    'price' => 700000.00,
+                    'price' => '300$',
+                    'phone' => '+998777777777',
                     'rating' => 4.7,
                     'reviews_count' => 35,
                     'duration_days' => 1,
@@ -171,7 +174,8 @@ class TourSeeder extends Seeder
             [
                 'main' => [
                     'category_id' => $extremeCat,
-                    'price' => 3500000.00, // Taxminiy narx
+                    'price' => '350$',
+                    'phone' => '+998666666666',
                     'rating' => 4.9,
                     'reviews_count' => 24,
                     'duration_days' => 3,
@@ -214,7 +218,8 @@ class TourSeeder extends Seeder
             [
                 'main' => [
                     'category_id' => $expeditionCat,
-                    'price' => 2200000.00,
+                    'price' => '200$',
+                    'phone' => '+998555555555',
                     'rating' => 4.8,
                     'reviews_count' => 10,
                     'duration_days' => 2,

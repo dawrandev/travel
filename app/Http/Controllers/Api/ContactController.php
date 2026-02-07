@@ -26,7 +26,34 @@ class ContactController extends Controller
             )
         ],
         responses: [
-            new OA\Response(response: 200, description: "Muvaffaqiyatli javob"),
+            new OA\Response(
+                response: 200,
+                description: "Muvaffaqiyatli javob",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "phone", type: "string", example: "+998901234567"),
+                                new OA\Property(property: "email", type: "string", example: "info@example.com"),
+                                new OA\Property(property: "address", type: "string", example: "Tashkent, Uzbekistan"),
+                                new OA\Property(property: "longitude", type: "string", example: "69.2401"),
+                                new OA\Property(property: "latitude", type: "string", example: "41.2995"),
+                                new OA\Property(property: "telegram_url", type: "string", example: "https://t.me/example"),
+                                new OA\Property(property: "telegram_username", type: "string", example: "@example"),
+                                new OA\Property(property: "instagram_url", type: "string", example: "https://instagram.com/example"),
+                                new OA\Property(property: "facebook_url", type: "string", example: "https://facebook.com/example"),
+                                new OA\Property(property: "facebook_name", type: "string", example: "Example Page"),
+                                new OA\Property(property: "youtube_url", type: "string", example: "https://youtube.com/example"),
+                                new OA\Property(property: "whatsapp_phone", type: "string", example: "+998901234567")
+                            ]
+                        )
+                    ]
+                )
+            ),
             new OA\Response(response: 404, description: "Ma'lumot topilmadi")
         ]
     )]
@@ -73,7 +100,12 @@ class ContactController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Biz bilan bog'laning"),
-                                new OA\Property(property: "image", type: "string", example: "/storage/uploads/contact-banner.jpg")
+                                new OA\Property(
+                                    property: "images",
+                                    type: "array",
+                                    description: "Banner rasmlari massivi (tartiblangan)",
+                                    items: new OA\Items(type: "string", example: "/storage/uploads/banners/contact-banner-1.jpg")
+                                )
                             ]
                         )
                     ]
@@ -84,7 +116,9 @@ class ContactController extends Controller
     )]
     public function banner(): JsonResponse
     {
-        $banner = ContactBanner::with('translations')
+        $banner = ContactBanner::with(['translations', 'images' => function ($q) {
+            $q->orderBy('sort_order');
+        }])
             ->where('is_active', true)
             ->first();
 

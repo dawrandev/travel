@@ -34,11 +34,18 @@ class FaqService
                 $tourTitle = $tourTranslation->title ?? 'N/A';
             }
 
+            $categoryName = null;
+            if ($faq->category) {
+                $categoryTranslation = $faq->category->translations->where('lang_code', $langCode)->first();
+                $categoryName = $categoryTranslation->name ?? 'N/A';
+            }
+
             return [
                 'id' => $faq->id,
                 'question' => $translation->question ?? 'N/A',
                 'answer' => $translation->answer ?? 'N/A',
                 'tour_title' => $tourTitle,
+                'category_name' => $categoryName,
                 'sort_order' => $faq->sort_order,
                 'is_active' => $faq->is_active
             ];

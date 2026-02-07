@@ -24,7 +24,9 @@ class ContactResource extends JsonResource
             'telegram_username' => $this->telegram_username,
             'instagram_url' => $this->instagram_url,
             'facebook_url' => $this->facebook_url,
+            'facebook_name' => $this->facebook_name,
             'youtube_url' => $this->youtube_url,
+            'whatsapp_phone' => $this->whatsapp_phone,
         ];
     }
 }

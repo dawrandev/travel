@@ -20,6 +20,7 @@ Route::get('/user', function (Request $request) {
 // Public API routes
 Route::get('/languages', [LanguageController::class, 'index']);
 Route::get('/faq', [FaqController::class, 'index']);
+Route::get('/faq/categories', [FaqController::class, 'categories']);
 Route::get('/about', [AboutController::class, 'index']);
 Route::get('/about/banner', [AboutController::class, 'banner']);
 Route::get('/contact', [ContactController::class, 'index']);

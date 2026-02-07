@@ -13,6 +13,7 @@ class Faq extends Model
 
     protected $fillable = [
         'tour_id',
+        'faq_category_id',
         'sort_order',
         'is_active',
     ];
@@ -29,5 +30,10 @@ class Faq extends Model
     public function tour(): BelongsTo
     {
         return $this->belongsTo(Tour::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(FaqCategory::class, 'faq_category_id');
     }
 }

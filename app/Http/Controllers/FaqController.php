@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FaqRequest;
+use App\Models\FaqCategory;
 use App\Models\Language;
 use App\Models\Tour;
 use App\Services\FaqService;
@@ -22,7 +23,11 @@ class FaqController extends Controller
         $faqs = $this->faqService->getAll();
         $languages = Language::all();
         $tours = Tour::with('translations')->get();
-        return view('pages.faqs.index', compact('faqs', 'languages', 'tours'));
+        $faqCategories = FaqCategory::with('translations')
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+        return view('pages.faqs.index', compact('faqs', 'languages', 'tours', 'faqCategories'));
     }
 
     public function filter(Request $request): JsonResponse
@@ -58,6 +63,7 @@ class FaqController extends Controller
             'faq' => [
                 'id' => $faq->id,
                 'tour_id' => $faq->tour_id,
+                'faq_category_id' => $faq->faq_category_id,
                 'sort_order' => $faq->sort_order,
                 'is_active' => $faq->is_active
             ],

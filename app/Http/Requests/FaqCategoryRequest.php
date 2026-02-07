@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Language;
 use Illuminate\Foundation\Http\FormRequest;
 
-class FaqRequest extends FormRequest
+class FaqCategoryRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,8 +15,6 @@ class FaqRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'tour_id' => 'nullable|exists:tours,id',
-            'faq_category_id' => 'nullable|exists:faq_categories,id',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ];
@@ -24,8 +22,7 @@ class FaqRequest extends FormRequest
         // Add validation rules for all languages
         $languages = Language::all();
         foreach ($languages as $language) {
-            $rules['question_' . $language->code] = 'required|string|max:255';
-            $rules['answer_' . $language->code] = 'required|string';
+            $rules['name_' . $language->code] = 'required|string|max:255';
         }
 
         return $rules;
@@ -33,14 +30,11 @@ class FaqRequest extends FormRequest
 
     public function messages(): array
     {
-        $messages = [
-            'tour_id.exists' => 'Выбранный тур не существует',
-        ];
+        $messages = [];
 
         $languages = Language::all();
         foreach ($languages as $language) {
-            $messages['question_' . $language->code . '.required'] = 'Вопрос (' . $language->name . ') обязателен';
-            $messages['answer_' . $language->code . '.required'] = 'Ответ (' . $language->name . ') обязателен';
+            $messages['name_' . $language->code . '.required'] = 'Название (' . $language->name . ') обязательно';
         }
 
         return $messages;

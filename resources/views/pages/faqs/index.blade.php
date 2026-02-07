@@ -43,6 +43,7 @@
                                 <th>№</th>
                                 <th>Вопрос</th>
                                 <th>Тур</th>
+                                <th>Категория</th>
                                 <th>Ответ</th>
                                 <th>Порядок</th>
                                 <th>Статус</th>
@@ -59,6 +60,15 @@
                                     <span class="badge badge-info">{{ $faq->tour->translations->first()->title ?? 'N/A' }}</span>
                                     @else
                                     <span class="badge badge-secondary">Общий</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($faq->category)
+                                    <span class="badge badge-primary">
+                                        {{ $faq->category->translations->first()->name ?? 'N/A' }}
+                                    </span>
+                                    @else
+                                    <span class="badge badge-secondary">Без категории</span>
                                     @endif
                                 </td>
                                 <td>{{ Str::limit($faq->translations->first()->answer ?? 'N/A', 50) }}</td>
@@ -145,7 +155,7 @@
             tbody.empty();
 
             if (faqs.length === 0) {
-                tbody.append('<tr><td colspan="7" class="text-center">Нет данных</td></tr>');
+                tbody.append('<tr><td colspan="8" class="text-center">Нет данных</td></tr>');
                 return;
             }
 
@@ -159,6 +169,10 @@
                     '<span class="badge badge-info">' + faq.tour_title + '</span>' :
                     '<span class="badge badge-secondary">Общий</span>';
 
+                var categoryBadge = faq.category_name ?
+                    '<span class="badge badge-primary">' + faq.category_name + '</span>' :
+                    '<span class="badge badge-secondary">Без категории</span>';
+
                 var answer = faq.answer.length > 50 ? faq.answer.substring(0, 50) + '...' : faq.answer;
 
                 var row = '<tr>' +
@@ -166,6 +180,7 @@
                     '<td>' + (index + 1) + '</td>' +
                     '<td>' + faq.question + '</td>' +
                     '<td>' + tourBadge + '</td>' +
+                    '<td>' + categoryBadge + '</td>' +
                     '<td>' + answer + '</td>' +
                     '<td>' + faq.sort_order + '</td>' +
                     '<td>' + statusBadge + '</td>' +
@@ -196,6 +211,7 @@
                 if (response.success) {
                     $('#editForm').attr('action', ROUTES.destroy.replace('{id}', id));
                     $('#edit_tour_id').val(response.faq.tour_id || '');
+                    $('#edit_faq_category_id').val(response.faq.faq_category_id || '');
                     $('#edit_sort_order').val(response.faq.sort_order);
                     $('#edit_is_active').prop('checked', response.faq.is_active);
 

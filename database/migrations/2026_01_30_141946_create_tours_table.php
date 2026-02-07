@@ -15,14 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->decimal('price', 10, 2);
+            $table->string('phone');
             $table->decimal('rating', 2, 1)->default(0);
             $table->integer('reviews_count')->default(0);
 
             $table->unsignedSmallInteger('duration_days')->default(1);
             $table->unsignedSmallInteger('duration_nights')->default(0);
 
-            $table->integer('min_age')->nullable();
-            $table->integer('max_people')->nullable();
+            $table->integer('min_age');
+            $table->integer('max_people');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

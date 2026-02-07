@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TourResource extends JsonResource
+class TourDetailResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -46,6 +46,48 @@ class TourResource extends JsonResource
                     'is_main' => (bool) $image->is_main,
                 ];
             }),
+
+            'itineraries' => $this->itineraries->map(function ($itinerary) use ($lang) {
+                $itTranslation = $itinerary->translations->firstWhere('lang_code', $lang)
+                    ?? $itinerary->translations->first();
+
+                return [
+                    'day_number' => $itinerary->day_number,
+                    'event_time' => $itinerary->event_time,
+                    'activity_title' => $itTranslation->activity_title ?? '',
+                    'activity_description' => $itTranslation->activity_description ?? '',
+                ];
+            }),
+
+            'features' => $this->features->map(function ($feature) use ($lang) {
+                $featureTranslation = $feature->translations->firstWhere('lang_code', $lang)
+                    ?? $feature->translations->first();
+
+                return [
+                    'id' => $feature->id,
+                    'name' => $featureTranslation->name ?? '',
+                    'description' => $featureTranslation->description ?? '',
+                    'icon' => $feature->icon,
+                    'is_included' => (bool) $feature->pivot->is_included,
+                ];
+            }),
+
+            'faqs' => $this->faqs
+                ->where('is_active', true)
+                ->sortBy('sort_order')
+                ->values()
+                ->map(function ($faq) use ($lang) {
+                    $translation = $faq->translations->firstWhere('lang_code', $lang)
+                        ?? $faq->translations->first();
+
+                    return [
+                        'id' => $faq->id,
+                        'question' => $translation->question ?? '',
+                        'answer' => $translation->answer ?? '',
+                        'sort_order' => $faq->sort_order,
+                        'faq_category_id' => $faq->faq_category_id,
+                    ];
+                }),
         ];
     }
 

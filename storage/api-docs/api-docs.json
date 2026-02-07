@@ -421,7 +421,77 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Muvaffaqiyatli javob"
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+998901234567"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "info@example.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Tashkent, Uzbekistan"
+                                                },
+                                                "longitude": {
+                                                    "type": "string",
+                                                    "example": "69.2401"
+                                                },
+                                                "latitude": {
+                                                    "type": "string",
+                                                    "example": "41.2995"
+                                                },
+                                                "telegram_url": {
+                                                    "type": "string",
+                                                    "example": "https://t.me/example"
+                                                },
+                                                "telegram_username": {
+                                                    "type": "string",
+                                                    "example": "@example"
+                                                },
+                                                "instagram_url": {
+                                                    "type": "string",
+                                                    "example": "https://instagram.com/example"
+                                                },
+                                                "facebook_url": {
+                                                    "type": "string",
+                                                    "example": "https://facebook.com/example"
+                                                },
+                                                "facebook_name": {
+                                                    "type": "string",
+                                                    "example": "Example Page"
+                                                },
+                                                "youtube_url": {
+                                                    "type": "string",
+                                                    "example": "https://youtube.com/example"
+                                                },
+                                                "whatsapp_phone": {
+                                                    "type": "string",
+                                                    "example": "+998901234567"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Ma'lumot topilmadi"
@@ -544,6 +614,76 @@
                                                     "answer": {
                                                         "type": "string",
                                                         "example": "Bizda iqlim keskin kontinental. Sayohat uchun eng ideal vaqt — bahor (aprel-may) va kuz (sentyabr-oktyabr) oylaridir."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/faq/categories": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "FAQ kategoriyalarini olish",
+                "description": "Barcha faol FAQ kategoriyalarini qaytaradi",
+                "operationId": "187b03b09f47ff0eac24b5f6610cc691",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (uz, ru, kk, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz",
+                            "enum": [
+                                "uz",
+                                "ru",
+                                "kk",
+                                "en"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Umumiy ma'lumotlar"
+                                                    },
+                                                    "sort_order": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
                                                     }
                                                 },
                                                 "type": "object"
@@ -1197,41 +1337,18 @@
                                                     "images": {
                                                         "type": "array",
                                                         "items": {
-                                                            "type": "object"
-                                                        }
-                                                    },
-                                                    "itineraries": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "object"
-                                                        }
-                                                    },
-                                                    "features": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "object"
-                                                        }
-                                                    },
-                                                    "faqs": {
-                                                        "description": "Tourga tegishli FAQ lar",
-                                                        "type": "array",
-                                                        "items": {
                                                             "properties": {
                                                                 "id": {
                                                                     "type": "integer",
                                                                     "example": 1
                                                                 },
-                                                                "question": {
+                                                                "url": {
                                                                     "type": "string",
-                                                                    "example": "Nukus madaniy turi qancha vaqt davom etadi?"
+                                                                    "example": "/storage/uploads/image.jpg"
                                                                 },
-                                                                "answer": {
-                                                                    "type": "string",
-                                                                    "example": "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."
-                                                                },
-                                                                "sort_order": {
-                                                                    "type": "integer",
-                                                                    "example": 1
+                                                                "is_main": {
+                                                                    "type": "boolean",
+                                                                    "example": true
                                                                 }
                                                             },
                                                             "type": "object"
@@ -1406,6 +1523,11 @@
                                                             "sort_order": {
                                                                 "type": "integer",
                                                                 "example": 1
+                                                            },
+                                                            "faq_category_id": {
+                                                                "type": "integer",
+                                                                "example": 1,
+                                                                "nullable": true
                                                             }
                                                         },
                                                         "type": "object"
@@ -1536,41 +1658,18 @@
                                                     "images": {
                                                         "type": "array",
                                                         "items": {
-                                                            "type": "object"
-                                                        }
-                                                    },
-                                                    "itineraries": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "object"
-                                                        }
-                                                    },
-                                                    "features": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "object"
-                                                        }
-                                                    },
-                                                    "faqs": {
-                                                        "description": "Tourga tegishli FAQ lar",
-                                                        "type": "array",
-                                                        "items": {
                                                             "properties": {
                                                                 "id": {
                                                                     "type": "integer",
                                                                     "example": 1
                                                                 },
-                                                                "question": {
+                                                                "url": {
                                                                     "type": "string",
-                                                                    "example": "Nukus madaniy turi qancha vaqt davom etadi?"
+                                                                    "example": "/storage/uploads/image.jpg"
                                                                 },
-                                                                "answer": {
-                                                                    "type": "string",
-                                                                    "example": "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."
-                                                                },
-                                                                "sort_order": {
-                                                                    "type": "integer",
-                                                                    "example": 1
+                                                                "is_main": {
+                                                                    "type": "boolean",
+                                                                    "example": true
                                                                 }
                                                             },
                                                             "type": "object"

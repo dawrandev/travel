@@ -58,12 +58,12 @@ class ContactController extends Controller
                 'email' => $contact->email,
                 'longitude' => $contact->longitude,
                 'latitude' => $contact->latitude,
-                'whatsapp_phone' => $contact->whatsapp_phone, // QOSHILDI
+                'whatsapp_phone' => $contact->whatsapp_phone,
                 'telegram_url' => $contact->telegram_url,
                 'telegram_username' => $contact->telegram_username,
                 'instagram_url' => $contact->instagram_url,
                 'facebook_url' => $contact->facebook_url,
-                'facebook_name' => $contact->facebook_name, // QOSHILDI
+                'facebook_name' => $contact->facebook_name,
                 'youtube_url' => $contact->youtube_url,
             ],
             'translations' => $translations

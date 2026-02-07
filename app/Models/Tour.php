@@ -9,6 +9,7 @@ class Tour extends Model
     protected $fillable = [
         'category_id',
         'price',
+        'phone',
         'rating',
         'reviews_count',
         'duration_days',

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HeroSlideController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\FaqCategoryController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
@@ -37,6 +38,15 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [FaqController::class, 'store'])->name('store');
         Route::put('/{id}', [FaqController::class, 'update'])->name('update');
         Route::delete('/{id}', [FaqController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('faq-categories')->name('faq-categories.')->group(function () {
+        Route::get('/', [FaqCategoryController::class, 'index'])->name('index');
+        Route::get('/filter', [FaqCategoryController::class, 'filter'])->name('filter');
+        Route::get('/{id}/translations', [FaqCategoryController::class, 'getTranslations'])->name('translations');
+        Route::post('/', [FaqCategoryController::class, 'store'])->name('store');
+        Route::put('/{id}', [FaqCategoryController::class, 'update'])->name('update');
+        Route::delete('/{id}', [FaqCategoryController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('abouts')->name('abouts.')->group(function () {

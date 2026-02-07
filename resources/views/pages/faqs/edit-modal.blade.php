@@ -26,6 +26,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Category Selection -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Категория FAQ (опционально)</label>
+                                <select name="faq_category_id" id="edit_faq_category_id" class="form-control">
+                                    <option value="">Без категории</option>
+                                    @foreach($faqCategories as $category)
+                                    <option value="{{ $category->id }}">
+                                        {{ $category->translations->where('lang_code', 'ru')->first()->name ?? $category->translations->first()->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                <small class="form-text text-muted">Выберите категорию для классификации FAQ</small>
+                            </div>
+                        </div>
+                    </div>
                     <hr>
 
                     <!-- Language Tabs -->
@@ -52,7 +70,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label class="form-label">Ответ ({{ $language->name }}) <span class="text-danger">*</span></label>
-                                        <textarea name="answer_{{ $language->code }}" id="edit_answer_{{ $language->code }}" class="form-control" rows="5" placeholder="Введите ответ" required></textarea>
+                                        <textarea name="answer_{{ $language->code }}" id="edit_answer_{{ $language->code }}" class="form-control" style="min-height: 150px; height: auto;" placeholder="Введите ответ" required></textarea>
                                     </div>
                                 </div>
                             </div>

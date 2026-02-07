@@ -182,7 +182,12 @@ class ReviewController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Mijozlar sharhlari"),
-                                new OA\Property(property: "image", type: "string", example: "/storage/uploads/review-banner.jpg")
+                                new OA\Property(
+                                    property: "images",
+                                    type: "array",
+                                    description: "Banner rasmlari massivi (tartiblangan)",
+                                    items: new OA\Items(type: "string", example: "/storage/uploads/banners/review-banner-1.jpg")
+                                )
                             ]
                         )
                     ]
@@ -193,7 +198,9 @@ class ReviewController extends Controller
     )]
     public function banner(): JsonResponse
     {
-        $banner = ReviewBanner::with('translations')
+        $banner = ReviewBanner::with(['translations', 'images' => function ($q) {
+            $q->orderBy('sort_order');
+        }])
             ->where('is_active', true)
             ->first();
 

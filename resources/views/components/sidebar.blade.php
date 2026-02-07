@@ -50,6 +50,9 @@
              <li class="dropdown {{ Request::is('faqs') ? 'active' : '' }}">
                  <a href="{{ route('faqs.index') }}" class="nav-link"><i data-feather="help-circle"></i><span>Вопросы и ответы</span></a>
              </li>
+             <li class="dropdown {{ Request::is('faq-categories') ? 'active' : '' }}">
+                 <a href="{{ route('faq-categories.index') }}" class="nav-link"><i data-feather="layers"></i><span>Категории FAQ</span></a>
+             </li>
              <li class="dropdown {{ Request::is('contacts') ? 'active' : '' }}">
                  <a href="{{ route('contacts.index') }}" class="nav-link"><i data-feather="phone"></i><span>Контакты</span></a>
              </li>

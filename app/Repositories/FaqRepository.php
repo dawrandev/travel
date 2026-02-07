@@ -9,7 +9,7 @@ class FaqRepository
 {
     public function getAll(): Collection
     {
-        return Faq::with(['translations', 'tour.translations'])
+        return Faq::with(['translations', 'tour.translations', 'category.translations'])
             ->orderBy('sort_order')
             ->get();
     }

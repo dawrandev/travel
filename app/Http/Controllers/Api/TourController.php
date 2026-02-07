@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TourResource;
+use App\Http\Resources\TourDetailResource;
 use App\Models\Tour;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -65,19 +66,14 @@ class TourController extends Controller
                                         ]
                                     ),
                                     new OA\Property(property: "main_image", type: "string", example: "/storage/uploads/image.jpg"),
-                                    new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
-                                    new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
-                                    new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(
-                                        property: "faqs",
+                                        property: "images",
                                         type: "array",
-                                        description: "Tourga tegishli FAQ lar",
                                         items: new OA\Items(
                                             properties: [
                                                 new OA\Property(property: "id", type: "integer", example: 1),
-                                                new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
-                                                new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
-                                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                                new OA\Property(property: "url", type: "string", example: "/storage/uploads/image.jpg"),
+                                                new OA\Property(property: "is_main", type: "boolean", example: true),
                                             ]
                                         )
                                     ),
@@ -91,7 +87,7 @@ class TourController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
-        $query = Tour::with(['translations', 'category.translations', 'images', 'itineraries.translations', 'features.translations'])
+        $query = Tour::with(['translations', 'category.translations', 'images'])
             ->where('is_active', true);
 
         if ($request->has('category_id')) {
@@ -173,6 +169,7 @@ class TourController extends Controller
                                             new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
                                             new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
                                             new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                            new OA\Property(property: "faq_category_id", type: "integer", example: 1, nullable: true),
                                         ]
                                     )
                                 ),
@@ -192,14 +189,15 @@ class TourController extends Controller
             'images',
             'itineraries.translations',
             'features.translations',
-            'faqs.translations'
+            'faqs.translations',
+            'faqs.category.translations'
         ])
             ->where('is_active', true)
             ->findOrFail($id);
 
         return response()->json([
             'success' => true,
-            'data' => new TourResource($tour)
+            'data' => new TourDetailResource($tour)
         ]);
     }
 
@@ -250,19 +248,14 @@ class TourController extends Controller
                                         ]
                                     ),
                                     new OA\Property(property: "main_image", type: "string", example: "/storage/image.jpg"),
-                                    new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
-                                    new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
-                                    new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(
-                                        property: "faqs",
+                                        property: "images",
                                         type: "array",
-                                        description: "Tourga tegishli FAQ lar",
                                         items: new OA\Items(
                                             properties: [
                                                 new OA\Property(property: "id", type: "integer", example: 1),
-                                                new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
-                                                new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
-                                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                                new OA\Property(property: "url", type: "string", example: "/storage/uploads/image.jpg"),
+                                                new OA\Property(property: "is_main", type: "boolean", example: true),
                                             ]
                                         )
                                     ),
@@ -276,7 +269,7 @@ class TourController extends Controller
     )]
     public function topRated(Request $request): JsonResponse
     {
-        $tours = Tour::with(['translations', 'category.translations', 'images', 'itineraries.translations', 'features.translations'])
+        $tours = Tour::with(['translations', 'category.translations', 'images'])
             ->where('is_active', true)
             ->whereNotNull('rating')
             ->orderBy('rating', 'desc')

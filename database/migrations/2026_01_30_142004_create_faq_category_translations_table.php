@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('faqs', function (Blueprint $table) {
+        Schema::create('faq_category_translations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tour_id')->nullable()->constrained('tours')->onDelete('cascade');
-            $table->foreignId('faq_category_id')->nullable()->constrained('faq_categories')->onDelete('set null');
-            $table->integer('sort_order')->default(0);
-            $table->boolean('is_active')->default(true);
+            $table->foreignId('faq_category_id')->constrained('faq_categories')->onDelete('cascade');
+            $table->string('lang_code', 10);
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('faqs');
+        Schema::dropIfExists('faq_category_translations');
     }
 };
