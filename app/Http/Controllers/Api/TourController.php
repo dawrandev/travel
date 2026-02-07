@@ -47,6 +47,7 @@ class TourController extends Controller
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
                                     new OA\Property(property: "title", type: "string", example: "Orol dengizi safari"),
+                                    new OA\Property(property: "phone", type: "string", example: "+998901234567"), // Qo'shildi
                                     new OA\Property(property: "description", type: "string", example: "Ajoyib sayohat..."),
                                     new OA\Property(property: "routes", type: "string", example: "Toshkent - Nukus - Moynaq"),
                                     new OA\Property(property: "important_info", type: "string", example: "Pasport talab qilinadi"),
@@ -136,6 +137,7 @@ class TourController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Nukus madaniy turi"),
+                                new OA\Property(property: "phone", type: "string", example: "+998901234567"), // Qo'shildi
                                 new OA\Property(property: "slogan", type: "string", example: "O'zbekistonning madaniy poytaxti"),
                                 new OA\Property(property: "description", type: "string", example: "Nukus shahrini va uning tarixiy joylarini kashf eting"),
                                 new OA\Property(property: "routes", type: "string", example: "Toshkent - Nukus"),
@@ -229,6 +231,7 @@ class TourController extends Controller
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
                                     new OA\Property(property: "title", type: "string", example: "Orol dengizi safari"),
+                                    new OA\Property(property: "phone", type: "string", example: "+998901234567"), // Qo'shildi
                                     new OA\Property(property: "description", type: "string", example: "Ajoyib sayohat..."),
                                     new OA\Property(property: "routes", type: "string", example: "Toshkent - Nukus - Moynaq"),
                                     new OA\Property(property: "important_info", type: "string", example: "Pasport talab qilinadi"),

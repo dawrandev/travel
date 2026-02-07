@@ -6,6 +6,7 @@ use App\Models\Language;
 use App\Models\TourItineraryTranslation;
 use App\Repositories\TourRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class TourService
@@ -38,8 +39,9 @@ class TourService
                 'price' => $data['price'],
                 'duration_days' => $data['duration_days'],
                 'duration_nights' => $data['duration_nights'] ?? 0,
-                'min_age' => $data['min_age'] ?? null,
-                'max_people' => $data['max_people'] ?? null,
+                'min_age' => $data['min_age'],
+                'max_people' => $data['max_people'],
+                'phone' => $data['phone'],
                 'is_active' => isset($data['is_active']) ? 1 : 0,
             ];
 
@@ -76,8 +78,9 @@ class TourService
                 'price' => $data['price'],
                 'duration_days' => $data['duration_days'],
                 'duration_nights' => $data['duration_nights'] ?? 0,
-                'min_age' => $data['min_age'] ?? null,
-                'max_people' => $data['max_people'] ?? null,
+                'min_age' => $data['min_age'],
+                'max_people' => $data['max_people'],
+                'phone' => $data['phone'],
                 'is_active' => isset($data['is_active']) ? 1 : 0,
             ];
 
@@ -229,7 +232,7 @@ class TourService
         }
 
         // Log for debugging
-        \Log::info('Sync Features Data', [
+        Log::info('Sync Features Data', [
             'tour_id' => $tourId,
             'features_data' => $featuresData,
             'all_data_keys' => array_keys($data)

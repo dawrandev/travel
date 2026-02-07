@@ -27,7 +27,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Цена (сўм) <span class="text-danger">*</span></label>
+                                <label>Цена ($)<span class="text-danger">*</span></label>
                                 <input type="number" name="price" class="form-control" step="0.01" min="0" required>
                             </div>
                         </div>
@@ -53,6 +53,13 @@
                             <div class="form-group">
                                 <label>Макс. человек</label>
                                 <input type="number" name="max_people" class="form-control" min="1">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Телефон</label>
+                                <input type="text" name="phone" class="form-control" placeholder="+998901234567">
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -332,7 +339,7 @@
             const languages = @json($languages);
             let tabsHtml = '';
             let contentHtml = '';
-            
+
             languages.forEach((language, index) => {
                 const isActive = index === 0 ? 'active' : '';
                 const showActive = index === 0 ? 'show active' : '';
@@ -356,7 +363,7 @@
                     </div>
                 `;
             });
-            
+
             let html = `
                 <div class="mb-3 p-3 time-item" data-day="${dayNumber}" data-time="${timeCounter}" style="border: 1px solid #d0d0d0; border-radius: 4px; background: #f9f9f9; position: relative;">
                     <button type="button" class="btn btn-sm btn-danger remove-time" style="position: absolute; top: 10px; right: 10px;">
@@ -436,7 +443,7 @@
             const timeItem = $(this).closest('.time-item');
             const dayContainer = timeItem.closest('.itinerary-day');
             const timesContainer = dayContainer.find('.times-container');
-            
+
             // Don't allow removing if it's the last time in the day
             if (timesContainer.find('.time-item').length <= 1) {
                 swal({
@@ -447,7 +454,7 @@
                 });
                 return;
             }
-            
+
             timeItem.remove();
         });
 
@@ -461,4 +468,3 @@
     });
 </script>
 @endpush
-

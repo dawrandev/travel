@@ -18,12 +18,13 @@ class TourRequest extends FormRequest
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
-            'duration_nights' => 'nullable|integer|min:0',
-            'min_age' => 'nullable|integer|min:0',
-            'max_people' => 'nullable|integer|min:1',
+            'duration_nights' => 'integer|min:0',
+            'min_age' => 'integer|min:0',
+            'max_people' => 'integer|min:1',
+            'phone' => 'string|max:50',
             'is_active' => 'nullable|boolean',
 
-            'images' => $this->isMethod('post') ? 'required|array|min:1' : 'nullable|array',
+            'images' => $this->isMethod('post') ? 'required|array|min:1' : 'array',
             'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:10240',
             'main_image' => 'nullable|integer',
 
@@ -55,6 +56,7 @@ class TourRequest extends FormRequest
         $messages = [
             'category_id.required' => 'Категория обязательна',
             'price.required' => 'Цена обязательна',
+            'phone.max' => 'Номер телефона слишком длинный',
             'duration_days.required' => 'Продолжительность (дни) обязательна',
             'images.required' => 'Загрузите хотя бы одно изображение',
             'images.*.max' => 'Размер изображения не должен превышать 10MB',

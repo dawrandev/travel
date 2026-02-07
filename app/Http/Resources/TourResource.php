@@ -26,6 +26,7 @@ class TourResource extends JsonResource
             'routes' => $translation->routes ?? '',
             'important_info' => $translation->important_info ?? '',
             'price' => (float) $this->price,
+            'phone' => $this->phone,
             'duration_days' => $this->duration_days,
             'duration_nights' => $this->duration_nights,
             'min_age' => $this->min_age,

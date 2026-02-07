@@ -132,9 +132,13 @@
                                                     "type": "string",
                                                     "example": "Biz haqimizda"
                                                 },
-                                                "image": {
-                                                    "type": "string",
-                                                    "example": "/storage/uploads/banners/about-banner.jpg"
+                                                "images": {
+                                                    "description": "Banner rasmlari massivi (tartiblangan)",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "/storage/uploads/banners/about-banner-1.jpg"
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -539,9 +543,13 @@
                                                     "type": "string",
                                                     "example": "Biz bilan bog'laning"
                                                 },
-                                                "image": {
-                                                    "type": "string",
-                                                    "example": "/storage/uploads/contact-banner.jpg"
+                                                "images": {
+                                                    "description": "Banner rasmlari massivi (tartiblangan)",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "/storage/uploads/banners/contact-banner-1.jpg"
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -1199,9 +1207,13 @@
                                                     "type": "string",
                                                     "example": "Mijozlar sharhlari"
                                                 },
-                                                "image": {
-                                                    "type": "string",
-                                                    "example": "/storage/uploads/review-banner.jpg"
+                                                "images": {
+                                                    "description": "Banner rasmlari massivi (tartiblangan)",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "/storage/uploads/banners/review-banner-1.jpg"
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -1276,6 +1288,10 @@
                                                     "title": {
                                                         "type": "string",
                                                         "example": "Orol dengizi safari"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "+998901234567"
                                                     },
                                                     "description": {
                                                         "type": "string",
@@ -1423,6 +1439,10 @@
                                                 "title": {
                                                     "type": "string",
                                                     "example": "Nukus madaniy turi"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+998901234567"
                                                 },
                                                 "slogan": {
                                                     "type": "string",
@@ -1596,6 +1616,10 @@
                                                     "title": {
                                                         "type": "string",
                                                         "example": "Orol dengizi safari"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "+998901234567"
                                                     },
                                                     "description": {
                                                         "type": "string",

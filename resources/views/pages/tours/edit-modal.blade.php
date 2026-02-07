@@ -27,7 +27,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Цена (сўм) <span class="text-danger">*</span></label>
+                                <label>Цена ($)<span class="text-danger">*</span></label>
                                 <input type="number" name="price" id="edit_price" class="form-control" step="0.01" required>
                             </div>
                         </div>
@@ -53,6 +53,13 @@
                             <div class="form-group">
                                 <label>Макс. человек</label>
                                 <input type="number" name="max_people" id="edit_max_people" class="form-control" min="1">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Телефон</label>
+                                <input type="text" name="phone" id="edit_phone" class="form-control" placeholder="+998901234567">
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -205,22 +212,22 @@
         const languages = @json($languages);
         let tabsHtml = '';
         let contentHtml = '';
-        
+
         languages.forEach((language, index) => {
             const isActive = index === 0 ? 'active' : '';
             const showActive = index === 0 ? 'show active' : '';
             let titleValue = '';
             let descValue = '';
-            
+
             if (timeData && timeData.translations && timeData.translations[language.code]) {
                 titleValue = timeData.translations[language.code].activity_title || '';
                 descValue = timeData.translations[language.code].activity_description || '';
             }
-            
+
             // Escape HTML entities
             titleValue = String(titleValue).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             descValue = String(descValue).replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '\\n');
-            
+
             tabsHtml += `
                 <li class="nav-item">
                     <a class="nav-link ${isActive}" data-toggle="pill" href="#${timeId}_lang_${language.code}">
@@ -241,7 +248,7 @@
                 </div>
             `;
         });
-        
+
         let html = `
             <div class="mb-3 p-3 edit-time-item" data-day="${dayNumber}" data-time="${timeCounter}" style="border: 1px solid #d0d0d0; border-radius: 4px; background: #f9f9f9; position: relative;">
                 <button type="button" class="btn btn-sm btn-danger remove-edit-time" style="position: absolute; top: 10px; right: 10px;">
@@ -291,7 +298,7 @@
                 </div>
                 <div class="edit-times-container" data-day="${dayNumber}">
         `;
-        
+
         // Add times for this day
         if (dayData && dayData.times && dayData.times.length > 0) {
             dayData.times.forEach((timeData, index) => {
@@ -300,7 +307,7 @@
         } else {
             html += addEditTimeToDay(dayNumber, 1);
         }
-        
+
         html += `
                 </div>
                 <button type="button" class="btn btn-sm btn-success add-edit-time-to-day" data-day="${dayNumber}">
@@ -457,7 +464,7 @@
             const timeItem = $(this).closest('.edit-time-item');
             const dayContainer = timeItem.closest('.edit-itinerary-day');
             const timesContainer = dayContainer.find('.edit-times-container');
-            
+
             // Don't allow removing if it's the last time in the day
             if (timesContainer.find('.edit-time-item').length <= 1) {
                 swal({
@@ -468,47 +475,54 @@
                 });
                 return;
             }
-            
+
             timeItem.remove();
         });
     });
 
     function populateEditModal(response) {
         try {
-            const { tour, translations, itineraries, features, images } = response;
+            const {
+                tour,
+                translations,
+                itineraries,
+                features,
+                images
+            } = response;
 
             // Form action
             $('#editForm').attr('action', '/tours/' + tour.id);
 
-        // Basic info
-        $('#edit_category_id').val(tour.category_id);
-        $('#edit_price').val(tour.price);
-        $('#edit_duration_days').val(tour.duration_days);
-        $('#edit_duration_nights').val(tour.duration_nights);
-        $('#edit_min_age').val(tour.min_age);
-        $('#edit_max_people').val(tour.max_people);
-        $('#edit_is_active').prop('checked', tour.is_active);
+            // Basic info
+            $('#edit_category_id').val(tour.category_id);
+            $('#edit_price').val(tour.price);
+            $('#edit_duration_days').val(tour.duration_days);
+            $('#edit_duration_nights').val(tour.duration_nights);
+            $('#edit_min_age').val(tour.min_age);
+            $('#edit_max_people').val(tour.max_people);
+            $('#edit_phone').val(tour.phone);
+            $('#edit_is_active').prop('checked', tour.is_active);
 
-        // Translations
-        @foreach($languages as $language)
-        if (translations['{{ $language->code }}']) {
-            $('#edit_title_{{ $language->code }}').val(translations['{{ $language->code }}'].title);
-            $('#edit_slogan_{{ $language->code }}').val(translations['{{ $language->code }}'].slogan);
-            $('#edit_description_{{ $language->code }}').val(translations['{{ $language->code }}'].description);
-            $('#edit_routes_{{ $language->code }}').val(translations['{{ $language->code }}'].routes);
-            $('#edit_important_info_{{ $language->code }}').val(translations['{{ $language->code }}'].important_info);
-        }
-        @endforeach
+            // Translations
+            @foreach($languages as $language)
+            if (translations['{{ $language->code }}']) {
+                $('#edit_title_{{ $language->code }}').val(translations['{{ $language->code }}'].title);
+                $('#edit_slogan_{{ $language->code }}').val(translations['{{ $language->code }}'].slogan);
+                $('#edit_description_{{ $language->code }}').val(translations['{{ $language->code }}'].description);
+                $('#edit_routes_{{ $language->code }}').val(translations['{{ $language->code }}'].routes);
+                $('#edit_important_info_{{ $language->code }}').val(translations['{{ $language->code }}'].important_info);
+            }
+            @endforeach
 
-        // Images
-        let imagesHtml = '';
-        let mainImageId = null;
-        if (images && Array.isArray(images)) {
-            images.forEach(img => {
-                if (img.is_main) {
-                    mainImageId = img.id;
-                }
-                imagesHtml += `
+            // Images
+            let imagesHtml = '';
+            let mainImageId = null;
+            if (images && Array.isArray(images)) {
+                images.forEach(img => {
+                    if (img.is_main) {
+                        mainImageId = img.id;
+                    }
+                    imagesHtml += `
                     <div class="col-md-3 mb-3">
                         <div class="position-relative">
                             <img src="/storage/${img.image_path}" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;">
@@ -521,65 +535,65 @@
                         </div>
                     </div>
                 `;
-            });
-        }
-        $('#currentImages').html(imagesHtml);
-        $('#main_image_id').val(mainImageId);
-
-        // Handle main image selection
-        $('input[name="main_image_radio"]').on('change', function() {
-            $('#main_image_id').val($(this).val());
-        });
-
-        // Itineraries - Group by day
-        $('#editItinerariesContainer').empty();
-        editItineraryCounter = 0;
-        
-        if (itineraries && Array.isArray(itineraries) && itineraries.length > 0) {
-            // Group itineraries by day_number
-            const daysMap = {};
-            itineraries.forEach((it) => {
-                if (!daysMap[it.day_number]) {
-                    daysMap[it.day_number] = {
-                        day_number: it.day_number,
-                        times: []
-                    };
-                }
-                daysMap[it.day_number].times.push({
-                    event_time: it.event_time,
-                    translations: it.translations || {}
                 });
-            });
-            
-            // Sort days
-            const sortedDays = Object.keys(daysMap).sort((a, b) => parseInt(a) - parseInt(b));
-            
-            // Create day containers
-            sortedDays.forEach((dayNum) => {
-                editItineraryCounter = Math.max(editItineraryCounter, parseInt(dayNum));
-                const dayData = daysMap[dayNum];
-                const html = addEditDay(parseInt(dayNum), dayData);
-                $('#editItinerariesContainer').append(html);
-            });
-            
-            // Update counter to next available day
-            editItineraryCounter = sortedDays.length > 0 ? Math.max(...sortedDays.map(d => parseInt(d))) : 0;
-        } else {
-            // No itineraries, set counter to 0
-            editItineraryCounter = 0;
-        }
-
-        // Features - Clear all radio buttons first
-        $('.edit-feature-radio').prop('checked', false);
-
-        // Set radio buttons based on features object (key: feature_id, value: 'included' or 'excluded')
-        for (const [featureId, status] of Object.entries(features)) {
-            if (status === 'included') {
-                $(`#edit_feature_included_${featureId}`).prop('checked', true);
-            } else if (status === 'excluded') {
-                $(`#edit_feature_excluded_${featureId}`).prop('checked', true);
             }
-        }
+            $('#currentImages').html(imagesHtml);
+            $('#main_image_id').val(mainImageId);
+
+            // Handle main image selection
+            $('input[name="main_image_radio"]').on('change', function() {
+                $('#main_image_id').val($(this).val());
+            });
+
+            // Itineraries - Group by day
+            $('#editItinerariesContainer').empty();
+            editItineraryCounter = 0;
+
+            if (itineraries && Array.isArray(itineraries) && itineraries.length > 0) {
+                // Group itineraries by day_number
+                const daysMap = {};
+                itineraries.forEach((it) => {
+                    if (!daysMap[it.day_number]) {
+                        daysMap[it.day_number] = {
+                            day_number: it.day_number,
+                            times: []
+                        };
+                    }
+                    daysMap[it.day_number].times.push({
+                        event_time: it.event_time,
+                        translations: it.translations || {}
+                    });
+                });
+
+                // Sort days
+                const sortedDays = Object.keys(daysMap).sort((a, b) => parseInt(a) - parseInt(b));
+
+                // Create day containers
+                sortedDays.forEach((dayNum) => {
+                    editItineraryCounter = Math.max(editItineraryCounter, parseInt(dayNum));
+                    const dayData = daysMap[dayNum];
+                    const html = addEditDay(parseInt(dayNum), dayData);
+                    $('#editItinerariesContainer').append(html);
+                });
+
+                // Update counter to next available day
+                editItineraryCounter = sortedDays.length > 0 ? Math.max(...sortedDays.map(d => parseInt(d))) : 0;
+            } else {
+                // No itineraries, set counter to 0
+                editItineraryCounter = 0;
+            }
+
+            // Features - Clear all radio buttons first
+            $('.edit-feature-radio').prop('checked', false);
+
+            // Set radio buttons based on features object (key: feature_id, value: 'included' or 'excluded')
+            for (const [featureId, status] of Object.entries(features)) {
+                if (status === 'included') {
+                    $(`#edit_feature_included_${featureId}`).prop('checked', true);
+                } else if (status === 'excluded') {
+                    $(`#edit_feature_excluded_${featureId}`).prop('checked', true);
+                }
+            }
         } catch (error) {
             console.error('Error populating edit modal:', error);
             swal({

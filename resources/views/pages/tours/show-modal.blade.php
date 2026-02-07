@@ -27,6 +27,11 @@
                     <div class="col-md-6">
                         <p><strong>Категория:</strong> <span id="showCategory"></span></p>
                         <p><strong>Цена:</strong> <span id="showPrice"></span></p>
+                        <p><strong>Телефон:</strong>
+                            <a href="" id="showPhoneLink" class="text-dark font-weight" style="text-decoration: none;">
+                                <i class="fas fa-phone-alt mr-1"></i> <span id="showPhone"></span>
+                            </a>
+                        </p>
                         <p><strong>Продолжительность:</strong> <span id="showDuration"></span></p>
                     </div>
                     <div class="col-md-6">
@@ -95,7 +100,15 @@
         // Info
         $('#showTitle').text(ruTranslation?.title || 'N/A');
         $('#showCategory').text(ruCategory?.name || 'N/A');
-        $('#showPrice').text(parseFloat(tour.price).toLocaleString('ru-RU') + ' сўм');
+        $('#showPrice').text(parseFloat(tour.price).toLocaleString('ru-RU') + '$');
+
+        if (tour.phone) {
+            $('#showPhone').text(tour.phone);
+            $('#showPhoneLink').attr('href', 'tel:' + tour.phone).show();
+            $('#showPhoneLink').parent().show();
+        } else {
+            $('#showPhoneLink').parent().hide();
+        }
         $('#showDuration').text(tour.duration_days + ' дней / ' + tour.duration_nights + ' ночей');
         $('#showMinAge').text(tour.min_age || 'Не указан');
         $('#showMaxPeople').text(tour.max_people || 'Не указан');

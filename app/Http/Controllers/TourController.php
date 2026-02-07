@@ -89,6 +89,7 @@ class TourController extends Controller
                 'duration_nights' => $tour->duration_nights,
                 'min_age' => $tour->min_age,
                 'max_people' => $tour->max_people,
+                'phone' => $tour->phone,
                 'is_active' => $tour->is_active,
             ],
             'translations' => $translations,
@@ -103,14 +104,14 @@ class TourController extends Controller
         // Merge validated data with feature fields
         $data = $request->validated();
         $allData = $request->all();
-        
+
         // Add feature fields to data
         foreach ($allData as $key => $value) {
             if (str_starts_with($key, 'feature_')) {
                 $data[$key] = $value;
             }
         }
-        
+
         $this->tourService->create($data);
         return redirect()->route('tours.index')->with('success', 'Тур успешно создан');
     }
@@ -120,19 +121,19 @@ class TourController extends Controller
         // Merge validated data with feature fields
         $data = $request->validated();
         $allData = $request->all();
-        
+
         // Add feature fields to data
         foreach ($allData as $key => $value) {
             if (str_starts_with($key, 'feature_')) {
                 $data[$key] = $value;
             }
         }
-        
+
         // Also add main_image_id if present
         if ($request->has('main_image_id')) {
             $data['main_image_id'] = $request->input('main_image_id');
         }
-        
+
         $this->tourService->update($id, $data);
         return redirect()->route('tours.index')->with('success', 'Тур успешно обновлен');
     }

@@ -39,7 +39,7 @@
         <div class="card card-primary">
             <div class="card-img-top" style="height: 200px; overflow: hidden; position: relative;">
                 @php
-                    $mainImage = $tour->images->where('is_main', true)->first() ?? $tour->images->first();
+                $mainImage = $tour->images->where('is_main', true)->first() ?? $tour->images->first();
                 @endphp
                 @if($mainImage)
                 <img src="{{ asset('storage/' . $mainImage->image_path) }}" alt="{{ $tour->translations->first()->title ?? '' }}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -56,27 +56,45 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title">{{ $tour->translations->where('lang_code', 'ru')->first()->title ?? $tour->translations->first()->title ?? 'N/A' }}</h5>
-                <p class="text-muted mb-2">
-                    <i class="fas fa-tag"></i> {{ $tour->category->translations->where('lang_code', 'ru')->first()->name ?? $tour->category->translations->first()->name ?? 'N/A' }}
+
+                <div class="tour-details-minimal mb-3">
+                    <p class="text-muted mb-1" style="font-size: 13px;">
+                        <i class="fas fa-tag fa-fw text-primary"></i> {{ $tour->category->translations->where('lang_code', 'ru')->first()->name ?? $tour->category->translations->first()->name ?? 'N/A' }}
+                    </p>
+
+                    <p class="text-muted mb-1" style="font-size: 13px;">
+                        <i class="fas fa-clock fa-fw text-primary"></i> {{ $tour->duration_days }} д. / {{ $tour->duration_nights }} н.
+                    </p>
+
+                    @if($tour->phone)
+                    <p class="text-muted mb-1" style="font-size: 13px;">
+                        <i class="fas fa-phone-alt fa-fw text-success"></i>
+                        <a href="tel:{{ $tour->phone }}" class="text-muted" style="text-decoration: none;">{{ $tour->phone }}</a>
+                    </p>
+                    @endif
+                </div>
+
+                <div class="mb-3">
+                    <span class="text-primary font-weight-bold" style="font-size: 1.1rem;">
+                        {{ number_format($tour->price, 0, ',', ' ') }} <i class="fas fa-dollar fa-sm"></i>
+                    </span>
+                </div>
+
+                <p class="card-text text-muted" style="font-size: 12px; line-height: 1.4;">
+                    {{ Str::limit($tour->translations->where('lang_code', 'ru')->first()->description ?? $tour->translations->first()->description ?? '', 70) }}
                 </p>
-                <p class="text-muted mb-2">
-                    <i class="fas fa-clock"></i> {{ $tour->duration_days }} дней / {{ $tour->duration_nights }} ночей
-                </p>
-                <p class="text-primary mb-2">
-                    <strong><i class="fas fa-money-bill-wave"></i> {{ number_format($tour->price, 0, ',', ' ') }} сўм</strong>
-                </p>
-                <p class="card-text" style="font-size: 13px;">{{ Str::limit($tour->translations->where('lang_code', 'ru')->first()->description ?? $tour->translations->first()->description ?? '', 80) }}</p>
-                <div class="btn-group w-100" role="group">
-                    <button type="button" class="btn btn-info btn-sm" onclick="showTour({{ $tour->id }})">
-                        <i class="fas fa-eye"></i> Просмотр
+
+                <div class="btn-group w-100 mt-2" role="group">
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="showTour({{ $tour->id }})">
+                        <i class="fas fa-eye"></i>
                     </button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="editTour({{ $tour->id }})">
-                        <i class="fas fa-edit"></i> Изменить
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="editTour({{ $tour->id }})">
+                        <i class="fas fa-edit"></i>
                     </button>
-                    <form action="{{ route('tours.destroy', $tour->id) }}" method="POST" style="display:inline;" data-confirm-delete data-item-name="тур">
+                    <form action="{{ route('tours.destroy', $tour->id) }}" method="POST" class="d-inline w-25" data-confirm-delete>
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
