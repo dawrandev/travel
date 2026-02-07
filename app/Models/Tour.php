@@ -70,4 +70,9 @@ class Tour extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    public function faqs()
+    {
+        return $this->hasMany(Faq::class);
+    }
 }

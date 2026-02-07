@@ -17,7 +17,8 @@ class ReviewBannerRequest extends FormRequest
         $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
 
         $rules = [
-            'banner_image' => $isUpdate ? 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240' : 'required|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'images' => $isUpdate ? 'nullable|array|size:3' : 'required|array|size:3',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,webp|max:10240',
             'is_active' => 'nullable|boolean',
         ];
 
@@ -32,9 +33,10 @@ class ReviewBannerRequest extends FormRequest
     public function messages(): array
     {
         $messages = [
-            'banner_image.required' => 'Изображение баннера обязательно',
-            'banner_image.image' => 'Файл должен быть изображением',
-            'banner_image.max' => 'Максимальный размер 10MB',
+            'images.required' => 'Изображения баннера обязательны',
+            'images.size' => 'Необходимо загрузить ровно 3 изображения',
+            'images.*.image' => 'Файл должен быть изображением',
+            'images.*.max' => 'Максимальный размер изображения 10MB',
         ];
 
         $languages = Language::all();

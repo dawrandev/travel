@@ -10,6 +10,24 @@
             <form action="{{ route('faqs.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
+                    <!-- Tour Selection -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Тур (опционально)</label>
+                                <select name="tour_id" class="form-control">
+                                    <option value="">Общий FAQ (не привязан к туру)</option>
+                                    @foreach($tours as $tour)
+                                    <option value="{{ $tour->id }}">{{ $tour->translations->where('lang_code', 'ru')->first()->title ?? $tour->translations->first()->title }}</option>
+                                    @endforeach
+                                </select>
+                                <small class="form-text text-muted">Оставьте пустым для создания общего FAQ</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <!-- Language Tabs -->
                     <ul class="nav nav-pills mb-3" id="languageTabs" role="tablist">
                         @foreach($languages as $index => $language)
                         <li class="nav-item">

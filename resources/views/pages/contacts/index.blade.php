@@ -101,7 +101,12 @@
                             <label class="font-weight-bold"><i class="fas fa-phone text-success"></i> Телефон:</label>
                             <p class="ml-4"><a href="tel:{{ $contact->phone }}" class="text-dark">{{ $contact->phone }}</a></p>
                         </div>
-
+                        @if($contact->whatsapp_phone)
+                        <div class="mb-3">
+                            <label class="font-weight-bold"><i class="fab fa-whatsapp text-success"></i> WhatsApp:</label>
+                            <p class="ml-4"><a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contact->whatsapp_phone) }}" target="_blank" class="text-dark">{{ $contact->whatsapp_phone }}</a></p>
+                        </div>
+                        @endif
                         <div class="mb-3">
                             <label class="font-weight-bold"><i class="fas fa-envelope text-danger"></i> Эл. почта:</label>
                             <p class="ml-4"><a href="mailto:{{ $contact->email }}" class="text-dark">{{ $contact->email }}</a></p>
@@ -127,6 +132,12 @@
                                 </a>
                                 @endif
 
+                                @if($contact->whatsapp_phone)
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contact->whatsapp_phone) }}" target="_blank" class="btn btn-success btn-sm mr-2 mb-2">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp
+                                </a>
+                                @endif
+
                                 @if($contact->instagram_url)
                                 <a href="{{ $contact->instagram_url }}" target="_blank" class="btn btn-sm mr-2 mb-2" style="background-color: #E1306C; color: white;">
                                     <i class="fab fa-instagram"></i> Instagram
@@ -135,17 +146,17 @@
 
                                 @if($contact->facebook_url)
                                 <a href="{{ $contact->facebook_url }}" target="_blank" class="btn btn-primary btn-sm mr-2 mb-2">
-                                    <i class="fab fa-facebook"></i> Facebook
+                                    <i class="fab fa-facebook"></i> {{ $contact->facebook_name ?? 'Facebook' }}
                                 </a>
                                 @endif
 
                                 @if($contact->youtube_url)
-                                <a href="{{ $contact->youtube_url }}" target="_blank" class="btn btn-info btn-sm mr-2 mb-2">
+                                <a href="{{ $contact->youtube_url }}" target="_blank" class="btn btn-danger btn-sm mr-2 mb-2">
                                     <i class="fab fa-youtube"></i> YouTube
                                 </a>
                                 @endif
 
-                                @if(!$contact->telegram_url && !$contact->instagram_url && !$contact->facebook_url && !$contact->youtube_url)
+                                @if(!$contact->telegram_url && !$contact->whatsapp_phone && !$contact->instagram_url && !$contact->facebook_url && !$contact->youtube_url)
                                 <span class="badge badge-secondary">Не указаны</span>
                                 @endif
                             </div>
@@ -209,11 +220,20 @@
     let createMarker, editMarker, contactMarker;
 
     // Initialize Contact Map (read-only)
-    @if($contacts->first())
+    @if($contacts - > first())
     $(document).ready(function() {
-        @php $contact = $contacts->first(); @endphp
-        const lat = {{ $contact->latitude }};
-        const lng = {{ $contact->longitude }};
+        @php $contact = $contacts - > first();
+        @endphp
+        const lat = {
+            {
+                $contact - > latitude
+            }
+        };
+        const lng = {
+            {
+                $contact - > longitude
+            }
+        };
 
         contactMap = L.map('contactMap', {
             scrollWheelZoom: false,
@@ -290,10 +310,12 @@
                     $('#edit_email').val(response.contact.email);
                     $('#edit_longitude').val(response.contact.longitude);
                     $('#edit_latitude').val(response.contact.latitude);
+                    $('#edit_whatsapp_phone').val(response.contact.whatsapp_phone); // QOSHILDI
                     $('#edit_telegram_url').val(response.contact.telegram_url);
                     $('#edit_telegram_username').val(response.contact.telegram_username);
                     $('#edit_instagram_url').val(response.contact.instagram_url);
                     $('#edit_facebook_url').val(response.contact.facebook_url);
+                    $('#edit_facebook_name').val(response.contact.facebook_name); // QOSHILDI
                     $('#edit_youtube_url').val(response.contact.youtube_url);
 
                     // Fill translations for each language

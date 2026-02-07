@@ -2,20 +2,20 @@
 
 namespace Database\Seeders;
 
-use App\Models\AboutBanner;
+use App\Models\ContactBanner;
 use App\Models\Language;
 use Illuminate\Database\Seeder;
 
-class AboutBannerSeeder extends Seeder
+class ContactBannerSeeder extends Seeder
 {
     public function run(): void
     {
-        $banner = AboutBanner::create([
+        $banner = ContactBanner::create([
             'is_active' => true,
         ]);
 
         // Create 3 images for the banner
-        $imageFiles = ['about-banner-1.jpg', 'about-banner-2.jpg', 'about-banner-3.jpg'];
+        $imageFiles = ['contact-banner-1.jpg', 'contact-banner-2.jpg', 'contact-banner-3.jpg'];
         foreach ($imageFiles as $index => $imageFile) {
             $banner->images()->create([
                 'image_path' => 'uploads/banners/' . $imageFile,
@@ -27,7 +27,7 @@ class AboutBannerSeeder extends Seeder
         foreach ($languages as $language) {
             $banner->translations()->create([
                 'lang_code' => $language->code,
-                'title' => 'About Us - ' . $language->name,
+                'title' => 'Contact Us - ' . $language->name,
             ]);
         }
     }

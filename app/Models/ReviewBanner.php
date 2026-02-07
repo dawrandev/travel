@@ -11,7 +11,6 @@ class ReviewBanner extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image',
         'is_active',
     ];
 
@@ -22,5 +21,10 @@ class ReviewBanner extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(ReviewBannerTranslation::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ReviewBannerImage::class);
     }
 }

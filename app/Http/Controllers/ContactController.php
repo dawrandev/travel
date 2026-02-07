@@ -58,10 +58,12 @@ class ContactController extends Controller
                 'email' => $contact->email,
                 'longitude' => $contact->longitude,
                 'latitude' => $contact->latitude,
+                'whatsapp_phone' => $contact->whatsapp_phone, // QOSHILDI
                 'telegram_url' => $contact->telegram_url,
                 'telegram_username' => $contact->telegram_username,
                 'instagram_url' => $contact->instagram_url,
                 'facebook_url' => $contact->facebook_url,
+                'facebook_name' => $contact->facebook_name, // QOSHILDI
                 'youtube_url' => $contact->youtube_url,
             ],
             'translations' => $translations
@@ -109,14 +111,22 @@ class ContactController extends Controller
             ];
         }
 
+        $images = $banner->images->sortBy('sort_order')->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'image_path' => $image->image_path,
+                'sort_order' => $image->sort_order,
+            ];
+        })->values()->toArray();
+
         return response()->json([
             'success' => true,
             'banner' => [
                 'id' => $banner->id,
-                'image' => $banner->image,
                 'is_active' => $banner->is_active
             ],
-            'translations' => $translations
+            'translations' => $translations,
+            'images' => $images
         ]);
     }
 }

@@ -120,14 +120,22 @@ class AboutController extends Controller
             ];
         }
 
+        $images = $banner->images->sortBy('sort_order')->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'image_path' => $image->image_path,
+                'sort_order' => $image->sort_order,
+            ];
+        })->values()->toArray();
+
         return response()->json([
             'success' => true,
             'banner' => [
                 'id' => $banner->id,
-                'image' => $banner->image,
                 'is_active' => $banner->is_active
             ],
-            'translations' => $translations
+            'translations' => $translations,
+            'images' => $images
         ]);
     }
 }

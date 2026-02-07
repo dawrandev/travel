@@ -15,6 +15,7 @@ class FaqRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
+            'tour_id' => 'nullable|exists:tours,id',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ];
@@ -31,7 +32,9 @@ class FaqRequest extends FormRequest
 
     public function messages(): array
     {
-        $messages = [];
+        $messages = [
+            'tour_id.exists' => 'Выбранный тур не существует',
+        ];
 
         $languages = Language::all();
         foreach ($languages as $language) {

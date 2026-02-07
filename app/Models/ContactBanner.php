@@ -11,7 +11,6 @@ class ContactBanner extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image',
         'is_active',
     ];
 
@@ -22,5 +21,10 @@ class ContactBanner extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(ContactBannerTranslation::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ContactBannerImage::class);
     }
 }

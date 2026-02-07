@@ -211,11 +211,10 @@ class TourSeeder extends Seeder
                     ]
                 ]
             ],
-            // 5. ARAL SEA ESSENTIALS: 2-KUNLIK (Xatosi to'g'irlangan qismi)
             [
                 'main' => [
                     'category_id' => $expeditionCat,
-                    'price' => 2200000.00, // Narxni nol bo'lmasligi uchun kiritdim
+                    'price' => 2200000.00,
                     'rating' => 4.8,
                     'reviews_count' => 10,
                     'duration_days' => 2,

@@ -49,8 +49,9 @@ class FaqSeeder extends Seeder
         ];
 
         foreach ($faqs as $index => $translations) {
-            // Asosiy FAQni yaratish
+            // Asosiy FAQni yaratish (umumiy FAQ - tour_id = null)
             $faqId = DB::table('faqs')->insertGetId([
+                'tour_id' => null,
                 'sort_order' => $index + 1,
                 'is_active' => true,
                 'created_at' => now(),
@@ -58,6 +59,121 @@ class FaqSeeder extends Seeder
             ]);
 
             // Har bir til uchun tarjimalarni kiritish
+            foreach ($translations as $langCode => $content) {
+                DB::table('faq_translations')->insert([
+                    'faq_id' => $faqId,
+                    'question' => $content['question'],
+                    'answer' => $content['answer'],
+                    'lang_code' => $langCode,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Tour-specific FAQs for tour_id = 1
+        $tourFaqs = [
+            [
+                'uz' => [
+                    'question' => 'Nukus madaniy turi qancha vaqt davom etadi?',
+                    'answer' => 'Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi. Siz Nukusning barcha asosiy diqqatga sazovor joylarini ko\'rib chiqasiz.'
+                ],
+                'kk' => [
+                    'question' => 'No\'kis ma\'deniy turi qansha waqıt dawam etedi?',
+                    'answer' => 'Tur 1 ku\'n dawam etedi ha\'m sag\'at 09:00 dan 18:00 shekem baradı.'
+                ],
+                'ru' => [
+                    'question' => 'Сколько длится культурный тур по Нукусу?',
+                    'answer' => 'Тур длится 1 день с 09:00 до 18:00. Вы увидите все основные достопримечательности Нукуса.'
+                ],
+                'en' => [
+                    'question' => 'How long does the Nukus cultural tour last?',
+                    'answer' => 'The tour lasts 1 day from 09:00 to 18:00. You will see all the main sights of Nukus.'
+                ],
+            ],
+            [
+                'uz' => [
+                    'question' => 'Turga ovqat kiritilganmi?',
+                    'answer' => 'Yo\'q, muzey chiptalari va ovqatlanish narxga kiritilmagan. Siz mahalliy restoranlarda o\'zingiz ovqatlanishingiz mumkin.'
+                ],
+                'kk' => [
+                    'question' => 'Turǵa awqat kiritilgenbe?',
+                    'answer' => 'Joq, muzey biletleri ha\'m awqatlanıw naxqa kiritilmegen.'
+                ],
+                'ru' => [
+                    'question' => 'Включено ли питание в тур?',
+                    'answer' => 'Нет, входные билеты в музеи и питание не включены. Вы можете питаться в местных ресторанах.'
+                ],
+                'en' => [
+                    'question' => 'Is food included in the tour?',
+                    'answer' => 'No, museum tickets and meals are not included. You can eat at local restaurants.'
+                ],
+            ],
+            [
+                'uz' => [
+                    'question' => 'Guruh nechta kishidan iborat?',
+                    'answer' => 'Maksimal guruh hajmi 15 kishi. Bu qulay va shaxsiy tajriba uchun ideal hajm.'
+                ],
+                'kk' => [
+                    'question' => 'Gurup neshten adam qatnasadı?',
+                    'answer' => 'Maksimal gurup hajmı 15 adam.'
+                ],
+                'ru' => [
+                    'question' => 'Сколько человек в группе?',
+                    'answer' => 'Максимальный размер группы 15 человек. Это идеальный размер для комфортного и персонального опыта.'
+                ],
+                'en' => [
+                    'question' => 'How many people are in the group?',
+                    'answer' => 'The maximum group size is 15 people. This is the ideal size for a comfortable and personal experience.'
+                ],
+            ],
+            [
+                'uz' => [
+                    'question' => 'Transport turi qanday?',
+                    'answer' => 'Biz qulay havo konditsionerli transport bilan ta\'minlaymiz.'
+                ],
+                'kk' => [
+                    'question' => 'Transport tu\'ri qanday?',
+                    'answer' => 'Biz qolaylı hawa konditsionerlı transport penen ta\'minleymiz.'
+                ],
+                'ru' => [
+                    'question' => 'Какой тип транспорта используется?',
+                    'answer' => 'Мы предоставляем комфортабельный транспорт с кондиционером.'
+                ],
+                'en' => [
+                    'question' => 'What type of transport is used?',
+                    'answer' => 'We provide comfortable air-conditioned transport.'
+                ],
+            ],
+            [
+                'uz' => [
+                    'question' => 'Savitskiy muzeyida qancha vaqt o\'tkazamiz?',
+                    'answer' => 'Muzeyda taxminan 2-3 soat o\'tkazamiz. Bu eng yaxshi eksponatlarni ko\'rish uchun yetarli vaqt.'
+                ],
+                'kk' => [
+                    'question' => 'Savitskiy muzeyinde qansha waqıt o\'tkezamiz?',
+                    'answer' => 'Muzeyda shama menen 2-3 sag\'at o\'tkezamiz.'
+                ],
+                'ru' => [
+                    'question' => 'Сколько времени проведём в музее Савицкого?',
+                    'answer' => 'В музее проведём примерно 2-3 часа. Это достаточно времени, чтобы увидеть лучшие экспонаты.'
+                ],
+                'en' => [
+                    'question' => 'How much time will we spend at the Savitsky Museum?',
+                    'answer' => 'We will spend about 2-3 hours at the museum. This is enough time to see the best exhibits.'
+                ],
+            ],
+        ];
+
+        foreach ($tourFaqs as $index => $translations) {
+            $faqId = DB::table('faqs')->insertGetId([
+                'tour_id' => 1,
+                'sort_order' => $index + 1,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
             foreach ($translations as $langCode => $content) {
                 DB::table('faq_translations')->insert([
                     'faq_id' => $faqId,

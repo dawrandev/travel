@@ -31,12 +31,19 @@ class ReviewBannerService
     {
         $data['is_active'] = isset($data['is_active']) ? 1 : 0;
 
-        if (isset($data['banner_image'])) {
-            $data['image'] = $data['banner_image']->store('uploads', 'public');
-            unset($data['banner_image']);
-        }
+        // Create banner without images
+        $banner = $this->reviewBannerRepository->create(['is_active' => $data['is_active']]);
 
-        $banner = $this->reviewBannerRepository->create($data);
+        // Handle 3 images
+        if (isset($data['images']) && is_array($data['images'])) {
+            foreach ($data['images'] as $index => $image) {
+                $imagePath = $image->store('uploads', 'public');
+                $this->reviewBannerRepository->createImage($banner->id, [
+                    'image_path' => $imagePath,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
 
         $languages = Language::all();
         foreach ($languages as $language) {
@@ -56,15 +63,26 @@ class ReviewBannerService
 
         $data['is_active'] = isset($data['is_active']) ? 1 : 0;
 
-        if (isset($data['banner_image'])) {
-            if ($banner->image) {
-                Storage::disk('public')->delete($banner->image);
+        // If new images uploaded
+        if (isset($data['images']) && is_array($data['images']) && count($data['images']) > 0) {
+            // Delete old images from storage
+            foreach ($banner->images as $oldImage) {
+                Storage::disk('public')->delete($oldImage->image_path);
             }
-            $data['image'] = $data['banner_image']->store('uploads', 'public');
-            unset($data['banner_image']);
+            // Delete image records
+            $banner->images()->delete();
+
+            // Add new images
+            foreach ($data['images'] as $index => $image) {
+                $imagePath = $image->store('uploads', 'public');
+                $this->reviewBannerRepository->createImage($banner->id, [
+                    'image_path' => $imagePath,
+                    'sort_order' => $index,
+                ]);
+            }
         }
 
-        $this->reviewBannerRepository->update($banner, $data);
+        $this->reviewBannerRepository->update($banner, ['is_active' => $data['is_active']]);
 
         $banner->translations()->delete();
         $languages = Language::all();

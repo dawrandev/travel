@@ -18,8 +18,10 @@ class Contact extends Model
         'telegram_url',
         'telegram_username',
         'instagram_url',
+        'facebook_name',
         'facebook_url',
         'youtube_url',
+        'whatsapp_phone',
     ];
 
     public function translations(): HasMany

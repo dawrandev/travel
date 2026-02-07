@@ -70,6 +70,22 @@ class TourResource extends JsonResource
                     'is_included' => (bool) $feature->pivot->is_included,
                 ];
             }),
+
+            'faqs' => $this->faqs()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get()
+                ->map(function ($faq) use ($lang) {
+                    $translation = $faq->translations->firstWhere('lang_code', $lang)
+                        ?? $faq->translations->first();
+
+                    return [
+                        'id' => $faq->id,
+                        'question' => $translation->question ?? '',
+                        'answer' => $translation->answer ?? '',
+                        'sort_order' => $faq->sort_order,
+                    ];
+                }),
         ];
     }
 

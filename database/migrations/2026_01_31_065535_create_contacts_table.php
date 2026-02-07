@@ -15,13 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('phone');
             $table->string('email');
-            $table->string('longitude')->nullable();
-            $table->string('latitude')->nullable();
-            $table->string('telegram_url')->nullable();
-            $table->string('telegram_username')->nullable();
-            $table->string('instagram_url')->nullable();
-            $table->string('facebook_url')->nullable();
-            $table->string('youtube_url')->nullable();
+            $table->string('longitude');
+            $table->string('latitude');
+            $table->string('telegram_url');
+            $table->string('telegram_username');
+            $table->string('instagram_url');
+            $table->string('facebook_name');
+            $table->string('facebook_url');
+            $table->string('youtube_url');
+            $table->string('whatsapp_phone');
             $table->timestamps();
         });
     }

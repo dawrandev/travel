@@ -11,16 +11,22 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Телефон <span class="text-danger">*</span></label>
                                 <input type="text" name="phone" class="form-control" placeholder="+998901234567" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Email <span class="text-danger">*</span></label>
                                 <input type="email" name="email" class="form-control" placeholder="info@example.com" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">WhatsApp номер</label>
+                                <input type="text" name="whatsapp_phone" class="form-control" placeholder="+998901234567">
                             </div>
                         </div>
                     </div>
@@ -83,19 +89,28 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Instagram URL</label>
-                                <input type="url" name="instagram_url" class="form-control" placeholder="https://instagram.com/username">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Facebook URL</label>
                                 <input type="url" name="facebook_url" class="form-control" placeholder="https://facebook.com/username">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Facebook Name</label>
+                                <input type="text" name="facebook_name" class="form-control" placeholder="Page Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Instagram URL</label>
+                                <input type="url" name="instagram_url" class="form-control" placeholder="https://instagram.com/username">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">YouTube URL</label>
                                 <input type="url" name="youtube_url" class="form-control" placeholder="https://youtube.com/@channel">

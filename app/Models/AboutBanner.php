@@ -11,7 +11,6 @@ class AboutBanner extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image',
         'is_active',
     ];
 
@@ -22,5 +21,10 @@ class AboutBanner extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(AboutBannerTranslation::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(AboutBannerImage::class);
     }
 }

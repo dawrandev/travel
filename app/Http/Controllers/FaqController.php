@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FaqRequest;
 use App\Models\Language;
+use App\Models\Tour;
 use App\Services\FaqService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -20,13 +21,19 @@ class FaqController extends Controller
     {
         $faqs = $this->faqService->getAll();
         $languages = Language::all();
-        return view('pages.faqs.index', compact('faqs', 'languages'));
+        $tours = Tour::with('translations')->get();
+        return view('pages.faqs.index', compact('faqs', 'languages', 'tours'));
     }
 
     public function filter(Request $request): JsonResponse
     {
         $langCode = $request->get('lang_code', 'en');
-        $faqs = $this->faqService->getAllByLanguage($langCode);
+        $tourId = $request->get('tour_id');
+
+        // Convert empty string to null
+        $tourId = $tourId === '' || $tourId === null ? null : (int) $tourId;
+
+        $faqs = $this->faqService->getAllByLanguage($langCode, $tourId);
 
         return response()->json([
             'success' => true,
@@ -50,6 +57,7 @@ class FaqController extends Controller
             'success' => true,
             'faq' => [
                 'id' => $faq->id,
+                'tour_id' => $faq->tour_id,
                 'sort_order' => $faq->sort_order,
                 'is_active' => $faq->is_active
             ],

@@ -493,23 +493,67 @@
                 "tags": [
                     "FAQ"
                 ],
-                "summary": "Ko'p beriladigan savollar ro'yxatini olish",
+                "summary": "Umumiy FAQ lar ro'yxatini olish",
+                "description": "Faqat umumiy (tourga tegishli bo'lmagan) FAQ larni qaytaradi",
                 "operationId": "a2585f9d0b9b4f7607cd21eaf2ae4ddf",
                 "parameters": [
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "Til kodi (languages jadvalidagi tillar)",
+                        "description": "Til kodi (uz, ru, kk, en)",
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "default": "uz"
+                            "default": "uz",
+                            "enum": [
+                                "uz",
+                                "ru",
+                                "kk",
+                                "en"
+                            ]
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Muvaffaqiyatli javob"
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "sort_order": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "question": {
+                                                        "type": "string",
+                                                        "example": "Orolga borish uchun eng maqbul vaqt qachon?"
+                                                    },
+                                                    "answer": {
+                                                        "type": "string",
+                                                        "example": "Bizda iqlim keskin kontinental. Sayohat uchun eng ideal vaqt — bahor (aprel-may) va kuz (sentyabr-oktyabr) oylaridir."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1167,6 +1211,31 @@
                                                         "items": {
                                                             "type": "object"
                                                         }
+                                                    },
+                                                    "faqs": {
+                                                        "description": "Tourga tegishli FAQ lar",
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "question": {
+                                                                    "type": "string",
+                                                                    "example": "Nukus madaniy turi qancha vaqt davom etadi?"
+                                                                },
+                                                                "answer": {
+                                                                    "type": "string",
+                                                                    "example": "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."
+                                                                },
+                                                                "sort_order": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
                                                     }
                                                 },
                                                 "type": "object"
@@ -1229,6 +1298,120 @@
                                             "example": true
                                         },
                                         "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Nukus madaniy turi"
+                                                },
+                                                "slogan": {
+                                                    "type": "string",
+                                                    "example": "O'zbekistonning madaniy poytaxti"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Nukus shahrini va uning tarixiy joylarini kashf eting"
+                                                },
+                                                "routes": {
+                                                    "type": "string",
+                                                    "example": "Toshkent - Nukus"
+                                                },
+                                                "important_info": {
+                                                    "type": "string",
+                                                    "example": "Pasport talab qilinadi"
+                                                },
+                                                "price": {
+                                                    "type": "number",
+                                                    "example": 500000
+                                                },
+                                                "duration_days": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "duration_nights": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "min_age": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "max_people": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "rating": {
+                                                    "type": "number",
+                                                    "example": 4.5
+                                                },
+                                                "reviews_count": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "category": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Madaniy turlar"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "main_image": {
+                                                    "type": "string",
+                                                    "example": "/storage/uploads/image.jpg"
+                                                },
+                                                "images": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "itineraries": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "features": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "faqs": {
+                                                    "description": "Tourga tegishli FAQ lar",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "question": {
+                                                                "type": "string",
+                                                                "example": "Nukus madaniy turi qancha vaqt davom etadi?"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string",
+                                                                "example": "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."
+                                                            },
+                                                            "sort_order": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
                                             "type": "object"
                                         }
                                     },
@@ -1365,6 +1548,31 @@
                                                     "features": {
                                                         "type": "array",
                                                         "items": {
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "faqs": {
+                                                        "description": "Tourga tegishli FAQ lar",
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "question": {
+                                                                    "type": "string",
+                                                                    "example": "Nukus madaniy turi qancha vaqt davom etadi?"
+                                                                },
+                                                                "answer": {
+                                                                    "type": "string",
+                                                                    "example": "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."
+                                                                },
+                                                                "sort_order": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                }
+                                                            },
                                                             "type": "object"
                                                         }
                                                     }

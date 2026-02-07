@@ -19,12 +19,18 @@
         <div class="card">
             <div class="card-header">
                 <h4>Список вопросов</h4>
-                <div class="card-header-action">
-                    <select class="form-control" id="languageFilter" style="width: 150px;">
+                <div class="card-header-action d-flex">
+                    <select class="form-control mr-2" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
                         <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
                             {{ $language->name }}
                         </option>
+                        @endforeach
+                    </select>
+                    <select class="form-control" id="tourFilter" style="width: 200px;">
+                        <option value="">Все туры</option>
+                        @foreach($tours as $tour)
+                        <option value="{{ $tour->id }}">{{ $tour->translations->where('lang_code', 'ru')->first()->title ?? $tour->translations->first()->title }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -36,6 +42,7 @@
                             <tr>
                                 <th>№</th>
                                 <th>Вопрос</th>
+                                <th>Тур</th>
                                 <th>Ответ</th>
                                 <th>Порядок</th>
                                 <th>Статус</th>
@@ -47,6 +54,13 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $faq->translations->first()->question ?? 'N/A' }}</td>
+                                <td>
+                                    @if($faq->tour)
+                                    <span class="badge badge-info">{{ $faq->tour->translations->first()->title ?? 'N/A' }}</span>
+                                    @else
+                                    <span class="badge badge-secondary">Общий</span>
+                                    @endif
+                                </td>
                                 <td>{{ Str::limit($faq->translations->first()->answer ?? 'N/A', 50) }}</td>
                                 <td>{{ $faq->sort_order }}</td>
                                 <td>
@@ -94,14 +108,26 @@
     };
 
     $(document).ready(function() {
+        // Language filter
         $('#languageFilter').on('change', function() {
-            var langCode = $(this).val();
+            filterFaqs();
+        });
+
+        // Tour filter
+        $('#tourFilter').on('change', function() {
+            filterFaqs();
+        });
+
+        function filterFaqs() {
+            var langCode = $('#languageFilter').val();
+            var tourId = $('#tourFilter').val();
 
             $.ajax({
                 url: ROUTES.filter,
                 type: 'GET',
                 data: {
-                    lang_code: langCode
+                    lang_code: langCode,
+                    tour_id: tourId
                 },
                 success: function(response) {
                     if (response.success) {
@@ -112,27 +138,34 @@
                     alert('Ошибка при загрузке данных');
                 }
             });
-        });
+        }
 
         function updateTable(faqs) {
             var tbody = $('#faqTableBody');
             tbody.empty();
 
             if (faqs.length === 0) {
-                tbody.append('<tr><td colspan="6" class="text-center">Нет данных</td></tr>');
+                tbody.append('<tr><td colspan="7" class="text-center">Нет данных</td></tr>');
                 return;
             }
 
-            faqs.forEach(function(faq) {
+            // faq ning yoniga "index" parametrini qo'shamiz
+            faqs.forEach(function(faq, index) {
                 var statusBadge = faq.is_active ?
                     '<span class="badge badge-success">Активен</span>' :
                     '<span class="badge badge-danger">Неактивен</span>';
 
+                var tourBadge = faq.tour_title ?
+                    '<span class="badge badge-info">' + faq.tour_title + '</span>' :
+                    '<span class="badge badge-secondary">Общий</span>';
+
                 var answer = faq.answer.length > 50 ? faq.answer.substring(0, 50) + '...' : faq.answer;
 
                 var row = '<tr>' +
-                    '<td>' + faq.id + '</td>' +
+                    // BU YERDA: faq.id o'rniga index + 1 ishlatamiz
+                    '<td>' + (index + 1) + '</td>' +
                     '<td>' + faq.question + '</td>' +
+                    '<td>' + tourBadge + '</td>' +
                     '<td>' + answer + '</td>' +
                     '<td>' + faq.sort_order + '</td>' +
                     '<td>' + statusBadge + '</td>' +
@@ -162,6 +195,7 @@
             success: function(response) {
                 if (response.success) {
                     $('#editForm').attr('action', ROUTES.destroy.replace('{id}', id));
+                    $('#edit_tour_id').val(response.faq.tour_id || '');
                     $('#edit_sort_order').val(response.faq.sort_order);
                     $('#edit_is_active').prop('checked', response.faq.is_active);
 

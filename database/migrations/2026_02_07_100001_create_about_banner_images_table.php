@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contact_banners', function (Blueprint $table) {
+        Schema::create('about_banner_images', function (Blueprint $table) {
             $table->id();
-            $table->boolean('is_active')->default(true);
+            $table->foreignId('about_banner_id')->constrained('about_banners')->onDelete('cascade');
+            $table->string('image_path');
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
     }
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contact_banners');
+        Schema::dropIfExists('about_banner_images');
     }
 };

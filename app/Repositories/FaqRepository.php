@@ -9,7 +9,9 @@ class FaqRepository
 {
     public function getAll(): Collection
     {
-        return Faq::with('translations')->orderBy('sort_order')->get();
+        return Faq::with(['translations', 'tour.translations'])
+            ->orderBy('sort_order')
+            ->get();
     }
 
     public function findById(int $id): ?Faq
@@ -38,5 +40,14 @@ class FaqRepository
             ['lang_code' => $data['lang_code']],
             $data
         );
+    }
+
+    public function getByTourId(int $tourId): Collection
+    {
+        return Faq::with('translations')
+            ->where('tour_id', $tourId)
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
     }
 }

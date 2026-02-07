@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Faq extends Model
@@ -11,6 +12,7 @@ class Faq extends Model
     use HasFactory;
 
     protected $fillable = [
+        'tour_id',
         'sort_order',
         'is_active',
     ];
@@ -22,5 +24,10 @@ class Faq extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(FaqTranslation::class);
+    }
+
+    public function tour(): BelongsTo
+    {
+        return $this->belongsTo(Tour::class);
     }
 }

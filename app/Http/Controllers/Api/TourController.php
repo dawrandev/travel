@@ -68,6 +68,19 @@ class TourController extends Controller
                                     new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
+                                    new OA\Property(
+                                        property: "faqs",
+                                        type: "array",
+                                        description: "Tourga tegishli FAQ lar",
+                                        items: new OA\Items(
+                                            properties: [
+                                                new OA\Property(property: "id", type: "integer", example: 1),
+                                                new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
+                                                new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
+                                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                            ]
+                                        )
+                                    ),
                                 ]
                             )
                         ),
@@ -121,7 +134,50 @@ class TourController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", type: "object"),
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "title", type: "string", example: "Nukus madaniy turi"),
+                                new OA\Property(property: "slogan", type: "string", example: "O'zbekistonning madaniy poytaxti"),
+                                new OA\Property(property: "description", type: "string", example: "Nukus shahrini va uning tarixiy joylarini kashf eting"),
+                                new OA\Property(property: "routes", type: "string", example: "Toshkent - Nukus"),
+                                new OA\Property(property: "important_info", type: "string", example: "Pasport talab qilinadi"),
+                                new OA\Property(property: "price", type: "number", example: 500000),
+                                new OA\Property(property: "duration_days", type: "integer", example: 1),
+                                new OA\Property(property: "duration_nights", type: "integer", example: 0),
+                                new OA\Property(property: "min_age", type: "integer", example: 0),
+                                new OA\Property(property: "max_people", type: "integer", example: 15),
+                                new OA\Property(property: "rating", type: "number", example: 4.5),
+                                new OA\Property(property: "reviews_count", type: "integer", example: 10),
+                                new OA\Property(
+                                    property: "category",
+                                    type: "object",
+                                    properties: [
+                                        new OA\Property(property: "id", type: "integer", example: 1),
+                                        new OA\Property(property: "name", type: "string", example: "Madaniy turlar"),
+                                    ]
+                                ),
+                                new OA\Property(property: "main_image", type: "string", example: "/storage/uploads/image.jpg"),
+                                new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
+                                new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
+                                new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
+                                new OA\Property(
+                                    property: "faqs",
+                                    type: "array",
+                                    description: "Tourga tegishli FAQ lar",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "id", type: "integer", example: 1),
+                                            new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
+                                            new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
+                                            new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                        ]
+                                    )
+                                ),
+                            ]
+                        ),
                     ]
                 )
             ),
@@ -130,7 +186,14 @@ class TourController extends Controller
     )]
     public function show(int $id): JsonResponse
     {
-        $tour = Tour::with(['translations', 'category.translations', 'images', 'itineraries.translations', 'features.translations'])
+        $tour = Tour::with([
+            'translations',
+            'category.translations',
+            'images',
+            'itineraries.translations',
+            'features.translations',
+            'faqs.translations'
+        ])
             ->where('is_active', true)
             ->findOrFail($id);
 
@@ -190,6 +253,19 @@ class TourController extends Controller
                                     new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
                                     new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
+                                    new OA\Property(
+                                        property: "faqs",
+                                        type: "array",
+                                        description: "Tourga tegishli FAQ lar",
+                                        items: new OA\Items(
+                                            properties: [
+                                                new OA\Property(property: "id", type: "integer", example: 1),
+                                                new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
+                                                new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
+                                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                            ]
+                                        )
+                                    ),
                                 ]
                             )
                         ),

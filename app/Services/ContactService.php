@@ -29,10 +29,12 @@ class ContactService
                 'address' => $translation->address ?? 'N/A',
                 'longitude' => $contact->longitude,
                 'latitude' => $contact->latitude,
+                'whatsapp_phone' => $contact->whatsapp_phone, // QOSHILDI
                 'telegram_url' => $contact->telegram_url,
                 'telegram_username' => $contact->telegram_username,
                 'instagram_url' => $contact->instagram_url,
                 'facebook_url' => $contact->facebook_url,
+                'facebook_name' => $contact->facebook_name, // QOSHILDI
                 'youtube_url' => $contact->youtube_url,
             ];
         });

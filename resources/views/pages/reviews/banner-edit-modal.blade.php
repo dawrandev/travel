@@ -7,9 +7,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="editBannerForm" method="POST" enctype="multipart/form-data">
+            <form id="editBannerForm">
                 @csrf
                 @method('PUT')
+                <input type="hidden" id="edit_banner_id" name="banner_id">
                 <div class="modal-body">
                     <!-- Language Tabs -->
                     <ul class="nav nav-pills mb-3" id="editBannerLanguageTabs" role="tablist">
@@ -35,30 +36,11 @@
 
                     <hr>
 
-                    <!-- Current Image -->
+                    <!-- Dropzone for Images -->
                     <div class="form-group">
-                        <label class="form-label">Текущее изображение:</label>
-                        <div id="current_banner_image" class="mb-2">
-                            <img id="current_banner_img" class="img-fluid rounded" style="max-height: 200px;" alt="Current Banner">
-                        </div>
-                    </div>
-
-                    <!-- New Image -->
-                    <div class="form-group">
-                        <label class="form-label">Новое изображение (опционально)</label>
-                        <div class="custom-file">
-                            <input type="file" name="banner_image" class="custom-file-input" id="banner_image_edit" accept="image/*">
-                            <label class="custom-file-label" for="banner_image_edit">Выберите изображение</label>
-                        </div>
-                        <small class="form-text text-muted">Оставьте пустым, если не хотите менять изображение. Рекомендуемый размер: 1920x600px. Макс. 10MB</small>
-                    </div>
-
-                    <!-- New Preview -->
-                    <div class="form-group">
-                        <div id="banner_preview_edit" style="display: none;">
-                            <label class="form-label">Предпросмотр нового изображения:</label>
-                            <img id="banner_preview_img_edit" class="img-fluid rounded" style="max-height: 300px;" alt="Preview">
-                        </div>
+                        <label class="form-label">Изображения баннера</label>
+                        <div id="dropzone-edit-banner" class="dropzone"></div>
+                        <small class="text-muted">Оставьте без изменений или загрузите 3 новых изображения. Макс. 10MB на изображение.</small>
                     </div>
 
                     <hr>
@@ -83,29 +65,138 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        // Image preview for edit banner
-        $('#banner_image_edit').on('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                $(this).next('.custom-file-label').text(file.name);
+{{-- QO'SHILDI: Dropzone CSS --}}
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+@endpush
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#banner_preview_img_edit').attr('src', e.target.result);
-                    $('#banner_preview_edit').show();
-                }
-                reader.readAsDataURL(file);
+@push('scripts')
+{{-- QO'SHILDI: Dropzone JS --}}
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script>
+    // QO'SHILDI: Dropzone autoDiscover ni o'chirish
+    Dropzone.autoDiscover = false;
+
+    let editBannerDropzone;
+    let currentBannerImages = [];
+
+    $(document).ready(function() {
+        // Initialize Dropzone for edit
+        editBannerDropzone = new Dropzone("#dropzone-edit-banner", {
+            url: "#",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            paramName: "images",
+            maxFiles: 3,
+            maxFilesize: 10,
+            acceptedFiles: "image/*",
+            addRemoveLinks: true,
+            dictDefaultMessage: "Текущие изображения отображаются ниже. Загрузите 3 новых для замены.",
+            dictRemoveFile: "Удалить",
+            dictMaxFilesExceeded: "Можно загрузить только 3 изображения",
+            init: function() {
+                this.on("addedfile", function(file) {
+                    // When user adds a file, remove existing mockFiles
+                    if (currentBannerImages.length > 0) {
+                        currentBannerImages.forEach(mockFile => {
+                            this.removeFile(mockFile);
+                        });
+                        currentBannerImages = [];
+                    }
+                });
+                this.on("maxfilesexceeded", function(file) {
+                    this.removeFile(file);
+                    swal({
+                        title: 'Предупреждение',
+                        text: 'Можно загрузить только 3 изображения',
+                        icon: 'warning',
+                        button: 'ОК'
+                    });
+                });
             }
+        });
+
+        // Form submission
+        $('#editBannerForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const bannerId = $('#edit_banner_id').val();
+
+            // Check if new images are uploaded
+            const newFiles = editBannerDropzone.files.filter(f => !f.mock);
+
+            // If new images uploaded, must be exactly 3
+            if (newFiles.length > 0 && newFiles.length !== 3) {
+                swal({
+                    title: 'Ошибка',
+                    text: 'Если вы загружаете новые изображения, необходимо загрузить ровно 3 изображения',
+                    icon: 'error',
+                    button: 'ОК'
+                });
+                return;
+            }
+
+            // Create FormData
+            let formData = new FormData();
+            formData.append('_method', 'PUT');
+
+            // Add new images if uploaded
+            if (newFiles.length === 3) {
+                newFiles.forEach((file, index) => {
+                    formData.append('images[]', file);
+                });
+            }
+
+            // Add other form fields
+            $('#editBannerForm').find('input[type!="file"], textarea, select').each(function() {
+                if ($(this).attr('type') === 'checkbox') {
+                    if ($(this).is(':checked')) {
+                        formData.append($(this).attr('name'), $(this).val());
+                    }
+                } else if ($(this).attr('name') !== '_method') {
+                    formData.append($(this).attr('name'), $(this).val());
+                }
+            });
+
+            // Submit via AJAX
+            $.ajax({
+                url: "/reviews/banner/" + bannerId,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    swal({
+                        title: 'Успешно',
+                        text: 'Баннер успешно обновлен',
+                        icon: 'success',
+                        button: 'ОК'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    let errorMessage = 'Произошла ошибка';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMessage = Object.values(xhr.responseJSON.errors).flat().join('\n');
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    swal({
+                        title: 'Ошибка',
+                        text: errorMessage,
+                        icon: 'error',
+                        button: 'ОК'
+                    });
+                }
+            });
         });
 
         // Reset on modal close
         $('#editBannerModal').on('hidden.bs.modal', function() {
             $('#editBannerForm')[0].reset();
-            $('#banner_image_edit').next('.custom-file-label').text('Выберите изображение');
-            $('#banner_preview_edit').hide();
+            editBannerDropzone.removeAllFiles();
+            currentBannerImages = [];
         });
     });
 
@@ -113,11 +204,12 @@
         try {
             const {
                 banner,
-                translations
+                translations,
+                images
             } = response;
 
-            // Form action
-            $('#editBannerForm').attr('action', '/reviews/banner/' + banner.id);
+            // Set banner ID
+            $('#edit_banner_id').val(banner.id);
 
             // Status
             $('#banner_is_active_edit').prop('checked', banner.is_active);
@@ -129,19 +221,34 @@
             }
             @endforeach
 
-            // Display current image
-            if (banner.image) {
-                $('#current_banner_img').attr('src', '/storage/' + banner.image);
-                $('#current_banner_image').show();
+            // Clear dropzone
+            editBannerDropzone.removeAllFiles();
+            currentBannerImages = [];
+
+            // Display current images as mockFiles
+            if (images && images.length > 0) {
+                images.forEach((image, index) => {
+                    const mockFile = {
+                        name: `Изображение ${index + 1}`,
+                        size: 12345,
+                        mock: true
+                    };
+
+                    editBannerDropzone.emit("addedfile", mockFile);
+                    editBannerDropzone.emit("thumbnail", mockFile, '/storage/' + image.image_path);
+                    editBannerDropzone.emit("complete", mockFile);
+
+                    currentBannerImages.push(mockFile);
+                });
             }
 
         } catch (error) {
             console.error('Error populating edit banner modal:', error);
             swal({
-                title: 'Ошибка!',
+                title: 'Ошибка',
                 text: 'Ошибка при загрузке данных баннера: ' + error.message,
                 icon: 'error',
-                button: 'ОК',
+                button: 'ОК'
             });
         }
     }

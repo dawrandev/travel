@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('contacts.banner.store') }}" method="POST" enctype="multipart/form-data" id="createBannerForm">
+            <form id="createBannerForm">
                 @csrf
                 <div class="modal-body">
                     <!-- Language Tabs -->
@@ -34,22 +34,11 @@
 
                     <hr>
 
-                    <!-- Banner Image -->
+                    <!-- Dropzone for 3 Images -->
                     <div class="form-group">
-                        <label class="form-label">Изображение баннера <span class="text-danger">*</span></label>
-                        <div class="custom-file">
-                            <input type="file" name="banner_image" class="custom-file-input" id="banner_image_create" accept="image/*" required>
-                            <label class="custom-file-label" for="banner_image_create">Выберите изображение</label>
-                        </div>
-                        <small class="form-text text-muted">Рекомендуемый размер: 1920x600px. Макс. 10MB</small>
-                    </div>
-
-                    <!-- Preview -->
-                    <div class="form-group">
-                        <div id="banner_preview_create" style="display: none;">
-                            <label class="form-label">Предпросмотр:</label>
-                            <img id="banner_preview_img_create" class="img-fluid rounded" style="max-height: 300px;" alt="Preview">
-                        </div>
+                        <label class="form-label">Изображения баннера (3 изображения) <span class="text-danger">*</span></label>
+                        <div id="dropzone-create-banner" class="dropzone"></div>
+                        <small class="text-muted">Необходимо загрузить ровно 3 изображения. Макс. 10MB на изображение.</small>
                     </div>
 
                     <hr>
@@ -74,29 +63,115 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        // Image preview for create banner
-        $('#banner_image_create').on('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                $(this).next('.custom-file-label').text(file.name);
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+@endpush
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#banner_preview_img_create').attr('src', e.target.result);
-                    $('#banner_preview_create').show();
-                }
-                reader.readAsDataURL(file);
+@push('scripts')
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script>
+    Dropzone.autoDiscover = false;
+    let createBannerDropzone;
+
+    $(document).ready(function() {
+        // Initialize Dropzone
+        createBannerDropzone = new Dropzone("#dropzone-create-banner", {
+            url: "#",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            paramName: "images",
+            maxFiles: 3,
+            maxFilesize: 10,
+            acceptedFiles: "image/*",
+            addRemoveLinks: true,
+            dictDefaultMessage: "Перетащите изображения сюда или нажмите для выбора",
+            dictRemoveFile: "Удалить",
+            dictMaxFilesExceeded: "Можно загрузить только 3 изображения",
+            init: function() {
+                this.on("maxfilesexceeded", function(file) {
+                    this.removeFile(file);
+                    swal({
+                        title: 'Предупреждение',
+                        text: 'Можно загрузить только 3 изображения',
+                        icon: 'warning',
+                        button: 'ОК'
+                    });
+                });
             }
+        });
+
+        // Form submission
+        $('#createBannerForm').on('submit', function(e) {
+            e.preventDefault();
+
+            // Validate exactly 3 images
+            if (createBannerDropzone.files.length !== 3) {
+                swal({
+                    title: 'Ошибка',
+                    text: 'Необходимо загрузить ровно 3 изображения',
+                    icon: 'error',
+                    button: 'ОК'
+                });
+                return;
+            }
+
+            // Create FormData
+            let formData = new FormData();
+
+            // Add images
+            createBannerDropzone.files.forEach((file, index) => {
+                formData.append('images[]', file);
+            });
+
+            // Add other form fields
+            $('#createBannerForm').find('input[type!="file"], textarea, select').each(function() {
+                if ($(this).attr('type') === 'checkbox') {
+                    if ($(this).is(':checked')) {
+                        formData.append($(this).attr('name'), $(this).val());
+                    }
+                } else {
+                    formData.append($(this).attr('name'), $(this).val());
+                }
+            });
+
+            // Submit via AJAX
+            $.ajax({
+                url: "{{ route('contacts.banner.store') }}",
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    swal({
+                        title: 'Успешно',
+                        text: 'Баннер успешно создан',
+                        icon: 'success',
+                        button: 'ОК'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    let errorMessage = 'Произошла ошибка';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMessage = Object.values(xhr.responseJSON.errors).flat().join('\n');
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    swal({
+                        title: 'Ошибка',
+                        text: errorMessage,
+                        icon: 'error',
+                        button: 'ОК'
+                    });
+                }
+            });
         });
 
         // Reset on modal close
         $('#createBannerModal').on('hidden.bs.modal', function() {
             $('#createBannerForm')[0].reset();
-            $('#banner_image_create').next('.custom-file-label').text('Выберите изображение');
-            $('#banner_preview_create').hide();
+            createBannerDropzone.removeAllFiles();
         });
     });
 </script>

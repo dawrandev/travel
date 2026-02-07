@@ -13,10 +13,14 @@ class AboutBannerResource extends JsonResource
         $translation = $this->translations->firstWhere('lang_code', $lang)
             ?? $this->translations->first();
 
+        $images = $this->images->sortBy('sort_order')->map(function($image) {
+            return $this->formatImagePath($image->image_path);
+        })->values()->toArray();
+
         return [
             'id' => $this->id,
             'title' => $translation->title ?? '',
-            'image' => $this->formatImagePath($this->image),
+            'images' => $images,
         ];
     }
 

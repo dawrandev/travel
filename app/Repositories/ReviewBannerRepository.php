@@ -8,17 +8,17 @@ class ReviewBannerRepository
 {
     public function getActive(): ?ReviewBanner
     {
-        return ReviewBanner::with('translations')->where('is_active', true)->first();
+        return ReviewBanner::with(['translations', 'images' => fn($q) => $q->orderBy('sort_order')])->where('is_active', true)->first();
     }
 
     public function getFirst(): ?ReviewBanner
     {
-        return ReviewBanner::with('translations')->first();
+        return ReviewBanner::with(['translations', 'images' => fn($q) => $q->orderBy('sort_order')])->first();
     }
 
     public function findById(int $id): ?ReviewBanner
     {
-        return ReviewBanner::with('translations')->find($id);
+        return ReviewBanner::with(['translations', 'images' => fn($q) => $q->orderBy('sort_order')])->find($id);
     }
 
     public function create(array $data): ReviewBanner
@@ -37,5 +37,10 @@ class ReviewBannerRepository
             ['lang_code' => $data['lang_code']],
             $data
         );
+    }
+
+    public function createImage(int $bannerId, array $data): void
+    {
+        ReviewBanner::find($bannerId)->images()->create($data);
     }
 }

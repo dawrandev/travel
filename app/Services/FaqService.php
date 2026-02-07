@@ -16,16 +16,29 @@ class FaqService
         return $this->faqRepository->getAll();
     }
 
-    public function getAllByLanguage(string $langCode)
+    public function getAllByLanguage(string $langCode, ?int $tourId = null)
     {
         $faqs = $this->faqRepository->getAll();
 
+        // Filter by tour_id if provided
+        if ($tourId !== null) {
+            $faqs = $faqs->where('tour_id', $tourId);
+        }
+
         return $faqs->map(function ($faq) use ($langCode) {
             $translation = $faq->translations->where('lang_code', $langCode)->first();
+
+            $tourTitle = null;
+            if ($faq->tour) {
+                $tourTranslation = $faq->tour->translations->where('lang_code', $langCode)->first();
+                $tourTitle = $tourTranslation->title ?? 'N/A';
+            }
+
             return [
                 'id' => $faq->id,
                 'question' => $translation->question ?? 'N/A',
                 'answer' => $translation->answer ?? 'N/A',
+                'tour_title' => $tourTitle,
                 'sort_order' => $faq->sort_order,
                 'is_active' => $faq->is_active
             ];
