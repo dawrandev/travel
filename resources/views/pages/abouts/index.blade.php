@@ -30,19 +30,48 @@
             <div class="card-body">
                 @if($banner)
                 <div class="row">
-                    <div class="col-md-4">
-                        <img src="{{ asset('storage/' . $banner->image) }}" class="img-fluid rounded" alt="Banner">
-                    </div>
-                    <div class="col-md-8">
-                        <h5>Заголовки баннера:</h5>
-                        <ul class="list-group">
-                            @foreach($banner->translations as $translation)
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span><strong>{{ strtoupper($translation->lang_code) }}:</strong> {{ $translation->title }}</span>
-                            </li>
+                    <!-- Images Section -->
+                    <div class="col-md-5">
+                        <h6 class="mb-3"><i class="fas fa-images"></i> Изображения баннера ({{ $banner->images->count() }})</h6>
+                        <div class="row">
+                            @foreach($banner->images->sortBy('sort_order') as $index => $image)
+                            <div class="col-md-4 mb-3">
+                                <div class="position-relative image-wrapper">
+                                    <a href="{{ asset('storage/' . $image->image_path) }}"
+                                        data-lightbox="banner-gallery"
+                                        data-title="Баннер - Изображение {{ $index + 1 }}">
+                                        <img src="{{ asset('storage/' . $image->image_path) }}"
+                                            class="img-fluid rounded shadow-sm"
+                                            alt="Banner Image {{ $index + 1 }}"
+                                            style="width: 100%; height: 120px; object-fit: cover; cursor: pointer; transition: transform 0.3s ease;">
+                                    </a>
+                                    <span class="badge badge-primary position-absolute" style="top: 5px; right: 5px;">
+                                        {{ $index + 1 }}
+                                    </span>
+                                </div>
+                            </div>
                             @endforeach
-                        </ul>
+                        </div>
+                    </div>
+
+                    <!-- Translations Section -->
+                    <div class="col-md-7">
+                        <h6 class="mb-3"><i class="fas fa-language"></i> Заголовки баннера</h6>
+                        <div class="list-group">
+                            @foreach($banner->translations as $translation)
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge badge-info mr-2">{{ strtoupper($translation->lang_code) }}</span>
+                                        <span>{{ $translation->title }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
                         <div class="mt-3">
+                            <h6><i class="fas fa-toggle-on"></i> Статус</h6>
                             <span class="badge badge-{{ $banner->is_active ? 'success' : 'danger' }} badge-lg">
                                 {{ $banner->is_active ? 'Активен' : 'Неактивен' }}
                             </span>
@@ -103,11 +132,20 @@
                 <div class="mb-4">
                     <h5><i class="fas fa-images"></i> Галерея ({{ $about->images->count() }} изображений):</h5>
                     <div class="row">
-                        @foreach($about->images->sortBy('sort_order') as $image)
-                        <div class="col-md-3 mb-3">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" class="img-fluid rounded mb-2" alt="Image" style="height: 200px; width: 100%; object-fit: cover;">
-                            <div class="text-center">
-                                <span class="badge badge-primary">Порядок: {{ $image->sort_order + 1 }}</span>
+                        @foreach($about->images->sortBy('sort_order') as $index => $image)
+                        <div class="col-md-4 mb-3">
+                            <div class="position-relative image-wrapper">
+                                <a href="{{ asset('storage/' . $image->image_path) }}"
+                                    data-lightbox="about-gallery"
+                                    data-title="О нас - Изображение {{ $index + 1 }}">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}"
+                                        class="img-fluid rounded shadow-sm"
+                                        alt="About Image {{ $index + 1 }}"
+                                        style="width: 100%; height: 200px; object-fit: cover; cursor: pointer; transition: transform 0.3s ease;">
+                                </a>
+                                <span class="badge badge-primary position-absolute" style="top: 10px; right: 10px;">
+                                    {{ $index + 1 }}
+                                </span>
                             </div>
                         </div>
                         @endforeach
@@ -146,8 +184,29 @@
 @include('pages.abouts.edit-modal')
 @endpush
 
+@push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+<style>
+    .image-wrapper:hover img {
+        transform: scale(1.05);
+    }
+
+    .lightbox .lb-image {
+        border-radius: 8px;
+    }
+</style>
+@endpush
+
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 <script>
+    // Lightbox settings
+    lightbox.option({
+        'resizeDuration': 200,
+        'wrapAround': true,
+        'albumLabel': 'Изображение %1 из %2'
+    });
+
     function editAbout(id) {
         $.ajax({
             url: '/abouts/' + id + '/translations',

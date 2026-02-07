@@ -22,7 +22,7 @@
                 <h4><i class="fas fa-image"></i> Баннер страницы</h4>
                 <div class="card-header-action">
                     @if($banner)
-                    <button class="btn btn-primary" onclick="editBanner({{ $banner->id }})">
+                    <button class="btn btn-primary" data-banner-id="{{ $banner->id }}" id="editBannerBtn">
                         <i class="fas fa-edit"></i> Редактировать баннер
                     </button>
                     @else
@@ -35,19 +35,48 @@
             <div class="card-body">
                 @if($banner)
                 <div class="row">
-                    <div class="col-md-4">
-                        <img src="{{ asset('storage/' . $banner->image) }}" class="img-fluid rounded" alt="Banner">
-                    </div>
-                    <div class="col-md-8">
-                        <h5>Заголовки баннера:</h5>
-                        <ul class="list-group">
-                            @foreach($banner->translations as $translation)
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span><strong>{{ strtoupper($translation->lang_code) }}:</strong> {{ $translation->title }}</span>
-                            </li>
+                    <!-- Images Section -->
+                    <div class="col-md-5">
+                        <h6 class="mb-3"><i class="fas fa-images"></i> Изображения баннера ({{ $banner->images->count() }})</h6>
+                        <div class="row">
+                            @foreach($banner->images->sortBy('sort_order') as $index => $image)
+                            <div class="col-md-4 mb-3">
+                                <div class="position-relative image-wrapper">
+                                    <a href="{{ asset('storage/' . $image->image_path) }}"
+                                        data-lightbox="contact-banner-gallery"
+                                        data-title="Контакты Баннер - Изображение {{ $index + 1 }}">
+                                        <img src="{{ asset('storage/' . $image->image_path) }}"
+                                            class="img-fluid rounded shadow-sm"
+                                            alt="Banner Image {{ $index + 1 }}"
+                                            style="width: 100%; height: 120px; object-fit: cover; cursor: pointer; transition: transform 0.3s ease;">
+                                    </a>
+                                    <span class="badge badge-primary position-absolute" style="top: 5px; right: 5px;">
+                                        {{ $index + 1 }}
+                                    </span>
+                                </div>
+                            </div>
                             @endforeach
-                        </ul>
+                        </div>
+                    </div>
+
+                    <!-- Translations Section -->
+                    <div class="col-md-7">
+                        <h6 class="mb-3"><i class="fas fa-language"></i> Заголовки баннера</h6>
+                        <div class="list-group">
+                            @foreach($banner->translations as $translation)
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge badge-info mr-2">{{ strtoupper($translation->lang_code) }}</span>
+                                        <span>{{ $translation->title }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
                         <div class="mt-3">
+                            <h6><i class="fas fa-toggle-on"></i> Статус</h6>
                             <span class="badge badge-{{ $banner->is_active ? 'success' : 'danger' }} badge-lg">
                                 {{ $banner->is_active ? 'Активен' : 'Неактивен' }}
                             </span>
@@ -198,6 +227,13 @@
         </div>
     </div>
 </div>
+
+<div id="page-metadata"
+    data-has-contact="{{ $contacts->first() ? 'true' : 'false' }}"
+    data-contact-lat="{{ $contacts->first() ? $contacts->first()->latitude : '' }}"
+    data-contact-lng="{{ $contacts->first() ? $contacts->first()->longitude : '' }}"
+    data-languages='{!! json_encode($languages->pluck("code")->toArray()) !!}'>
+</div>
 @endsection
 
 @push('modals')
@@ -206,243 +242,166 @@
 @include('pages.contacts.create-modal')
 @include('pages.contacts.edit-modal')
 @endpush
-@push('scripts')
-{{-- Leaflet CSS --}}
+
+@push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+<style>
+    .image-wrapper:hover img {
+        transform: scale(1.05);
+    }
 
-{{-- PHP variables for JavaScript --}}
-@php
-$hasContact = $contacts->first();
-$contactData = $hasContact ? [
-'lat' => $contacts->first()->latitude,
-'lng' => $contacts->first()->longitude
-] : null;
-$languageCodes = $languages->pluck('code')->toArray();
-@endphp
-
-{{-- Leaflet JS --}}
+    .lightbox .lb-image {
+        border-radius: 8px;
+    }
+</style>
+@endpush
+@push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 
 <script>
-    // Routes
-    const ROUTES = {
-        translations: '/contacts/{id}/translations',
-        destroy: '/contacts/{id}'
-    };
-
-    // Leaflet Maps
-    let createMap, editMap, contactMap;
-    let createMarker, editMarker, contactMarker;
-
-    // Contact data from PHP
-    const hasContact = {
-        {
-            $hasContact ? 'true' : 'false'
-        }
-    };
-    const contactData = {
-        !!json_encode($contactData) !!
-    };
-
-    // Languages array for translations
-    const languages = {
-        !!json_encode($languageCodes) !!
-    };
-
     $(document).ready(function() {
-        // Initialize Contact Map (read-only)
-        if (hasContact && contactData) {
+        // 1. Metadata o'qish
+        const meta = $('#page-metadata');
+        const hasContact = meta.data('has-contact') === true || meta.data('has-contact') === 'true';
+        const contactLat = meta.data('contact-lat');
+        const contactLng = meta.data('contact-lng');
+        const languages = meta.data('languages');
+
+        // Global xarita o'zgaruvchilari
+        let createMap, editMap, contactMap;
+        let createMarker, editMarker, contactMarker;
+
+        // 2. Lightbox sozlamalari
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true,
+            'albumLabel': 'Изображение %1 из %2'
+        });
+
+        // 3. Asosiy sahifadagi xarita (Read-only)
+        if (hasContact && contactLat && contactLng) {
             contactMap = L.map('contactMap', {
                 scrollWheelZoom: false,
                 dragging: true,
-                touchZoom: true,
-                doubleClickZoom: true,
                 zoomControl: true
-            }).setView([contactData.lat, contactData.lng], 15);
+            }).setView([contactLat, contactLng], 15);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution: '&copy; OpenStreetMap contributors'
             }).addTo(contactMap);
 
-            // Add marker
-            contactMarker = L.marker([contactData.lat, contactData.lng]).addTo(contactMap);
-            contactMarker.bindPopup('<b>Местоположение</b><br>Широта: ' + contactData.lat + '<br>Долгота: ' + contactData.lng).openPopup();
+            L.marker([contactLat, contactLng]).addTo(contactMap)
+                .bindPopup(`<b>Местоположение</b><br>Lat: ${contactLat}<br>Lng: ${contactLng}`)
+                .openPopup();
         }
 
-        // Event listener for edit contact button
-        $('#editContactBtn').on('click', function() {
-            const contactId = $(this).data('contact-id');
-            editContact(contactId);
-        });
-    });
+        // 4. Create Modal xaritasi
+        $('#createModal').on('shown.bs.modal', function() {
+            if (!createMap) {
+                createMap = L.map('createMap').setView([41.311081, 69.240562], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(createMap);
 
-    // Initialize Create Map
-    $('#createModal').on('shown.bs.modal', function() {
-        if (!createMap) {
-            // Default center: Tashkent, Uzbekistan
-            createMap = L.map('createMap').setView([41.311081, 69.240562], 13);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(createMap);
-
-            createMap.on('click', function(e) {
-                const lat = e.latlng.lat;
-                const lng = e.latlng.lng;
-
-                // Remove previous marker
-                if (createMarker) {
-                    createMap.removeLayer(createMarker);
-                }
-
-                // Add new marker
-                createMarker = L.marker([lat, lng]).addTo(createMap);
-
-                // Update hidden inputs and display
-                $('#create_latitude').val(lat);
-                $('#create_longitude').val(lng);
-                $('#create_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
-            });
-        }
-
-        setTimeout(() => {
-            createMap.invalidateSize();
-        }, 200);
-    });
-
-    // Reset create map on modal close
-    $('#createModal').on('hidden.bs.modal', function() {
-        if (createMarker) {
-            createMap.removeLayer(createMarker);
-            createMarker = null;
-        }
-        $('#create_latitude').val('');
-        $('#create_longitude').val('');
-        $('#create_coords_display').text('Выберите местоположение на карте');
-    });
-
-    // Edit Contact function
-    function editContact(id) {
-        $.ajax({
-            url: ROUTES.translations.replace('{id}', id),
-            type: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    $('#editContactForm').attr('action', ROUTES.destroy.replace('{id}', id));
-                    $('#edit_phone').val(response.contact.phone || '');
-                    $('#edit_email').val(response.contact.email || '');
-                    $('#edit_longitude').val(response.contact.longitude || '');
-                    $('#edit_latitude').val(response.contact.latitude || '');
-                    $('#edit_whatsapp_phone').val(response.contact.whatsapp_phone || '');
-                    $('#edit_telegram_url').val(response.contact.telegram_url || '');
-                    $('#edit_telegram_username').val(response.contact.telegram_username || '');
-                    $('#edit_instagram_url').val(response.contact.instagram_url || '');
-                    $('#edit_facebook_url').val(response.contact.facebook_url || '');
-                    $('#edit_facebook_name').val(response.contact.facebook_name || '');
-                    $('#edit_youtube_url').val(response.contact.youtube_url || '');
-
-                    // Fill translations for each language
-                    languages.forEach(function(langCode) {
-                        if (response.translations[langCode]) {
-                            $('#edit_address_' + langCode).val(response.translations[langCode].address);
-                        }
-                    });
-
-                    // Show modal first
-                    $('#editContactModal').modal('show');
-                }
-            },
-            error: function(xhr) {
-                swal({
-                    title: 'Ошибка!',
-                    text: 'Ошибка при загрузке данных',
-                    icon: 'error',
-                    button: 'ОК',
-                });
-            }
-        });
-    }
-
-    // Initialize edit map when modal is shown
-    $('#editContactModal').on('shown.bs.modal', function() {
-        setTimeout(() => {
-            if (!editMap) {
-                editMap = L.map('editMap').setView([41.311081, 69.240562], 13);
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(editMap);
-
-                editMap.on('click', function(e) {
+                createMap.on('click', function(e) {
                     const lat = e.latlng.lat;
                     const lng = e.latlng.lng;
+                    if (createMarker) createMap.removeLayer(createMarker);
+                    createMarker = L.marker([lat, lng]).addTo(createMap);
 
-                    if (editMarker) {
-                        editMap.removeLayer(editMarker);
-                    }
-
-                    editMarker = L.marker([lat, lng]).addTo(editMap);
-                    $('#edit_latitude').val(lat);
-                    $('#edit_longitude').val(lng);
-                    $('#edit_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
+                    $('#create_latitude').val(lat);
+                    $('#create_longitude').val(lng);
+                    $('#create_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
                 });
             }
+            setTimeout(() => createMap.invalidateSize(), 200);
+        });
 
-            // Set existing coordinates if available
+        // 5. Contact Edit funksiyasi
+        $('#editContactBtn').on('click', function() {
+            const id = $(this).data('contact-id');
+            $.ajax({
+                url: `/contacts/${id}/translations`,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        $('#editContactForm').attr('action', `/contacts/${id}`);
+
+                        // Formani to'ldirish
+                        const c = response.contact;
+                        $('#edit_phone').val(c.phone || '');
+                        $('#edit_email').val(c.email || '');
+                        $('#edit_latitude').val(c.latitude || '');
+                        $('#edit_longitude').val(c.longitude || '');
+                        $('#edit_whatsapp_phone').val(c.whatsapp_phone || '');
+                        $('#edit_telegram_url').val(c.telegram_url || '');
+                        $('#edit_telegram_username').val(c.telegram_username || '');
+                        $('#edit_instagram_url').val(c.instagram_url || '');
+                        $('#edit_facebook_url').val(c.facebook_url || '');
+                        $('#edit_facebook_name').val(c.facebook_name || '');
+                        $('#edit_youtube_url').val(c.youtube_url || '');
+
+                        // Tarjimalar
+                        languages.forEach(lang => {
+                            if (response.translations[lang]) {
+                                $(`#edit_address_${lang}`).val(response.translations[lang].address);
+                            }
+                        });
+
+                        $('#editContactModal').modal('show');
+                    }
+                },
+                error: () => swal('Ошибка!', 'Не удалось загрузить данные', 'error')
+            });
+        });
+
+        // 6. Edit Modal xaritasi (shown bo'lganda yangilash)
+        $('#editContactModal').on('shown.bs.modal', function() {
             const lat = parseFloat($('#edit_latitude').val());
             const lng = parseFloat($('#edit_longitude').val());
 
+            if (!editMap) {
+                editMap = L.map('editMap').setView([41.311081, 69.240562], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(editMap);
+
+                editMap.on('click', function(e) {
+                    const newLat = e.latlng.lat;
+                    const newLng = e.latlng.lng;
+                    if (editMarker) editMap.removeLayer(editMarker);
+                    editMarker = L.marker([newLat, newLng]).addTo(editMap);
+                    $('#edit_latitude').val(newLat);
+                    $('#edit_longitude').val(newLng);
+                    $('#edit_coords_display').text(`Широта: ${newLat.toFixed(6)}, Долгота: ${newLng.toFixed(6)}`);
+                });
+            }
+
             if (lat && lng) {
                 editMap.setView([lat, lng], 15);
-
-                if (editMarker) {
-                    editMap.removeLayer(editMarker);
-                }
-
+                if (editMarker) editMap.removeLayer(editMarker);
                 editMarker = L.marker([lat, lng]).addTo(editMap);
                 $('#edit_coords_display').text(`Широта: ${lat.toFixed(6)}, Долгота: ${lng.toFixed(6)}`);
             }
 
-            editMap.invalidateSize();
-        }, 300);
-    });
-
-    // Reset edit map on modal close
-    $('#editContactModal').on('hidden.bs.modal', function() {
-        if (editMarker) {
-            editMap.removeLayer(editMarker);
-            editMarker = null;
-        }
-    });
-
-    // Edit Banner function
-    function editBanner(id) {
-        $.ajax({
-            url: '/contacts/banner/' + id + '/translations',
-            type: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    populateEditBannerModal(response);
-                    $('#editBannerModal').modal('show');
-                }
-            },
-            error: function(xhr) {
-                swal({
-                    title: 'Ошибка!',
-                    text: 'Ошибка при загрузке данных баннера',
-                    icon: 'error',
-                    button: 'ОК',
-                });
-            }
+            setTimeout(() => editMap.invalidateSize(), 200);
         });
-    }
 
-    // Event listener for edit banner button (if exists)
-    $(document).on('click', '[onclick*="editBanner"]', function(e) {
-        e.preventDefault();
-        const onclickAttr = $(this).attr('onclick');
-        const id = onclickAttr.match(/\d+/)[0];
-        editBanner(id);
+        // 7. Banner Edit funksiyasi
+        $('#editBannerBtn').on('click', function() {
+            const id = $(this).data('banner-id');
+            $.ajax({
+                url: `/contacts/banner/${id}/translations`,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        if (typeof populateEditBannerModal === "function") {
+                            populateEditBannerModal(response);
+                        }
+                        $('#editBannerModal').modal('show');
+                    }
+                },
+                error: () => swal('Ошибка!', 'Не удалось загрузить баннер', 'error')
+            });
+        });
     });
 </script>
 @endpush

@@ -35,19 +35,48 @@
             <div class="card-body">
                 @if($banner)
                 <div class="row">
-                    <div class="col-md-4">
-                        <img src="{{ asset('storage/' . $banner->image) }}" class="img-fluid rounded" alt="Banner">
-                    </div>
-                    <div class="col-md-8">
-                        <h5>Заголовки баннера:</h5>
-                        <ul class="list-group">
-                            @foreach($banner->translations as $translation)
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span><strong>{{ strtoupper($translation->lang_code) }}:</strong> {{ $translation->title }}</span>
-                            </li>
+                    <!-- Images Section -->
+                    <div class="col-md-5">
+                        <h6 class="mb-3"><i class="fas fa-images"></i> Изображения баннера ({{ $banner->images->count() }})</h6>
+                        <div class="row">
+                            @foreach($banner->images->sortBy('sort_order') as $index => $image)
+                            <div class="col-md-4 mb-3">
+                                <div class="position-relative image-wrapper">
+                                    <a href="{{ asset('storage/' . $image->image_path) }}"
+                                        data-lightbox="banner-gallery"
+                                        data-title="Баннер - Изображение {{ $index + 1 }}">
+                                        <img src="{{ asset('storage/' . $image->image_path) }}"
+                                            class="img-fluid rounded shadow-sm"
+                                            alt="Banner Image {{ $index + 1 }}"
+                                            style="width: 100%; height: 120px; object-fit: cover; cursor: pointer; transition: transform 0.3s ease;">
+                                    </a>
+                                    <span class="badge badge-primary position-absolute" style="top: 5px; right: 5px;">
+                                        {{ $index + 1 }}
+                                    </span>
+                                </div>
+                            </div>
                             @endforeach
-                        </ul>
+                        </div>
+                    </div>
+
+                    <!-- Translations Section -->
+                    <div class="col-md-7">
+                        <h6 class="mb-3"><i class="fas fa-language"></i> Заголовки баннера</h6>
+                        <div class="list-group">
+                            @foreach($banner->translations as $translation)
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge badge-info mr-2">{{ strtoupper($translation->lang_code) }}</span>
+                                        <span>{{ $translation->title }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
                         <div class="mt-3">
+                            <h6><i class="fas fa-toggle-on"></i> Статус</h6>
                             <span class="badge badge-{{ $banner->is_active ? 'success' : 'danger' }} badge-lg">
                                 {{ $banner->is_active ? 'Активен' : 'Неактивен' }}
                             </span>
@@ -60,7 +89,7 @@
                         <i class="fas fa-image fa-3x text-warning"></i>
                     </div>
                     <h5>Баннер не создан</h5>
-                    <p class="text-muted">Создайте баннер для страницы "Отзывы"</p>
+                    <p class="text-muted">Создайте баннер для страницы "О нас"</p>
                     <button class="btn btn-success" data-toggle="modal" data-target="#createBannerModal">
                         <i class="fas fa-plus"></i> Создать баннер
                     </button>
@@ -185,7 +214,14 @@
 @include('pages.reviews.show-modal')
 @endpush
 
+@push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+
+@endpush
+
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
 <script>
     const ROUTES = {
         filter: '{{ route("reviews.filter") }}',
@@ -292,7 +328,11 @@
                     // Get tour name from first available translation
                     var tourName = 'N/A';
                     @foreach($tours as $tour)
-                    if ({{ $tour->id }} == response.review.tour_id) {
+                    if ({
+                            {
+                                $tour - > id
+                            }
+                        } == response.review.tour_id) {
                         tourName = '{{ $tour->translations->first()->title ?? "N/A" }}';
                     }
                     @endforeach
