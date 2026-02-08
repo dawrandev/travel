@@ -99,7 +99,7 @@ class TourController extends Controller
         ]);
     }
 
-    public function store(TourRequest $request): RedirectResponse
+    public function store(TourRequest $request)
     {
         // Merge validated data with feature fields
         $data = $request->validated();
@@ -112,11 +112,22 @@ class TourController extends Controller
             }
         }
 
-        $this->tourService->create($data);
+        $tour = $this->tourService->create($data);
+
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Тур успешно создан',
+                'tour_id' => $tour->id
+            ]);
+        }
+
+        // Return redirect for normal requests
         return redirect()->route('tours.index')->with('success', 'Тур успешно создан');
     }
 
-    public function update(TourRequest $request, int $id): RedirectResponse
+    public function update(TourRequest $request, int $id)
     {
         // Merge validated data with feature fields
         $data = $request->validated();
@@ -134,7 +145,18 @@ class TourController extends Controller
             $data['main_image_id'] = $request->input('main_image_id');
         }
 
-        $this->tourService->update($id, $data);
+        $tour = $this->tourService->update($id, $data);
+
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Тур успешно обновлен',
+                'tour_id' => $id
+            ]);
+        }
+
+        // Return redirect for normal requests
         return redirect()->route('tours.index')->with('success', 'Тур успешно обновлен');
     }
 

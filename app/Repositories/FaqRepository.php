@@ -4,14 +4,15 @@ namespace App\Repositories;
 
 use App\Models\Faq;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FaqRepository
 {
-    public function getAll(): Collection
+    public function getAll(): LengthAwarePaginator
     {
         return Faq::with(['translations', 'tour.translations', 'category.translations'])
             ->orderBy('sort_order')
-            ->get();
+            ->paginate(10);
     }
 
     public function findById(int $id): ?Faq

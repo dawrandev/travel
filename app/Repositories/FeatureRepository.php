@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Models\Feature;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class FeatureRepository
 {
-    public function getAll(): Collection
+    public function getAll(): LengthAwarePaginator
     {
-        return Feature::with('translations')->get();
+        return Feature::with('translations')->paginate(15);
     }
 
     public function findById(int $id): ?Feature

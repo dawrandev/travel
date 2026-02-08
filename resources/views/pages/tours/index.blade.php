@@ -155,7 +155,6 @@
     }
 
     function editTour(id) {
-        // Will implement in edit-modal
         $.get('/tours/' + id + '/translations', function(response) {
             if (response.success) {
                 populateEditModal(response);

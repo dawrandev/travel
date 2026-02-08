@@ -218,6 +218,12 @@
         $('#createForm').on('submit', function(e) {
             e.preventDefault();
 
+            // Prevent double submission
+            const $submitBtn = $(this).find('button[type="submit"]');
+            if ($submitBtn.prop('disabled')) {
+                return false;
+            }
+
             const files = createDropzone.getAcceptedFiles();
             if (files.length === 0) {
                 swal({
@@ -293,38 +299,68 @@
 
             console.log('Form data prepared, submitting...');
 
-            // Submit via AJAX
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    swal({
-                        title: 'Успешно!',
-                        text: 'Тур успешно создан',
-                        icon: 'success',
-                        button: 'ОК',
-                    }).then(() => {
-                        location.reload();
-                    });
-                },
-                error: function(xhr) {
-                    let errorMsg = 'Ошибка при создании тура';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMsg = xhr.responseJSON.message;
-                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
+            // Disable submit button
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-save').addClass('fa-spinner fa-spin');
+
+            const formAction = $(this).attr('action');
+
+            // Use native XMLHttpRequest
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', formAction, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        const response = JSON.parse(xhr.responseText);
+                        swal({
+                            title: 'Успешно!',
+                            text: 'Тур успешно создан',
+                            icon: 'success',
+                            button: 'ОК',
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        let errorMsg = 'Ошибка при создании тура';
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.message) {
+                                errorMsg = response.message;
+                            } else if (response.errors) {
+                                errorMsg = Object.values(response.errors).flat().join('\n');
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse error response:', e);
+                        }
+                        swal({
+                            title: 'Ошибка!',
+                            text: errorMsg,
+                            icon: 'error',
+                            button: 'ОК',
+                        });
+                        // Re-enable submit button on error
+                        $submitBtn.prop('disabled', false);
+                        $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
                     }
-                    swal({
-                        title: 'Ошибка!',
-                        text: errorMsg,
-                        icon: 'error',
-                        button: 'ОК',
-                    });
                 }
-            });
+            };
+
+            xhr.onerror = function() {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Не удалось подключиться к серверу',
+                    icon: 'error',
+                    button: 'ОК',
+                });
+                $submitBtn.prop('disabled', false);
+                $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
+            };
+
+            xhr.send(formData);
         });
 
         // Add Itinerary (Day)
@@ -464,6 +500,11 @@
             createDropzone.removeAllFiles();
             $('#itinerariesContainer').empty();
             itineraryCounter = 0;
+            // Re-enable submit button
+            const $btn = $('#createForm button[type="submit"]');
+            $btn.prop('disabled', false);
+            const $icon = $btn.find('i');
+            $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
         });
     });
 </script>

@@ -23,22 +23,26 @@ class FaqController extends Controller
         $faqs = $this->faqService->getAll();
         $languages = Language::all();
         $tours = Tour::with('translations')->get();
-        $faqCategories = FaqCategory::with('translations')
+        $categories = FaqCategory::with('translations')
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
-        return view('pages.faqs.index', compact('faqs', 'languages', 'tours', 'faqCategories'));
+        return view('pages.faqs.index', compact('faqs', 'languages', 'tours', 'categories'));
     }
 
     public function filter(Request $request): JsonResponse
     {
         $langCode = $request->get('lang_code', 'en');
         $tourId = $request->get('tour_id');
+        $categoryId = $request->get('category_id');
+        $search = $request->get('search');
 
         // Convert empty string to null
         $tourId = $tourId === '' || $tourId === null ? null : (int) $tourId;
+        $categoryId = $categoryId === '' || $categoryId === null ? null : (int) $categoryId;
+        $search = $search === '' ? null : $search;
 
-        $faqs = $this->faqService->getAllByLanguage($langCode, $tourId);
+        $faqs = $this->faqService->filter($langCode, $tourId, $categoryId, $search);
 
         return response()->json([
             'success' => true,

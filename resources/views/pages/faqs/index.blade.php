@@ -19,14 +19,28 @@
         <div class="card">
             <div class="card-header">
                 <h4>Список вопросов</h4>
-                <div class="card-header-action d-flex">
-                    <select class="form-control mr-2" id="languageFilter" style="width: 150px;">
+                <div class="card-header-action d-flex align-items-center" style="gap: 10px;">
+                    <!-- Search Input -->
+                    <input type="text" class="form-control" id="searchInput" placeholder="Поиск по вопросу..." style="width: 250px;">
+
+                    <!-- Language Filter -->
+                    <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
                         <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
                             {{ $language->name }}
                         </option>
                         @endforeach
                     </select>
+
+                    <!-- Category Filter -->
+                    <select class="form-control" id="categoryFilter" style="width: 180px;">
+                        <option value="">Все категории</option>
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->translations->where('lang_code', 'ru')->first()->name ?? $category->translations->first()->name ?? 'N/A' }}</option>
+                        @endforeach
+                    </select>
+
+                    <!-- Tour Filter -->
                     <select class="form-control" id="tourFilter" style="width: 200px;">
                         <option value="">Все туры</option>
                         @foreach($tours as $tour)
@@ -80,7 +94,7 @@
                                     <span class="badge badge-danger">Неактивен</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <button class="btn btn-sm btn-primary" onclick="editFaq({{ $faq->id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -97,6 +111,7 @@
                         </tbody>
                     </table>
                 </div>
+                {{ $faqs->links() }}
             </div>
         </div>
     </div>
@@ -118,8 +133,23 @@
     };
 
     $(document).ready(function() {
+        let searchTimeout;
+
+        // Search input with debounce
+        $('#searchInput').on('keyup', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                filterFaqs();
+            }, 500); // Wait 500ms after user stops typing
+        });
+
         // Language filter
         $('#languageFilter').on('change', function() {
+            filterFaqs();
+        });
+
+        // Category filter
+        $('#categoryFilter').on('change', function() {
             filterFaqs();
         });
 
@@ -129,14 +159,18 @@
         });
 
         function filterFaqs() {
+            var search = $('#searchInput').val();
             var langCode = $('#languageFilter').val();
+            var categoryId = $('#categoryFilter').val();
             var tourId = $('#tourFilter').val();
 
             $.ajax({
                 url: ROUTES.filter,
                 type: 'GET',
                 data: {
+                    search: search,
                     lang_code: langCode,
+                    category_id: categoryId,
                     tour_id: tourId
                 },
                 success: function(response) {
@@ -145,7 +179,12 @@
                     }
                 },
                 error: function() {
-                    alert('Ошибка при загрузке данных');
+                    swal({
+                        title: 'Ошибка!',
+                        text: 'Ошибка при загрузке данных',
+                        icon: 'error',
+                        button: 'ОК'
+                    });
                 }
             });
         }
@@ -176,7 +215,6 @@
                 var answer = faq.answer.length > 50 ? faq.answer.substring(0, 50) + '...' : faq.answer;
 
                 var row = '<tr>' +
-                    // BU YERDA: faq.id o'rniga index + 1 ishlatamiz
                     '<td>' + (index + 1) + '</td>' +
                     '<td>' + faq.question + '</td>' +
                     '<td>' + tourBadge + '</td>' +
@@ -184,7 +222,7 @@
                     '<td>' + answer + '</td>' +
                     '<td>' + faq.sort_order + '</td>' +
                     '<td>' + statusBadge + '</td>' +
-                    '<td>' +
+                    '<td style="white-space: nowrap;">' +
                     '<button class="btn btn-sm btn-primary" onclick="editFaq(' + faq.id + ')">' +
                     '<i class="fas fa-edit"></i>' +
                     '</button> ' +

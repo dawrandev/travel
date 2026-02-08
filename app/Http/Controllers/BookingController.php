@@ -13,14 +13,13 @@ class BookingController extends Controller
     {
         $query = Booking::with('tour.translations');
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('primary_phone', 'like', "%{$search}%")
-                  ->orWhere('secondary_phone', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('primary_phone', 'like', "%{$search}%")
+                    ->orWhere('secondary_phone', 'like', "%{$search}%");
             });
         }
 

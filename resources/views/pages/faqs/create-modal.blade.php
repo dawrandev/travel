@@ -33,7 +33,7 @@
                                 <label class="form-label">Категория FAQ (опционально)</label>
                                 <select name="faq_category_id" class="form-control">
                                     <option value="">Без категории</option>
-                                    @foreach($faqCategories as $category)
+                                    @foreach($categories as $category)
                                     <option value="{{ $category->id }}">
                                         {{ $category->translations->where('lang_code', 'ru')->first()->name ?? $category->translations->first()->name }}
                                     </option>

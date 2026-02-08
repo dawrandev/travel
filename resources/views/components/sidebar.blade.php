@@ -18,7 +18,7 @@
                  <a href="{{ route('features.index') }}" class="nav-link"><i data-feather="list"></i><span>Функции</span></a>
              </li>
              <li class="dropdown {{ Request::is('categories') ? 'active' : '' }}">
-                 <a href="{{ route('categories.index') }}" class="nav-link"><i data-feather="folder"></i><span>Категории</span></a>
+                 <a href="{{ route('categories.index') }}" class="nav-link"><i data-feather="folder"></i><span>Категории туров</span></a>
              </li>
              <li class="dropdown {{ Request::is('reviews') ? 'active' : '' }}">
                  <a href="{{ route('reviews.index') }}" class="nav-link"><i data-feather="star"></i><span>Отзывы</span></a>

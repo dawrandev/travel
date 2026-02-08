@@ -13,13 +13,12 @@ class QuestionController extends Controller
     {
         $query = Question::with('tour.translations');
 
-        // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -64,4 +63,3 @@ class QuestionController extends Controller
         return redirect()->route('questions.index')->with('success', 'Вопрос успешно удален');
     }
 }
-

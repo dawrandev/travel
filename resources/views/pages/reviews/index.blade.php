@@ -106,7 +106,11 @@
         <div class="card">
             <div class="card-header">
                 <h4>Список отзывов</h4>
-                <div class="card-header-action">
+                <div class="card-header-action d-flex align-items-center" style="gap: 10px;">
+                    <!-- Search Input -->
+                    <input type="text" class="form-control" id="searchInput" placeholder="Поиск по имени, городу, комментарию..." style="width: 300px;">
+
+                    <!-- Language Filter -->
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
                         <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
@@ -180,7 +184,7 @@
                                     <span class="badge badge-danger">Неактивен</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <button class="btn btn-sm btn-info" onclick="showReview({{ $review->id }})" title="Просмотр">
                                         <i class="fas fa-eye"></i>
                                     </button>
@@ -230,13 +234,30 @@
     };
 
     $(document).ready(function() {
+        let searchTimeout;
+
+        // Search input with debounce
+        $('#searchInput').on('keyup', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
+                filterReviews();
+            }, 500); // Wait 500ms after user stops typing
+        });
+
+        // Language filter
         $('#languageFilter').on('change', function() {
-            var langCode = $(this).val();
+            filterReviews();
+        });
+
+        function filterReviews() {
+            var search = $('#searchInput').val();
+            var langCode = $('#languageFilter').val();
 
             $.ajax({
                 url: ROUTES.filter,
                 type: 'GET',
                 data: {
+                    search: search,
                     lang_code: langCode
                 },
                 success: function(response) {
@@ -245,10 +266,15 @@
                     }
                 },
                 error: function() {
-                    alert('Ошибка при загрузке данных');
+                    swal({
+                        title: 'Ошибка!',
+                        text: 'Ошибка при загрузке данных',
+                        icon: 'error',
+                        button: 'ОК'
+                    });
                 }
             });
-        });
+        }
 
         function updateTable(reviews) {
             var tbody = $('#reviewTableBody');
@@ -296,7 +322,7 @@
                     '<td>' + comment + '</td>' +
                     '<td>' + review.sort_order + '</td>' +
                     '<td>' + statusBadge + '</td>' +
-                    '<td>' +
+                    '<td style="white-space: nowrap;">' +
                     '<button class="btn btn-sm btn-info" onclick="showReview(' + review.id + ')" title="Просмотр">' +
                     '<i class="fas fa-eye"></i>' +
                     '</button> ' +
@@ -328,11 +354,7 @@
                     // Get tour name from first available translation
                     var tourName = 'N/A';
                     @foreach($tours as $tour)
-                    if ({
-                            {
-                                $tour - > id
-                            }
-                        } == response.review.tour_id) {
+                    if ({{ $tour->id }} == response.review.tour_id) {
                         tourName = '{{ $tour->translations->first()->title ?? "N/A" }}';
                     }
                     @endforeach

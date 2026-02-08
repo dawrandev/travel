@@ -335,6 +335,12 @@
         $('#editForm').on('submit', function(e) {
             e.preventDefault();
 
+            // Prevent double submission
+            const $submitBtn = $(this).find('button[type="submit"]');
+            if ($submitBtn.prop('disabled')) {
+                return false;
+            }
+
             // Check if at least one day is added
             const daysCount = $('.edit-itinerary-day').length;
             if (daysCount === 0) {
@@ -366,8 +372,6 @@
             const files = editDropzone.getAcceptedFiles();
             const formData = new FormData(this);
 
-            console.log('Files count:', files.length);
-
             // If new images uploaded, add them
             if (files.length > 0) {
                 formData.delete('images[]');
@@ -375,15 +379,11 @@
 
                 files.forEach((file, index) => {
                     formData.append('images[]', file);
-                    console.log('Adding image:', file.name);
                 });
                 formData.append('main_image', 0); // First image is main
-            } else {
-                console.log('No new images uploaded, keeping existing images');
             }
 
             // Add feature radio buttons to FormData
-            // Remove any existing feature fields first
             const existingFeatureKeys = [];
             for (let key of formData.keys()) {
                 if (key.startsWith('feature_')) {
@@ -397,45 +397,117 @@
                 const name = $(this).attr('name');
                 const value = $(this).val();
                 formData.append(name, value);
-                console.log('Adding feature:', name, '=', value);
             });
 
-            console.log('Form data prepared, submitting...');
+            // Disable submit button
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-sync-alt').addClass('fa-spinner fa-spin');
 
-            // Submit via AJAX
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    swal({
-                        title: 'Успешно!',
-                        text: 'Тур успешно обновлен',
-                        icon: 'success',
-                        button: 'ОК',
-                    }).then(() => {
-                        location.reload();
-                    });
-                },
-                error: function(xhr) {
-                    let errorMsg = 'Ошибка при обновлении тура';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMsg = xhr.responseJSON.message;
-                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
+            const formAction = $(this).attr('action');
+
+            try {
+                // Use native XMLHttpRequest instead of jQuery
+
+                const xhr = new XMLHttpRequest();
+
+                xhr.open('POST', formAction, true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                swal({
+                                    title: 'Успешно!',
+                                    text: response.message || 'Тур успешно обновлен',
+                                    icon: 'success',
+                                    button: 'ОК',
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } catch (e) {
+                                // Server returned HTML instead of JSON
+                                swal({
+                                    title: 'Успешно!',
+                                    text: 'Тур успешно обновлен',
+                                    icon: 'success',
+                                    button: 'ОК',
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        } else {
+                            let errorMsg = 'Ошибка при обновлении тура';
+
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.message) {
+                                    errorMsg = response.message;
+                                } else if (response.errors) {
+                                    errorMsg = Object.values(response.errors).flat().join('\n');
+                                }
+                            } catch (e) {
+                                if (xhr.status === 500) {
+                                    errorMsg = 'Внутренняя ошибка сервера';
+                                } else if (xhr.status === 422) {
+                                    errorMsg = 'Ошибка валидации данных';
+                                } else if (xhr.status === 404) {
+                                    errorMsg = 'Тур не найден';
+                                }
+                            }
+
+                            swal({
+                                title: 'Ошибка!',
+                                text: errorMsg,
+                                icon: 'error',
+                                button: 'ОК',
+                            });
+
+                            $submitBtn.prop('disabled', false);
+                            const $icon = $submitBtn.find('i');
+                            $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+                        }
                     }
+                };
+
+                xhr.onerror = function() {
                     swal({
                         title: 'Ошибка!',
-                        text: errorMsg,
+                        text: 'Не удалось подключиться к серверу. Проверьте интернет-соединение.',
                         icon: 'error',
                         button: 'ОК',
                     });
-                }
-            });
-        });
 
+                    $submitBtn.prop('disabled', false);
+                    const $icon = $submitBtn.find('i');
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+                };
+
+                xhr.ontimeout = function() {
+                    swal({
+                        title: 'Ошибка!',
+                        text: 'Превышено время ожидания. Попробуйте еще раз.',
+                        icon: 'error',
+                        button: 'ОК',
+                    });
+
+                    $submitBtn.prop('disabled', false);
+                    const $icon = $submitBtn.find('i');
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+                };
+
+                xhr.timeout = 300000; // 5 minutes
+                xhr.send(formData);
+
+            } catch (error) {
+                $submitBtn.prop('disabled', false);
+                const $icon = $submitBtn.find('i');
+                $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+            }
+        });
 
         // Add Edit Itinerary (Day)
         $('#addEditItinerary').click(function() {
@@ -477,6 +549,22 @@
             }
 
             timeItem.remove();
+        });
+
+        // Reset on modal close
+        $('#editModal').on('hidden.bs.modal', function() {
+            $('#editForm')[0].reset();
+            editDropzone.removeAllFiles();
+            $('#editItinerariesContainer').empty();
+            $('#currentImages').empty();
+            editItineraryCounter = 0;
+            // Re-enable submit button
+            const $btn = $('#editForm button[type="submit"]');
+            $btn.prop('disabled', false);
+            const $icon = $btn.find('i');
+            $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+            // Remove event listeners
+            $('input[name="main_image_radio"]').off('change');
         });
     });
 
@@ -540,8 +628,8 @@
             $('#currentImages').html(imagesHtml);
             $('#main_image_id').val(mainImageId);
 
-            // Handle main image selection
-            $('input[name="main_image_radio"]').on('change', function() {
+            // Handle main image selection - Remove old listeners first
+            $('input[name="main_image_radio"]').off('change').on('change', function() {
                 $('#main_image_id').val($(this).val());
             });
 
@@ -595,7 +683,6 @@
                 }
             }
         } catch (error) {
-            console.error('Error populating edit modal:', error);
             swal({
                 title: 'Ошибка!',
                 text: 'Ошибка при загрузке данных тура: ' + error.message,

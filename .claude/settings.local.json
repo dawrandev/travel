@@ -5,7 +5,8 @@
       "Bash(grep:*)",
       "Bash(composer show:*)",
       "Bash(composer remove:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Bash(node:*)"
     ]
   }
 }

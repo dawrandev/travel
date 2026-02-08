@@ -74,6 +74,7 @@
                         </tbody>
                     </table>
                 </div>
+                {{ $features->links() }}
             </div>
         </div>
     </div>

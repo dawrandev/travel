@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,10 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share pending bookings count with sidebar
         view()->composer('components.sidebar', function ($view) {
             $pendingBookingsCount = \App\Models\Booking::where('status', 'pending')->count();
             $view->with('pendingBookingsCount', $pendingBookingsCount);
         });
+
+        Paginator::useBootstrapFive();
     }
 }
