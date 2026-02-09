@@ -32,7 +32,7 @@ class FaqController extends Controller
 
     public function filter(Request $request): JsonResponse
     {
-        $langCode = $request->get('lang_code', 'en');
+        $langCode = $request->get('lang_code', 'ru');
         $tourId = $request->get('tour_id');
         $categoryId = $request->get('category_id');
         $search = $request->get('search');

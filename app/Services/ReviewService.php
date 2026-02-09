@@ -16,11 +16,11 @@ class ReviewService
         return $this->reviewRepository->getAll();
     }
 
-    public function getAllByLanguage(string $langCode)
+    public function getAllByLanguage(string $langCode, ?string $search = null)
     {
         $reviews = $this->reviewRepository->getAll();
 
-        return $reviews->map(function ($review) use ($langCode) {
+        $mappedReviews = $reviews->map(function ($review) use ($langCode) {
             $translation = $review->translations->where('lang_code', $langCode)->first();
             return [
                 'id' => $review->id,
@@ -35,6 +35,19 @@ class ReviewService
                 'is_active' => $review->is_active
             ];
         });
+
+        // Apply search filter if provided
+        if (!empty($search)) {
+            $search = mb_strtolower($search);
+            $mappedReviews = $mappedReviews->filter(function ($review) use ($search) {
+                return str_contains(mb_strtolower($review['user_name']), $search) ||
+                       str_contains(mb_strtolower($review['city']), $search) ||
+                       str_contains(mb_strtolower($review['comment']), $search) ||
+                       str_contains(mb_strtolower($review['tour_name']), $search);
+            })->values();
+        }
+
+        return $mappedReviews;
     }
 
     public function findById(int $id)

@@ -22,7 +22,7 @@
                 <div class="card-header-action">
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
+                        <option value="{{ $language->code }}" {{ $language->code == 'ru' ? 'selected' : '' }}>
                             {{ $language->name }}
                         </option>
                         @endforeach
@@ -45,7 +45,7 @@
                             @foreach($faqCategories as $faqCategory)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $faqCategory->translations->first()->name ?? 'N/A' }}</td>
+                                <td>{{ $faqCategory->translations->where('lang_code', 'ru')->first()->name ?? $faqCategory->translations->first()->name ?? 'N/A' }}</td>
                                 <td>{{ $faqCategory->sort_order }}</td>
                                 <td>
                                     @if($faqCategory->is_active)

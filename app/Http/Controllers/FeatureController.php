@@ -25,7 +25,7 @@ class FeatureController extends Controller
 
     public function filter(Request $request): JsonResponse
     {
-        $langCode = $request->get('lang_code', 'en');
+        $langCode = $request->get('lang_code', 'ru');
         $features = $this->featureService->getAllByLanguage($langCode);
 
         return response()->json([

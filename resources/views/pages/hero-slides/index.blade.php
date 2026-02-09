@@ -22,7 +22,7 @@
                 <div class="card-header-action">
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
+                        <option value="{{ $language->code }}" {{ $language->code == 'ru' ? 'selected' : '' }}>
                             {{ $language->name }}
                         </option>
                         @endforeach
@@ -51,9 +51,9 @@
                                 <td>
                                     <img src="{{ asset('storage/' . $slide->image_path) }}" alt="slide" width="100">
                                 </td>
-                                <td>{{ $slide->translations->first()->title ?? 'N/A' }}</td>
-                                <td>{{ $slide->translations->first()->subtitle ?? 'N/A' }}</td>
-                                <td>{{ Str::limit($slide->translations->first()->description ?? '-', 50) }}</td>
+                                <td>{{ $slide->translations->where('lang_code', 'ru')->first()->title ?? $slide->translations->first()->title ?? 'N/A' }}</td>
+                                <td>{{ $slide->translations->where('lang_code', 'ru')->first()->subtitle ?? $slide->translations->first()->subtitle ?? 'N/A' }}</td>
+                                <td>{{ Str::limit($slide->translations->where('lang_code', 'ru')->first()->description ?? $slide->translations->first()->description ?? '-', 50) }}</td>
                                 <td>{{ $slide->sort_order }}</td>
                                 <td>
                                     @if($slide->is_active)

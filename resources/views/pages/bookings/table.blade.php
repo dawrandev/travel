@@ -46,14 +46,14 @@
                     <span class="badge {{ $status['class'] }}">{{ $status['text'] }}</span>
                 </td>
                 <td>{{ $booking->created_at->format('d.m.Y H:i') }}</td>
-                <td>
+                <td style="white-space: nowrap;">
                     <button type="button" class="btn btn-info btn-sm view-booking" data-id="{{ $booking->id }}" title="Просмотр">
                         <i class="fas fa-eye"></i>
                     </button>
                     <button type="button" class="btn btn-warning btn-sm edit-status" data-id="{{ $booking->id }}" data-status="{{ $booking->status }}" title="Изменить статус">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline;" data-confirm-delete data-item-name="бронирование">
+                    <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="бронирование">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" title="Удалить">

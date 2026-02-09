@@ -107,13 +107,11 @@
             <div class="card-header">
                 <h4>Список отзывов</h4>
                 <div class="card-header-action d-flex align-items-center" style="gap: 10px;">
-                    <!-- Search Input -->
                     <input type="text" class="form-control" id="searchInput" placeholder="Поиск по имени, городу, комментарию..." style="width: 300px;">
 
-                    <!-- Language Filter -->
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
+                        <option value="{{ $language->code }}" {{ $language->code == 'ru' ? 'selected' : '' }}>
                             {{ $language->name }}
                         </option>
                         @endforeach
@@ -354,7 +352,11 @@
                     // Get tour name from first available translation
                     var tourName = 'N/A';
                     @foreach($tours as $tour)
-                    if ({{ $tour->id }} == response.review.tour_id) {
+                    if ({
+                            {
+                                $tour - > id
+                            }
+                        } == response.review.tour_id) {
                         tourName = '{{ $tour->translations->first()->title ?? "N/A" }}';
                     }
                     @endforeach

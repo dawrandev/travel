@@ -26,7 +26,7 @@
                     <!-- Language Filter -->
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
+                        <option value="{{ $language->code }}" {{ $language->code == 'ru' ? 'selected' : '' }}>
                             {{ $language->name }}
                         </option>
                         @endforeach
@@ -68,10 +68,10 @@
                             @foreach($faqs as $faq)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $faq->translations->first()->question ?? 'N/A' }}</td>
+                                <td>{{ $faq->translations->where('lang_code', 'ru')->first()->question ?? $faq->translations->first()->question ?? 'N/A' }}</td>
                                 <td>
                                     @if($faq->tour)
-                                    <span class="badge badge-info">{{ $faq->tour->translations->first()->title ?? 'N/A' }}</span>
+                                    <span class="badge badge-info">{{ $faq->tour->translations->where('lang_code', 'ru')->first()->title ?? $faq->tour->translations->first()->title ?? 'N/A' }}</span>
                                     @else
                                     <span class="badge badge-secondary">Общий</span>
                                     @endif
@@ -79,13 +79,13 @@
                                 <td>
                                     @if($faq->category)
                                     <span class="badge badge-primary">
-                                        {{ $faq->category->translations->first()->name ?? 'N/A' }}
+                                        {{ $faq->category->translations->where('lang_code', 'ru')->first()->name ?? $faq->category->translations->first()->name ?? 'N/A' }}
                                     </span>
                                     @else
                                     <span class="badge badge-secondary">Без категории</span>
                                     @endif
                                 </td>
-                                <td>{{ Str::limit($faq->translations->first()->answer ?? 'N/A', 50) }}</td>
+                                <td>{{ Str::limit($faq->translations->where('lang_code', 'ru')->first()->answer ?? $faq->translations->first()->answer ?? 'N/A', 50) }}</td>
                                 <td>{{ $faq->sort_order }}</td>
                                 <td>
                                     @if($faq->is_active)

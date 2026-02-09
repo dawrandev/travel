@@ -43,14 +43,14 @@
                     <span class="badge {{ $status['class'] }}">{{ $status['text'] }}</span>
                 </td>
                 <td>{{ $question->created_at->format('d.m.Y H:i') }}</td>
-                <td>
+                <td style="white-space: nowrap;">
                     <button type="button" class="btn btn-info btn-sm view-question" data-id="{{ $question->id }}" title="Просмотр">
                         <i class="fas fa-eye"></i>
                     </button>
                     <button type="button" class="btn btn-warning btn-sm edit-status" data-id="{{ $question->id }}" data-status="{{ $question->status }}" title="Изменить статус">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <form action="{{ route('questions.destroy', $question->id) }}" method="POST" style="display:inline;" data-confirm-delete data-item-name="вопрос">
+                    <form action="{{ route('questions.destroy', $question->id) }}" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="вопрос">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" title="Удалить">

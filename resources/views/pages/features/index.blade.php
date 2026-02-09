@@ -22,7 +22,7 @@
                 <div class="card-header-action">
                     <select class="form-control" id="languageFilter" style="width: 150px;">
                         @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'en' ? 'selected' : '' }}>
+                        <option value="{{ $language->code }}" {{ $language->code == 'ru' ? 'selected' : '' }}>
                             {{ $language->name }}
                         </option>
                         @endforeach
@@ -52,8 +52,8 @@
                                     <span class="badge badge-secondary">Нет иконки</span>
                                     @endif
                                 </td>
-                                <td>{{ $feature->translations->first()->name ?? 'N/A' }}</td>
-                                <td>{{ Str::limit($feature->translations->first()->description ?? 'N/A', 60) }}</td>
+                                <td>{{ $feature->translations->where('lang_code', 'ru')->first()->name ?? $feature->translations->first()->name ?? 'N/A' }}</td>
+                                <td>{{ Str::limit($feature->translations->where('lang_code', 'ru')->first()->description ?? $feature->translations->first()->description ?? 'N/A', 60) }}</td>
                                 <td>
                                     <button class="btn btn-primary" onclick="editFeature({{ $feature->id }})"
                                         style="width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">

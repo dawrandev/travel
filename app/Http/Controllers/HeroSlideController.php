@@ -25,7 +25,7 @@ class HeroSlideController extends Controller
 
     public function filter(Request $request): JsonResponse
     {
-        $langCode = $request->get('lang_code', 'en');
+        $langCode = $request->get('lang_code', 'ru');
         $slides = $this->heroSlideService->getAllByLanguage($langCode);
 
         return response()->json([

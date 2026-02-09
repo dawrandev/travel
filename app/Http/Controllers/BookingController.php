@@ -19,11 +19,10 @@ class BookingController extends Controller
                 $q->where('full_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('primary_phone', 'like', "%{$search}%")
-                    ->orWhere('secondary_phone', 'like', "%{$search}%");
+                    ->orWhere('secondary_phone', 'like', "%{$search}%")
+                    ->orWhere('message', 'like', "%{$search}%");
             });
         }
-
-        // Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }

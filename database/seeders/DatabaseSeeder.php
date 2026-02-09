@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
             ReviewBannerSeeder::class,
             FeatureSeeder::class,
             TourInclusionSeeder::class,
+            BookingSeeder::class,
+            QuestionSeeder::class,
         ]);
     }
 }

@@ -32,8 +32,9 @@ class ReviewController extends Controller
 
     public function filter(Request $request): JsonResponse
     {
-        $langCode = $request->get('lang_code', 'en');
-        $reviews = $this->reviewService->getAllByLanguage($langCode);
+        $langCode = $request->get('lang_code', 'ru');
+        $search = $request->get('search');
+        $reviews = $this->reviewService->getAllByLanguage($langCode, $search);
 
         return response()->json([
             'success' => true,

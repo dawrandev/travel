@@ -20,12 +20,7 @@
                 <div class="row mb-3">
                     <div class="col-md-5">
                         <div class="input-group">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Поиск по имени, email, телефону..." value="{{ request('search') }}">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" id="searchBtn">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Поиск по имени, email, телефону, вопросу..." value="{{ request('search') }}">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -107,6 +102,8 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        let searchTimeout;
+
         // Search function
         function loadQuestions() {
             const search = $('#searchInput').val();
@@ -128,16 +125,12 @@
             });
         }
 
-        // Search button
-        $('#searchBtn').click(function() {
-            loadQuestions();
-        });
-
-        // Enter key on search input
-        $('#searchInput').keypress(function(e) {
-            if (e.which == 13) {
+        // Search input with debounce
+        $('#searchInput').on('keyup', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function() {
                 loadQuestions();
-            }
+            }, 500);
         });
 
         // Status filter change
