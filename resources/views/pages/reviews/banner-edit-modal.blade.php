@@ -40,7 +40,7 @@
                     <div class="form-group">
                         <label class="form-label">Изображения баннера</label>
                         <div id="dropzone-edit-banner" class="dropzone"></div>
-                        <small class="text-muted">Оставьте без изменений или загрузите 3 новых изображения. Макс. 10MB на изображение.</small>
+                        <small class="text-muted">Текущие изображения показаны ниже. Можете загрузить до 3 новых изображений (макс. 10MB на изображение).</small>
                     </div>
 
                     <hr>
@@ -91,24 +91,15 @@
             maxFilesize: 10,
             acceptedFiles: "image/*",
             addRemoveLinks: true,
-            dictDefaultMessage: "Текущие изображения отображаются ниже. Загрузите 3 новых для замены.",
+            dictDefaultMessage: "Перетащите файлы сюда или нажмите для выбора (до 3 изображений)",
             dictRemoveFile: "Удалить",
             dictMaxFilesExceeded: "Можно загрузить только 3 изображения",
             init: function() {
-                this.on("addedfile", function(file) {
-                    // When user adds a file, remove existing mockFiles
-                    if (currentBannerImages.length > 0) {
-                        currentBannerImages.forEach(mockFile => {
-                            this.removeFile(mockFile);
-                        });
-                        currentBannerImages = [];
-                    }
-                });
                 this.on("maxfilesexceeded", function(file) {
                     this.removeFile(file);
                     swal({
                         title: 'Предупреждение',
-                        text: 'Можно загрузить только 3 изображения',
+                        text: 'Можно загрузить максимум 3 изображения',
                         icon: 'warning',
                         button: 'ОК'
                     });
@@ -125,11 +116,11 @@
             // Check if new images are uploaded
             const newFiles = editBannerDropzone.files.filter(f => !f.mock);
 
-            // If new images uploaded, must be exactly 3
-            if (newFiles.length > 0 && newFiles.length !== 3) {
+            // If new images uploaded, can be 1-3 images
+            if (newFiles.length > 3) {
                 swal({
                     title: 'Ошибка',
-                    text: 'Если вы загружаете новые изображения, необходимо загрузить ровно 3 изображения',
+                    text: 'Можно загрузить максимум 3 изображения',
                     icon: 'error',
                     button: 'ОК'
                 });
@@ -141,7 +132,7 @@
             formData.append('_method', 'PUT');
 
             // Add new images if uploaded
-            if (newFiles.length === 3) {
+            if (newFiles.length > 0) {
                 newFiles.forEach((file, index) => {
                     formData.append('images[]', file);
                 });
@@ -200,7 +191,7 @@
         });
     });
 
-    function populateEditBannerModal(response) {
+    window.populateEditBannerModal = function(response) {
         try {
             const {
                 banner,

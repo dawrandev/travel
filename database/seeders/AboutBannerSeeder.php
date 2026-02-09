@@ -10,11 +10,12 @@ class AboutBannerSeeder extends Seeder
 {
     public function run(): void
     {
+        // Asosiy banner
         $banner = AboutBanner::create([
             'is_active' => true,
         ]);
 
-        // Create 3 images for the banner
+        // Rasmlar
         $imageFiles = ['about-banner-1.jpg', 'about-banner-2.jpg', 'about-banner-3.jpg'];
         foreach ($imageFiles as $index => $imageFile) {
             $banner->images()->create([
@@ -23,11 +24,18 @@ class AboutBannerSeeder extends Seeder
             ]);
         }
 
-        $languages = Language::all();
-        foreach ($languages as $language) {
+        // Tarjimalar (Title qismini tarjima bilan saqlash)
+        $translations = [
+            'uz' => 'Biz haqimizda',
+            'ru' => 'О нас',
+            'en' => 'About Us',
+            'kk' => 'Biz haqqımızda',
+        ];
+
+        foreach ($translations as $lang => $title) {
             $banner->translations()->create([
-                'lang_code' => $language->code,
-                'title' => 'About Us - ' . $language->name,
+                'lang_code' => $lang,
+                'title'     => $title,
             ]);
         }
     }

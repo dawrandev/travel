@@ -341,7 +341,7 @@
         }
     });
 
-    function showReview(id) {
+    window.showReview = function(id) {
         $.ajax({
             url: ROUTES.translations.replace('{id}', id),
             type: 'GET',
@@ -352,11 +352,7 @@
                     // Get tour name from first available translation
                     var tourName = 'N/A';
                     @foreach($tours as $tour)
-                    if ({
-                            {
-                                $tour - > id
-                            }
-                        } == response.review.tour_id) {
+                    if ({{ $tour->id }} == response.review.tour_id) {
                         tourName = '{{ $tour->translations->first()->title ?? "N/A" }}';
                     }
                     @endforeach
@@ -416,9 +412,9 @@
                 });
             }
         });
-    }
+    };
 
-    function editReview(id) {
+    window.editReview = function(id) {
         $.ajax({
             url: ROUTES.translations.replace('{id}', id),
             type: 'GET',
@@ -452,15 +448,15 @@
                 });
             }
         });
-    }
+    };
 
-    function editBanner(id) {
+    window.editBanner = function(id) {
         $.ajax({
             url: '/reviews/banner/' + id + '/translations',
             type: 'GET',
             success: function(response) {
                 if (response.success) {
-                    populateEditBannerModal(response);
+                    window.populateEditBannerModal(response);
                     $('#editBannerModal').modal('show');
                 }
             },
@@ -473,6 +469,6 @@
                 });
             }
         });
-    }
+    };
 </script>
 @endpush

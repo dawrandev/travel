@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\ReviewBanner;
-use App\Models\Language;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ReviewBannerSeeder extends Seeder
 {
@@ -14,20 +14,25 @@ class ReviewBannerSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // Create 3 images for the banner
         $imageFiles = ['review-banner-1.jpg', 'review-banner-2.jpg', 'review-banner-3.jpg'];
         foreach ($imageFiles as $index => $imageFile) {
             $banner->images()->create([
-                'image_path' => 'uploads/banners/' . $imageFile,
+                'image_path' => 'uploads/' . $imageFile,
                 'sort_order' => $index,
             ]);
         }
 
-        $languages = Language::all();
-        foreach ($languages as $language) {
+        $translations = [
+            'uz' => 'Mijozlarimiz fikrlari',
+            'ru' => 'Отзывы наших клиентов',
+            'en' => 'Customer Reviews',
+            'kk' => 'Klientlerimizin\' pikirleri',
+        ];
+
+        foreach ($translations as $lang => $title) {
             $banner->translations()->create([
-                'lang_code' => $language->code,
-                'title' => 'Reviews - ' . $language->name,
+                'lang_code' => $lang,
+                'title' => $title,
             ]);
         }
     }

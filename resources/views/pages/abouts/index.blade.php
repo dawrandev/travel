@@ -228,13 +228,13 @@
         });
     }
 
-    function editBanner(id) {
+    window.editBanner = function(id) {
         $.ajax({
             url: '/abouts/banner/' + id + '/translations',
             type: 'GET',
             success: function(response) {
                 if (response.success) {
-                    populateEditBannerModal(response);
+                    window.populateEditBannerModal(response);
                     $('#editBannerModal').modal('show');
                 }
             },
@@ -247,6 +247,6 @@
                 });
             }
         });
-    }
+    };
 </script>
 @endpush
