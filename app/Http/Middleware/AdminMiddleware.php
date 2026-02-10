@@ -14,6 +14,10 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
+        if (Auth::id() !== 1) {
+            return redirect()->route('login')->with('error', 'У вас нет доступа к админ-панели');
+        }
+
         return $next($request);
     }
 }

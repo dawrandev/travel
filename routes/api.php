@@ -40,6 +40,6 @@ Route::get('/reviews', [ReviewController::class, 'index']);
 Route::get('/reviews/banner', [ReviewController::class, 'banner']);
 Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 
-Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:100,1');
+Route::post('/bookings', [BookingController::class, 'store'])->middleware('throttle:10,1');
 
-Route::post('/questions', [QuestionController::class, 'store'])->middleware('throttle:100,1');
+Route::post('/questions', [QuestionController::class, 'store'])->middleware('throttle:10,1');

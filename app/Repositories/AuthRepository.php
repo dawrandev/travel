@@ -16,6 +16,10 @@ class AuthRepository
     public function logout(): void
     {
         Auth::logout();
+
+        session()->invalidate();
+
+        session()->regenerateToken();
     }
 
     public function getAuthUser()
