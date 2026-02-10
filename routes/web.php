@@ -16,7 +16,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TourController;
 
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login.post');
 
 Route::middleware('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

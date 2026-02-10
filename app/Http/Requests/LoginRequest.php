@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class LoginRequest extends FormRequest
 {
@@ -15,7 +16,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'login' => 'required|string',
-            'password' => 'required|min:6',
+            'password' => ['required', Password::min(8)->letters()->numbers()],
         ];
     }
 
@@ -25,7 +26,7 @@ class LoginRequest extends FormRequest
             'login.required' => 'Логин обязателен',
             'login.login' => 'Некорректный формат логина',
             'password.required' => 'Пароль обязателен',
-            'password.min' => 'Пароль должен содержать минимум :min символов',
+            'password' => 'Пароль должен содержать минимум 8 символов, включая прописные буквы, цифры и специальные символы (@$!%*?&)',
         ];
     }
 }
