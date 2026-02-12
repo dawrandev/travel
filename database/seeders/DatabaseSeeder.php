@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ContactSeeder::class,
             ContactBannerSeeder::class,
             CategorySeeder::class,
+            CategoryBannerSeeder::class,
             TourSeeder::class,
             FaqCategorySeeder::class,
             FaqSeeder::class,

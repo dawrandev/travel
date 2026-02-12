@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryBannerRequest;
 use App\Http\Requests\StoreCategoryRequest;
+use App\Models\CategoryBanner;
 use App\Models\Language;
+use App\Services\CategoryBannerService;
 use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -13,14 +16,16 @@ use Illuminate\View\View;
 class CategoryController extends Controller
 {
     public function __construct(
-        protected CategoryService $categoryService
+        protected CategoryService $categoryService,
+        protected CategoryBannerService $categoryBannerService
     ) {}
 
     public function index(): View
     {
         $categories = $this->categoryService->getAll();
+        $banner = CategoryBanner::first();
         $languages = Language::all();
-        return view('pages.categories.index', compact('categories', 'languages'));
+        return view('pages.categories.index', compact('categories', 'banner', 'languages'));
     }
 
     public function filter(Request $request): JsonResponse
@@ -72,5 +77,47 @@ class CategoryController extends Controller
     {
         $this->categoryService->delete($id);
         return redirect()->route('categories.index')->with('success', 'Категория успешно удалена');
+    }
+
+    public function storeBanner(CategoryBannerRequest $request): RedirectResponse
+    {
+        $this->categoryBannerService->create($request->validated());
+        return redirect()->route('categories.index')->with('success', 'Баннер успешно создан');
+    }
+
+    public function updateBanner(CategoryBannerRequest $request, int $id): RedirectResponse
+    {
+        $this->categoryBannerService->update($id, $request->validated());
+        return redirect()->route('categories.index')->with('success', 'Баннер успешно обновлен');
+    }
+
+    public function getBannerTranslations(int $id): JsonResponse
+    {
+        $banner = $this->categoryBannerService->findById($id);
+
+        $translations = [];
+        foreach ($banner->translations as $translation) {
+            $translations[$translation->lang_code] = [
+                'title' => $translation->title,
+            ];
+        }
+
+        $images = $banner->images->sortBy('sort_order')->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'image_path' => $image->image_path,
+                'sort_order' => $image->sort_order,
+            ];
+        })->values()->toArray();
+
+        return response()->json([
+            'success' => true,
+            'banner' => [
+                'id' => $banner->id,
+                'is_active' => $banner->is_active
+            ],
+            'translations' => $translations,
+            'images' => $images
+        ]);
     }
 }

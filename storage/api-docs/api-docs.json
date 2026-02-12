@@ -404,6 +404,69 @@
                 }
             }
         },
+        "/categories/banner": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Kategoriyalar sahifasi bannerini olish",
+                "operationId": "46e2d9460f18f26841f35732c8b03044",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (uz, ru, kk, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muvaffaqiyatli javob",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Kategoriyalar"
+                                                },
+                                                "images": {
+                                                    "description": "Banner rasmlari massivi (tartiblangan)",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "/storage/uploads/banners/category-banner-1.jpg"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Banner topilmadi"
+                    }
+                }
+            }
+        },
         "/contact": {
             "get": {
                 "tags": [
@@ -1524,6 +1587,27 @@
                                                 "features": {
                                                     "type": "array",
                                                     "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "route": {
+                                                    "description": "Marshrut GPS nuqtalari",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "sort_order": {
+                                                                "type": "integer",
+                                                                "example": 0
+                                                            },
+                                                            "latitude": {
+                                                                "type": "number",
+                                                                "example": 41.2995
+                                                            },
+                                                            "longitude": {
+                                                                "type": "number",
+                                                                "example": 69.2401
+                                                            }
+                                                        },
                                                         "type": "object"
                                                     }
                                                 },

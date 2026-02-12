@@ -159,7 +159,7 @@
 
             // Submit via AJAX
             $.ajax({
-                url: "/contacts/banner/" + bannerId,
+                url: "/categories/banner/" + bannerId,
                 method: 'POST',
                 data: formData,
                 processData: false,

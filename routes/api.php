@@ -28,6 +28,7 @@ Route::get('/contact/banner', [ContactController::class, 'banner']);
 Route::get('/hero-slides', [HeroSlideController::class, 'index']);
 
 // Categories
+Route::get('/categories/banner', [CategoryController::class, 'banner']);
 Route::get('/categories', [CategoryController::class, 'index']);
 
 // Tours

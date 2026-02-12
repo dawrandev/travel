@@ -66,16 +66,20 @@
 </div>
 
 @push('scripts')
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 <script>
+    Dropzone.autoDiscover = false;
+
     let editBannerDropzone;
     let currentBannerImages = [];
 
-    // Initialize Dropzone immediately when script loads
-    if (typeof Dropzone !== 'undefined') {
-        Dropzone.autoDiscover = false;
-    }
+    function initializeEditBannerDropzone() {
+        // Destroy existing dropzone if it exists
+        const existingElement = document.getElementById('dropzone-edit-banner');
+        if (existingElement && existingElement.dropzone) {
+            existingElement.dropzone.destroy();
+        }
 
-    $(document).ready(function() {
         // Initialize Dropzone for edit
         editBannerDropzone = new Dropzone("#dropzone-edit-banner", {
             url: "#",
@@ -101,6 +105,11 @@
                 });
             }
         });
+    }
+
+    $(document).ready(function() {
+        // Initialize Dropzone on first load
+        initializeEditBannerDropzone();
 
         // Form submission
         $('#editBannerForm').on('submit', function(e) {
@@ -152,7 +161,6 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    // CHANGED: Swal → swal
                     swal({
                         title: 'Успешно',
                         text: 'Баннер успешно обновлен',
@@ -169,7 +177,6 @@
                     } else if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMessage = xhr.responseJSON.message;
                     }
-                    // CHANGED: Swal → swal
                     swal({
                         title: 'Ошибка',
                         text: errorMessage,
@@ -180,10 +187,17 @@
             });
         });
 
+        // Re-initialize Dropzone when modal is shown
+        $('#editBannerModal').on('shown.bs.modal', function() {
+            initializeEditBannerDropzone();
+        });
+
         // Reset on modal close
         $('#editBannerModal').on('hidden.bs.modal', function() {
             $('#editBannerForm')[0].reset();
-            editBannerDropzone.removeAllFiles();
+            if (editBannerDropzone) {
+                editBannerDropzone.removeAllFiles();
+            }
             currentBannerImages = [];
         });
     });
@@ -210,30 +224,38 @@
             }
             @endforeach
 
+            // Initialize Dropzone if not already done
+            if (!editBannerDropzone) {
+                initializeEditBannerDropzone();
+            }
+
             // Clear dropzone
-            editBannerDropzone.removeAllFiles();
+            if (editBannerDropzone) {
+                editBannerDropzone.removeAllFiles();
+            }
             currentBannerImages = [];
 
             // Display current images as mockFiles
             if (images && images.length > 0) {
-                images.forEach((image, index) => {
-                    const mockFile = {
-                        name: `Изображение ${index + 1}`,
-                        size: 12345,
-                        mock: true
-                    };
+                setTimeout(() => {
+                    images.forEach((image, index) => {
+                        const mockFile = {
+                            name: `Изображение ${index + 1}`,
+                            size: 12345,
+                            mock: true
+                        };
 
-                    editBannerDropzone.emit("addedfile", mockFile);
-                    editBannerDropzone.emit("thumbnail", mockFile, '/storage/' + image.image_path);
-                    editBannerDropzone.emit("complete", mockFile);
+                        editBannerDropzone.emit("addedfile", mockFile);
+                        editBannerDropzone.emit("thumbnail", mockFile, '/storage/' + image.image_path);
+                        editBannerDropzone.emit("complete", mockFile);
 
-                    currentBannerImages.push(mockFile);
-                });
+                        currentBannerImages.push(mockFile);
+                    });
+                }, 100);
             }
 
         } catch (error) {
             console.error('Error populating edit banner modal:', error);
-            // CHANGED: Swal → swal
             swal({
                 title: 'Ошибка',
                 text: 'Ошибка при загрузке данных баннера: ' + error.message,

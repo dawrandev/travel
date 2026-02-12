@@ -80,6 +80,9 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [CategoryController::class, 'store'])->name('store');
         Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
         Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::post('/banner', [CategoryController::class, 'storeBanner'])->name('banner.store');
+        Route::put('/banner/{id}', [CategoryController::class, 'updateBanner'])->name('banner.update');
+        Route::get('/banner/{id}/translations', [CategoryController::class, 'getBannerTranslations'])->name('banner.translations');
     });
 
     Route::prefix('reviews')->name('reviews.')->group(function () {

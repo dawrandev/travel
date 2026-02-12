@@ -80,7 +80,13 @@
     let editBannerDropzone;
     let currentBannerImages = [];
 
-    $(document).ready(function() {
+    function initializeEditBannerDropzone() {
+        // Destroy existing dropzone if it exists
+        const existingElement = document.getElementById('dropzone-edit-banner');
+        if (existingElement && existingElement.dropzone) {
+            existingElement.dropzone.destroy();
+        }
+
         // Initialize Dropzone for edit
         editBannerDropzone = new Dropzone("#dropzone-edit-banner", {
             url: "#",
@@ -106,6 +112,11 @@
                 });
             }
         });
+    }
+
+    $(document).ready(function() {
+        // Initialize Dropzone on first load
+        initializeEditBannerDropzone();
 
         // Form submission
         $('#editBannerForm').on('submit', function(e) {
@@ -183,10 +194,17 @@
             });
         });
 
+        // Re-initialize Dropzone when modal is shown
+        $('#editBannerModal').on('shown.bs.modal', function() {
+            initializeEditBannerDropzone();
+        });
+
         // Reset on modal close
         $('#editBannerModal').on('hidden.bs.modal', function() {
             $('#editBannerForm')[0].reset();
-            editBannerDropzone.removeAllFiles();
+            if (editBannerDropzone) {
+                editBannerDropzone.removeAllFiles();
+            }
             currentBannerImages = [];
         });
     });
@@ -212,25 +230,34 @@
             }
             @endforeach
 
+            // Initialize Dropzone if not already done
+            if (!editBannerDropzone) {
+                initializeEditBannerDropzone();
+            }
+
             // Clear dropzone
-            editBannerDropzone.removeAllFiles();
+            if (editBannerDropzone) {
+                editBannerDropzone.removeAllFiles();
+            }
             currentBannerImages = [];
 
             // Display current images as mockFiles
             if (images && images.length > 0) {
-                images.forEach((image, index) => {
-                    const mockFile = {
-                        name: `Изображение ${index + 1}`,
-                        size: 12345,
-                        mock: true
-                    };
+                setTimeout(() => {
+                    images.forEach((image, index) => {
+                        const mockFile = {
+                            name: `Изображение ${index + 1}`,
+                            size: 12345,
+                            mock: true
+                        };
 
-                    editBannerDropzone.emit("addedfile", mockFile);
-                    editBannerDropzone.emit("thumbnail", mockFile, '/storage/' + image.image_path);
-                    editBannerDropzone.emit("complete", mockFile);
+                        editBannerDropzone.emit("addedfile", mockFile);
+                        editBannerDropzone.emit("thumbnail", mockFile, '/storage/' + image.image_path);
+                        editBannerDropzone.emit("complete", mockFile);
 
-                    currentBannerImages.push(mockFile);
-                });
+                        currentBannerImages.push(mockFile);
+                    });
+                }, 100);
             }
 
         } catch (error) {

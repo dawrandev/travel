@@ -282,12 +282,20 @@ class TourSeeder extends Seeder
                 ]);
             }
 
-            // Sample waypoints for each tour
-            DB::table('tour_waypoints')->insert([
-                ['tour_id' => $tourId, 'latitude' => 41.2995, 'longitude' => 69.2401, 'sort_order' => 0, 'created_at' => now(), 'updated_at' => now()],
-                ['tour_id' => $tourId, 'latitude' => 41.3111, 'longitude' => 69.2803, 'sort_order' => 1, 'created_at' => now(), 'updated_at' => now()],
-                ['tour_id' => $tourId, 'latitude' => 41.3256, 'longitude' => 69.2987, 'sort_order' => 2, 'created_at' => now(), 'updated_at' => now()],
-            ]);
+            $waypoints = [
+                ['tour_id' => $tourId, 'latitude' => 42.4601, 'longitude' => 59.6120, 'name' => 'Nukus (Center)', 'sort_order' => 0],
+                ['tour_id' => $tourId, 'latitude' => 42.3218, 'longitude' => 59.3789, 'name' => 'Mizdakhan Necropolis', 'sort_order' => 1],
+                ['tour_id' => $tourId, 'latitude' => 43.7667, 'longitude' => 59.0333, 'name' => 'Muynak (Ship Graveyard)', 'sort_order' => 2],
+                ['tour_id' => $tourId, 'latitude' => 42.0012, 'longitude' => 60.6542, 'name' => 'Ayaz Qala', 'sort_order' => 3],
+                ['tour_id' => $tourId, 'latitude' => 44.2464, 'longitude' => 58.2612, 'name' => 'Aral Sea Shore', 'sort_order' => 4],
+            ];
+
+            foreach ($waypoints as $point) {
+                DB::table('tour_waypoints')->insert(array_merge($point, [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]));
+            }
         }
     }
 }

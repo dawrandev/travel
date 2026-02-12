@@ -147,15 +147,15 @@
                     <hr>
 
                     <!-- Marshrut (Route Waypoints) -->
-                    <h6 class="mb-3"><i class="fas fa-map-marked-alt"></i> Marshrut nuqtalari</h6>
+                    <h6 class="mb-3"><i class="fas fa-map-marked-alt"></i> Точки маршрута</h6>
                     <div class="form-group">
                         <div id="edit-tour-map" style="height: 400px; border-radius: 8px;"></div>
-                        <small class="text-muted">Xaritaga bosib marshrut nuqtalarini ketma-ket belgilang</small>
+                        <small class="text-muted">Нажмите на карту, чтобы последовательно отметить точки маршрута</small>
                         <div id="edit-waypoints-list" class="mt-2">
-                            <small class="text-muted">Hech qanday nuqta belgilanmagan</small>
+                            <small class="text-muted">Точки не отмечены</small>
                         </div>
                         <button type="button" class="btn btn-sm btn-danger mt-1" id="clear-edit-waypoints">
-                            <i class="fas fa-trash"></i> Nuqtalarni tozalash
+                            <i class="fas fa-trash"></i> Очистить точки
                         </button>
                     </div>
 
