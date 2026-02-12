@@ -281,6 +281,21 @@ class TourSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
             }
+
+            $waypoints = [
+                ['tour_id' => $tourId, 'latitude' => 42.4601, 'longitude' => 59.6120,],
+                ['tour_id' => $tourId, 'latitude' => 42.3218, 'longitude' => 59.3789,],
+                ['tour_id' => $tourId, 'latitude' => 43.7667, 'longitude' => 59.0333,],
+                ['tour_id' => $tourId, 'latitude' => 42.0012, 'longitude' => 60.6542,],
+                ['tour_id' => $tourId, 'latitude' => 44.2464, 'longitude' => 58.2612,],
+            ];
+
+            foreach ($waypoints as $point) {
+                DB::table('tour_waypoints')->insert(array_merge($point, [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]));
+            }
         }
     }
 }
