@@ -73,31 +73,31 @@ class TourDetailResource extends JsonResource
                 ];
             }),
 
-            'faqs' => $this->faqs
+            'faq' => $this->faqs
                 ->where('is_active', true)
                 ->sortBy('sort_order')
-                ->values()
-                ->map(function ($faq) use ($lang) {
-                    $translation = $faq->translations->firstWhere('lang_code', $lang)
-                        ?? $faq->translations->first();
-
-                    $categoryTranslation = $faq->category
-                        ? ($faq->category->translations->firstWhere('lang_code', $lang)
-                            ?? $faq->category->translations->first())
+                ->groupBy('faq_category_id')
+                ->map(function ($faqs, $categoryId) use ($lang) {
+                    $firstFaq = $faqs->first();
+                    $categoryTranslation = $firstFaq->category
+                        ? ($firstFaq->category->translations->firstWhere('lang_code', $lang)
+                            ?? $firstFaq->category->translations->first())
                         : null;
 
                     return [
-                        'id' => $faq->id,
-                        'question' => $translation->question ?? '',
-                        'answer' => $translation->answer ?? '',
-                        'sort_order' => $faq->sort_order,
-                        'faq_category_id' => $faq->faq_category_id,
-                        'faq_category' => $faq->category ? [
-                            'id' => $faq->category->id,
-                            'name' => $categoryTranslation->name ?? '',
-                        ] : null,
+                        'title' => $categoryTranslation->name ?? '',
+                        'questions' => $faqs->map(function ($faq) use ($lang) {
+                            $translation = $faq->translations->firstWhere('lang_code', $lang)
+                                ?? $faq->translations->first();
+
+                            return [
+                                'question' => $translation->question ?? '',
+                                'answer' => $translation->answer ?? '',
+                            ];
+                        })->values(),
                     ];
-                }),
+                })
+                ->values(),
 
             'route' => $this->waypoints->map(fn($w) => [
                 'sort_order' => $w->sort_order,
