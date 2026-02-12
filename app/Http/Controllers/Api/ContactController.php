@@ -45,6 +45,7 @@ class ContactController extends Controller
                                 new OA\Property(property: "telegram_url", type: "string", example: "https://t.me/example"),
                                 new OA\Property(property: "telegram_username", type: "string", example: "@example"),
                                 new OA\Property(property: "instagram_url", type: "string", example: "https://instagram.com/example"),
+                                new OA\Property(property: "instagram_username", type: "string", example: "@example"),
                                 new OA\Property(property: "facebook_url", type: "string", example: "https://facebook.com/example"),
                                 new OA\Property(property: "facebook_name", type: "string", example: "Example Page"),
                                 new OA\Property(property: "youtube_url", type: "string", example: "https://youtube.com/example"),

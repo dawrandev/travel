@@ -19,6 +19,7 @@ class ContactSeeder extends Seeder
             'longitude' => '59.6121',
             'telegram_url' => 'https://t.me/welcome_to_karakalpakistan',
             'telegram_username' => 'welcome_to_karakalpakistan',
+            'instagram_username' => 'Toqtarbay Tours',
             'instagram_url' => 'https://instagram.com',
             'facebook_name' => 'Facebook',
             'facebook_url' => 'https://facebook.com',

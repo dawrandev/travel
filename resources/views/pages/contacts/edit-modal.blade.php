@@ -113,6 +113,15 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label class="form-label">Instagram Username</label>
+                                <input type="text" name="instagram_username" id="edit_instagram_username" class="form-control" placeholder="username">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label class="form-label">YouTube URL</label>
                                 <input type="url" name="youtube_url" id="edit_youtube_url" class="form-control" placeholder="https://youtube.com/@channel">
                             </div>

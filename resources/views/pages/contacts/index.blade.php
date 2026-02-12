@@ -169,7 +169,8 @@
 
                                 @if($contact->instagram_url)
                                 <a href="{{ $contact->instagram_url }}" target="_blank" class="btn btn-sm mr-2 mb-2" style="background-color: #E1306C; color: white;">
-                                    <i class="fab fa-instagram"></i> Instagram
+                                    <i class="fab fa-instagram"></i>
+                                    {{ $contact->instagram_username ? '@' . $contact->instagram_username : 'Instagram' }}
                                 </a>
                                 @endif
 
@@ -337,6 +338,7 @@
                         $('#edit_telegram_url').val(c.telegram_url || '');
                         $('#edit_telegram_username').val(c.telegram_username || '');
                         $('#edit_instagram_url').val(c.instagram_url || '');
+                        $('#edit_instagram_username').val(c.instagram_username || '');
                         $('#edit_facebook_url').val(c.facebook_url || '');
                         $('#edit_facebook_name').val(c.facebook_name || '');
                         $('#edit_youtube_url').val(c.youtube_url || '');

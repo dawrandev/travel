@@ -472,6 +472,10 @@
                                                     "type": "string",
                                                     "example": "https://instagram.com/example"
                                                 },
+                                                "instagram_username": {
+                                                    "type": "string",
+                                                    "example": "@example"
+                                                },
                                                 "facebook_url": {
                                                     "type": "string",
                                                     "example": "https://facebook.com/example"

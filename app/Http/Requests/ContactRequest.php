@@ -22,6 +22,7 @@ class ContactRequest extends FormRequest
             'telegram_url' => 'nullable|url|max:255',
             'telegram_username' => 'nullable|string|max:255',
             'instagram_url' => 'nullable|url|max:255',
+            'instagram_username' => 'nullable|string|max:255',
             'facebook_url' => 'nullable|url|max:255',
             'youtube_url' => 'nullable|url|max:255',
         ];

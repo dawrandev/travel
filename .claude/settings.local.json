@@ -6,7 +6,9 @@
       "Bash(composer show:*)",
       "Bash(composer remove:*)",
       "Bash(php:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

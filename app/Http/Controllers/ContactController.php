@@ -62,6 +62,7 @@ class ContactController extends Controller
                 'telegram_url' => $contact->telegram_url,
                 'telegram_username' => $contact->telegram_username,
                 'instagram_url' => $contact->instagram_url,
+                'instagram_username' => $contact->instagram_username,
                 'facebook_url' => $contact->facebook_url,
                 'facebook_name' => $contact->facebook_name,
                 'youtube_url' => $contact->youtube_url,

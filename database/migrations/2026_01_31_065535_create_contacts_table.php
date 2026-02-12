@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('latitude');
             $table->string('telegram_url');
             $table->string('telegram_username');
+            $table->string('instagram_username');
             $table->string('instagram_url');
             $table->string('facebook_name');
             $table->string('facebook_url');

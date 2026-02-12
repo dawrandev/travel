@@ -17,6 +17,7 @@ class Contact extends Model
         'latitude',
         'telegram_url',
         'telegram_username',
+        'instagram_username',
         'instagram_url',
         'facebook_name',
         'facebook_url',
