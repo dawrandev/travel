@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Language;
 use App\Models\TourItineraryTranslation;
+use App\Models\TourWaypoint;
 use App\Repositories\TourRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -59,6 +60,9 @@ class TourService
             if (isset($data['itineraries']) && is_array($data['itineraries'])) {
                 $this->createItineraries($tour->id, $data['itineraries']);
             }
+
+            // Create waypoints
+            $this->createWaypoints($tour->id, $data);
 
             // Sync features (inclusions)
             $this->syncFeaturesFromRequest($tour->id, $data);
@@ -135,6 +139,10 @@ class TourService
                 $this->createItineraries($tour->id, $data['itineraries']);
             }
 
+            // Update waypoints (delete old, recreate)
+            $tour->waypoints()->delete();
+            $this->createWaypoints($tour->id, $data);
+
             // Update features (inclusions)
             $this->syncFeaturesFromRequest($tour->id, $data);
 
@@ -210,6 +218,20 @@ class TourService
                     'activity_description' => $itinerary['activity_description_' . $langCode] ?? '',
                 ]);
             }
+        }
+    }
+
+    private function createWaypoints(int $tourId, array $data): void
+    {
+        if (!isset($data['waypoints']) || !is_array($data['waypoints'])) return;
+
+        foreach ($data['waypoints'] as $index => $waypoint) {
+            TourWaypoint::create([
+                'tour_id'    => $tourId,
+                'latitude'   => $waypoint['latitude'],
+                'longitude'  => $waypoint['longitude'],
+                'sort_order' => $index,
+            ]);
         }
     }
 

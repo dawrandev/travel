@@ -281,6 +281,13 @@ class TourSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
             }
+
+            // Sample waypoints for each tour
+            DB::table('tour_waypoints')->insert([
+                ['tour_id' => $tourId, 'latitude' => 41.2995, 'longitude' => 69.2401, 'sort_order' => 0, 'created_at' => now(), 'updated_at' => now()],
+                ['tour_id' => $tourId, 'latitude' => 41.3111, 'longitude' => 69.2803, 'sort_order' => 1, 'created_at' => now(), 'updated_at' => now()],
+                ['tour_id' => $tourId, 'latitude' => 41.3256, 'longitude' => 69.2987, 'sort_order' => 2, 'created_at' => now(), 'updated_at' => now()],
+            ]);
         }
     }
 }

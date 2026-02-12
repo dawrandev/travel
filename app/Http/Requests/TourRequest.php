@@ -31,6 +31,10 @@ class TourRequest extends FormRequest
             'itineraries' => 'required|array|min:1',
             'itineraries.*.day_number' => 'required|integer|min:1',
             'itineraries.*.event_time' => 'required|date_format:H:i:s,H:i',
+
+            'waypoints'             => 'nullable|array',
+            'waypoints.*.latitude'  => 'required_with:waypoints|numeric|between:-90,90',
+            'waypoints.*.longitude' => 'required_with:waypoints|numeric|between:-180,180',
         ];
 
         // Add validation rules for all languages

@@ -162,6 +162,18 @@ class TourController extends Controller
                                 new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
                                 new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
                                 new OA\Property(
+                                    property: "route",
+                                    type: "array",
+                                    description: "Marshrut GPS nuqtalari",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "sort_order", type: "integer", example: 0),
+                                            new OA\Property(property: "latitude", type: "number", example: 41.2995),
+                                            new OA\Property(property: "longitude", type: "number", example: 69.2401),
+                                        ]
+                                    )
+                                ),
+                                new OA\Property(
                                     property: "faqs",
                                     type: "array",
                                     description: "Tourga tegishli FAQ lar",
@@ -192,7 +204,8 @@ class TourController extends Controller
             'itineraries.translations',
             'features.translations',
             'faqs.translations',
-            'faqs.category.translations'
+            'faqs.category.translations',
+            'waypoints',
         ])
             ->where('is_active', true)
             ->findOrFail($id);

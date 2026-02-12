@@ -89,6 +89,12 @@ class TourDetailResource extends JsonResource
                         'faq_category_id' => $faq->faq_category_id,
                     ];
                 }),
+
+            'route' => $this->waypoints->map(fn($w) => [
+                'sort_order' => $w->sort_order,
+                'latitude'   => (float) $w->latitude,
+                'longitude'  => (float) $w->longitude,
+            ])->values()->toArray(),
         ];
     }
 

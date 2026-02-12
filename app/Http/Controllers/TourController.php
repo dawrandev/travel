@@ -32,6 +32,7 @@ class TourController extends Controller
     public function show(int $id): JsonResponse
     {
         $tour = $this->tourService->findById($id);
+        $tour->load('waypoints');
 
         return response()->json([
             'success' => true,
@@ -79,6 +80,12 @@ class TourController extends Controller
             $features[$feature->id] = $feature->pivot->is_included ? 'included' : 'excluded';
         }
 
+        $waypoints = $tour->waypoints->map(fn($w) => [
+            'latitude'   => (float) $w->latitude,
+            'longitude'  => (float) $w->longitude,
+            'sort_order' => $w->sort_order,
+        ])->values()->toArray();
+
         return response()->json([
             'success' => true,
             'tour' => [
@@ -96,6 +103,7 @@ class TourController extends Controller
             'itineraries' => $itineraries,
             'features' => $features,
             'images' => $tour->images,
+            'waypoints' => $waypoints,
         ]);
     }
 

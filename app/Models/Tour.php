@@ -79,4 +79,9 @@ class Tour extends Model
     {
         return $this->hasMany(Faq::class);
     }
+
+    public function waypoints()
+    {
+        return $this->hasMany(TourWaypoint::class)->orderBy('sort_order');
+    }
 }

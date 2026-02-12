@@ -70,6 +70,10 @@
                         <div id="showExcluded"></div>
                     </div>
                 </div>
+
+                <!-- Marshrut nuqtalari -->
+                <h5 class="mt-4"><i class="fas fa-map-marked-alt"></i> Marshrut nuqtalari</h5>
+                <div id="show-tour-map" style="height: 400px; border-radius: 8px;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -78,8 +82,65 @@
     </div>
 </div>
 
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+@endpush
+
 @push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    let showMap = null;
+    let showMapMarkers = [];
+    let showPendingWaypoints = null;
+
+    function initShowMap() {
+        if (showMap) {
+            showMap.invalidateSize();
+            return;
+        }
+        showMap = L.map('show-tour-map').setView([42.4667, 59.6167], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(showMap);
+    }
+
+    function displayShowWaypoints(waypoints) {
+        showMapMarkers.forEach(function(m) { showMap.removeLayer(m); });
+        showMapMarkers = [];
+
+        if (!waypoints || waypoints.length === 0) {
+            showMap.setView([42.4667, 59.6167], 12);
+            return;
+        }
+
+        var sorted = waypoints.slice().sort(function(a, b) { return a.sort_order - b.sort_order; });
+        sorted.forEach(function(wp, i) {
+            var marker = L.marker([parseFloat(wp.latitude), parseFloat(wp.longitude)], {
+                icon: L.divIcon({
+                    html: '<div style="background:#6777ef;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);">' + (i + 1) + '</div>',
+                    iconSize: [26, 26],
+                    iconAnchor: [13, 13],
+                    className: ''
+                })
+            }).addTo(showMap);
+            showMapMarkers.push(marker);
+        });
+
+        var latlngs = sorted.map(function(wp) { return [parseFloat(wp.latitude), parseFloat(wp.longitude)]; });
+        showMap.fitBounds(latlngs, {padding: [30, 30]});
+    }
+
+    $(document).ready(function() {
+        $('#showModal').on('shown.bs.modal', function() {
+            initShowMap();
+            if (showPendingWaypoints !== null) {
+                displayShowWaypoints(showPendingWaypoints);
+                showPendingWaypoints = null;
+            }
+        });
+    });
+
     function populateShowModal(tour) {
         // Images
         let carouselHtml = '';
@@ -200,6 +261,9 @@
 
         $('#showIncluded').html(includedHtml || '<p class="text-muted">Нет функций</p>');
         $('#showExcluded').html(excludedHtml || '<p class="text-muted">Нет функций</p>');
+
+        // Waypoints
+        showPendingWaypoints = tour.waypoints || [];
     }
 </script>
 @endpush
