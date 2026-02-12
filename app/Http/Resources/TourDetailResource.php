@@ -81,12 +81,21 @@ class TourDetailResource extends JsonResource
                     $translation = $faq->translations->firstWhere('lang_code', $lang)
                         ?? $faq->translations->first();
 
+                    $categoryTranslation = $faq->category
+                        ? ($faq->category->translations->firstWhere('lang_code', $lang)
+                            ?? $faq->category->translations->first())
+                        : null;
+
                     return [
                         'id' => $faq->id,
                         'question' => $translation->question ?? '',
                         'answer' => $translation->answer ?? '',
                         'sort_order' => $faq->sort_order,
                         'faq_category_id' => $faq->faq_category_id,
+                        'faq_category' => $faq->category ? [
+                            'id' => $faq->category->id,
+                            'name' => $categoryTranslation->name ?? '',
+                        ] : null,
                     ];
                 }),
 
