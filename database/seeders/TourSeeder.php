@@ -281,21 +281,6 @@ class TourSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
             }
-
-            $waypoints = [
-                ['tour_id' => $tourId, 'latitude' => 42.4601, 'longitude' => 59.6120, 'name' => 'Nukus (Center)', 'sort_order' => 0],
-                ['tour_id' => $tourId, 'latitude' => 42.3218, 'longitude' => 59.3789, 'name' => 'Mizdakhan Necropolis', 'sort_order' => 1],
-                ['tour_id' => $tourId, 'latitude' => 43.7667, 'longitude' => 59.0333, 'name' => 'Muynak (Ship Graveyard)', 'sort_order' => 2],
-                ['tour_id' => $tourId, 'latitude' => 42.0012, 'longitude' => 60.6542, 'name' => 'Ayaz Qala', 'sort_order' => 3],
-                ['tour_id' => $tourId, 'latitude' => 44.2464, 'longitude' => 58.2612, 'name' => 'Aral Sea Shore', 'sort_order' => 4],
-            ];
-
-            foreach ($waypoints as $point) {
-                DB::table('tour_waypoints')->insert(array_merge($point, [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]));
-            }
         }
     }
 }
