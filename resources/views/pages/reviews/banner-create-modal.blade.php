@@ -92,6 +92,13 @@
             }
         });
 
+        // Disable submit button on form submit
+        $('#createBannerForm').on('submit', function() {
+            const $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true);
+            $submitBtn.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin');
+        });
+
         // Reset on modal close
         $('#createBannerModal').on('hidden.bs.modal', function() {
             $('#createBannerForm')[0].reset();

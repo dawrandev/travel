@@ -135,6 +135,11 @@
                 return;
             }
 
+            const $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-sync-alt').addClass('fa-spinner fa-spin');
+
             // Create FormData
             let formData = new FormData();
             formData.append('_method', 'PUT');
@@ -181,6 +186,8 @@
                     } else if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMessage = xhr.responseJSON.message;
                     }
+                    $submitBtn.prop('disabled', false);
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
                     swal({
                         title: 'Ошибка',
                         text: errorMessage,
@@ -203,6 +210,9 @@
                 editBannerDropzone.removeAllFiles();
             }
             currentBannerImages = [];
+            const $btn = $('#editBannerForm').find('button[type="submit"]');
+            $btn.prop('disabled', false);
+            $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
         });
     });
 

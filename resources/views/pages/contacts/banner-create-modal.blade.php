@@ -115,6 +115,11 @@
                 return;
             }
 
+            const $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-save').addClass('fa-spinner fa-spin');
+
             // Create FormData
             let formData = new FormData();
 
@@ -158,6 +163,8 @@
                     } else if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMessage = xhr.responseJSON.message;
                     }
+                    $submitBtn.prop('disabled', false);
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
                     swal({
                         title: 'Ошибка',
                         text: errorMessage,
@@ -172,6 +179,9 @@
         $('#createBannerModal').on('hidden.bs.modal', function() {
             $('#createBannerForm')[0].reset();
             createBannerDropzone.removeAllFiles();
+            const $btn = $('#createBannerForm').find('button[type="submit"]');
+            $btn.prop('disabled', false);
+            $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-save');
         });
     });
 </script>
