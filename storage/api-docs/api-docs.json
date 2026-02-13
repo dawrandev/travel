@@ -1590,26 +1590,10 @@
                                                         "type": "object"
                                                     }
                                                 },
-                                                "route": {
-                                                    "description": "Marshrut GPS nuqtalari",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "sort_order": {
-                                                                "type": "integer",
-                                                                "example": 0
-                                                            },
-                                                            "latitude": {
-                                                                "type": "number",
-                                                                "example": 41.2995
-                                                            },
-                                                            "longitude": {
-                                                                "type": "number",
-                                                                "example": 69.2401
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
+                                                "gif_map": {
+                                                    "type": "string",
+                                                    "example": "/storage/uploads/route.gif",
+                                                    "nullable": true
                                                 },
                                                 "faqs": {
                                                     "description": "Tourga tegishli FAQ lar",

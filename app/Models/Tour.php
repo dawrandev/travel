@@ -19,7 +19,8 @@ class Tour extends Model
         'duration_nights',
         'min_age',
         'max_people',
-        'is_active'
+        'is_active',
+        'gif_map',
     ];
 
     protected $casts = [
@@ -80,8 +81,4 @@ class Tour extends Model
         return $this->hasMany(Faq::class);
     }
 
-    public function waypoints()
-    {
-        return $this->hasMany(TourWaypoint::class)->orderBy('sort_order');
-    }
 }

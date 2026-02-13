@@ -146,17 +146,15 @@
 
                     <hr>
 
-                    <!-- Marshrut (Route Waypoints) -->
-                    <h6 class="mb-3"><i class="fas fa-map-marked-alt"></i> Точки маршрута</h6>
+                    <!-- GIF Route Map -->
+                    <h6 class="mb-3"><i class="fas fa-film"></i> Маршрутная карта (GIF)</h6>
                     <div class="form-group">
-                        <div id="edit-tour-map" style="height: 400px; border-radius: 8px;"></div>
-                        <small class="text-muted">Нажмите на карту, чтобы последовательно отметить точки маршрута</small>
-                        <div id="edit-waypoints-list" class="mt-2">
-                            <small class="text-muted">Точки не отмечены</small>
+                        <div id="current_gif_map_container" class="mb-2" style="display:none;">
+                            <img id="current_gif_map" src="" alt="Route GIF" style="max-height:200px; border-radius:6px;">
+                            <small class="text-muted d-block">Текущий GIF</small>
                         </div>
-                        <button type="button" class="btn btn-sm btn-danger mt-1" id="clear-edit-waypoints">
-                            <i class="fas fa-trash"></i> Очистить точки
-                        </button>
+                        <input type="file" name="gif_map" id="gif_map_edit" class="form-control-file" accept=".gif">
+                        <small class="text-muted">Только GIF формат. Макс. 10MB. Если не загружать — текущий сохранится.</small>
                     </div>
 
                     <hr>
@@ -216,18 +214,12 @@
 </div>
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 @endpush
 
 @push('scripts')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     let editDropzone;
     let editItineraryCounter = 0;
-    let editMap = null;
-    let editWaypointList = [];
-    let editMapMarkers = [];
-    let editPendingWaypoints = null;
 
     // Add Time to Day (Edit) - Global function
     function addEditTimeToDay(dayNumber, timeCounter, timeData = null) {
@@ -342,77 +334,6 @@
         return html;
     }
 
-    // Waypoints helpers (edit)
-    function initEditMap() {
-        if (editMap) {
-            editMap.invalidateSize();
-            return;
-        }
-        editMap = L.map('edit-tour-map').setView([42.4667, 59.6167], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(editMap);
-        editMap.on('click', function(e) {
-            addEditMarker(e.latlng.lat, e.latlng.lng);
-        });
-    }
-
-    function addEditMarker(lat, lng) {
-        editWaypointList.push({latitude: lat, longitude: lng});
-        var idx = editWaypointList.length;
-        var marker = L.marker([lat, lng], {
-            icon: L.divIcon({
-                html: '<div style="background:#6777ef;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);">' + idx + '</div>',
-                iconSize: [26, 26],
-                iconAnchor: [13, 13],
-                className: ''
-            })
-        }).addTo(editMap);
-        editMapMarkers.push(marker);
-        updateEditWaypointsList();
-    }
-
-    function clearEditWaypointsFn() {
-        editMapMarkers.forEach(function(m) { if (editMap) editMap.removeLayer(m); });
-        editMapMarkers = [];
-        editWaypointList = [];
-        updateEditWaypointsList();
-    }
-
-    function updateEditWaypointsList() {
-        var el = document.getElementById('edit-waypoints-list');
-        if (!el) return;
-        if (editWaypointList.length === 0) {
-            el.innerHTML = '<small class="text-muted">Hech qanday nuqta belgilanmagan</small>';
-            return;
-        }
-        var html = '<div class="d-flex flex-wrap" style="gap:4px;">';
-        editWaypointList.forEach(function(wp, i) {
-            html += '<span class="badge badge-primary">' + (i + 1) + ': ' + wp.latitude.toFixed(5) + ', ' + wp.longitude.toFixed(5) + '</span>';
-        });
-        html += '</div>';
-        el.innerHTML = html;
-    }
-
-    function populateEditWaypoints(waypoints) {
-        clearEditWaypointsFn();
-        if (!waypoints || waypoints.length === 0) {
-            if (editMap) editMap.setView([42.4667, 59.6167], 12);
-            return;
-        }
-
-        var sorted = waypoints.slice().sort(function(a, b) { return a.sort_order - b.sort_order; });
-        sorted.forEach(function(wp) {
-            addEditMarker(parseFloat(wp.latitude), parseFloat(wp.longitude));
-        });
-
-        if (editMap && sorted.length > 0) {
-            var latlngs = sorted.map(function(wp) { return [parseFloat(wp.latitude), parseFloat(wp.longitude)]; });
-            editMap.fitBounds(latlngs, {padding: [20, 20]});
-        }
-    }
-
     $(document).ready(function() {
         // Initialize Edit Dropzone
         editDropzone = new Dropzone("#dropzone-edit", {
@@ -495,6 +416,7 @@
             });
 
             // Disable submit button
+
             $submitBtn.prop('disabled', true);
             const $icon = $submitBtn.find('i');
             $icon.removeClass('fa-sync-alt').addClass('fa-spinner fa-spin');
@@ -596,12 +518,6 @@
 
                 xhr.timeout = 300000; // 5 minutes
 
-                // Add waypoints to FormData
-                editWaypointList.forEach(function(wp, i) {
-                    formData.append('waypoints[' + i + '][latitude]', wp.latitude);
-                    formData.append('waypoints[' + i + '][longitude]', wp.longitude);
-                });
-
                 xhr.send(formData);
 
             } catch (error) {
@@ -609,19 +525,6 @@
                 const $icon = $submitBtn.find('i');
                 $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
             }
-        });
-
-        // Waypoints map init on modal show
-        $('#editModal').on('shown.bs.modal', function() {
-            initEditMap();
-            if (editPendingWaypoints !== null) {
-                populateEditWaypoints(editPendingWaypoints);
-                editPendingWaypoints = null;
-            }
-        });
-
-        $('#clear-edit-waypoints').on('click', function() {
-            clearEditWaypointsFn();
         });
 
         // Add Edit Itinerary (Day)
@@ -672,9 +575,8 @@
             editDropzone.removeAllFiles();
             $('#editItinerariesContainer').empty();
             $('#currentImages').empty();
+            $('#current_gif_map_container').hide();
             editItineraryCounter = 0;
-            clearEditWaypointsFn();
-            editPendingWaypoints = null;
             // Re-enable submit button
             const $btn = $('#editForm button[type="submit"]');
             $btn.prop('disabled', false);
@@ -693,7 +595,6 @@
                 itineraries,
                 features,
                 images,
-                waypoints
             } = response;
 
             // Form action
@@ -801,12 +702,12 @@
                 }
             }
 
-            // Waypoints
-            var waypointsData = waypoints || [];
-            if (editMap) {
-                populateEditWaypoints(waypointsData);
+            // GIF map
+            if (tour.gif_map) {
+                $('#current_gif_map').attr('src', tour.gif_map);
+                $('#current_gif_map_container').show();
             } else {
-                editPendingWaypoints = waypointsData;
+                $('#current_gif_map_container').hide();
             }
         } catch (error) {
             swal({

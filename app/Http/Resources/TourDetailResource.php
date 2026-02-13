@@ -99,11 +99,7 @@ class TourDetailResource extends JsonResource
                 })
                 ->values(),
 
-            'route' => $this->waypoints->map(fn($w) => [
-                'sort_order' => $w->sort_order,
-                'latitude'   => (float) $w->latitude,
-                'longitude'  => (float) $w->longitude,
-            ])->values()->toArray(),
+            'gif_map' => $this->gif_map ? '/storage/' . $this->gif_map : null,
         ];
     }
 

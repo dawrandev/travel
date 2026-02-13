@@ -32,11 +32,13 @@ class TourController extends Controller
     public function show(int $id): JsonResponse
     {
         $tour = $this->tourService->findById($id);
-        $tour->load('waypoints');
+
+        $tourData = $tour->toArray();
+        $tourData['gif_map'] = $tour->gif_map ? '/storage/' . $tour->gif_map : null;
 
         return response()->json([
             'success' => true,
-            'tour' => $tour
+            'tour' => $tourData
         ]);
     }
 
@@ -55,7 +57,6 @@ class TourController extends Controller
             ];
         }
 
-        // Get itineraries with translations
         $itineraries = [];
         foreach ($tour->itineraries as $itinerary) {
             $itineraryTranslations = [];
@@ -74,17 +75,10 @@ class TourController extends Controller
             ];
         }
 
-        // Get features with inclusion status
         $features = [];
         foreach ($tour->features as $feature) {
             $features[$feature->id] = $feature->pivot->is_included ? 'included' : 'excluded';
         }
-
-        $waypoints = $tour->waypoints->map(fn($w) => [
-            'latitude'   => (float) $w->latitude,
-            'longitude'  => (float) $w->longitude,
-            'sort_order' => $w->sort_order,
-        ])->values()->toArray();
 
         return response()->json([
             'success' => true,
@@ -98,12 +92,12 @@ class TourController extends Controller
                 'max_people' => $tour->max_people,
                 'phone' => $tour->phone,
                 'is_active' => $tour->is_active,
+                'gif_map' => $tour->gif_map ? '/storage/' . $tour->gif_map : null,
             ],
             'translations' => $translations,
             'itineraries' => $itineraries,
             'features' => $features,
             'images' => $tour->images,
-            'waypoints' => $waypoints,
         ]);
     }
 

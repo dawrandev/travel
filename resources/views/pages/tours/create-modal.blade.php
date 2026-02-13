@@ -135,17 +135,11 @@
 
                     <hr>
 
-                    <!-- Marshrut (Route Waypoints) -->
-                    <h6 class="mb-3"><i class="fas fa-map-marked-alt"></i> Точки маршрута</h6>
+                    <!-- GIF Route Map -->
+                    <h6 class="mb-3"><i class="fas fa-film"></i> Маршрутная карта (GIF)</h6>
                     <div class="form-group">
-                        <div id="create-tour-map" style="height: 400px; border-radius: 8px;"></div>
-                        <small class="text-muted">Нажмите на карту, чтобы последовательно отметить точки маршрута</small>
-                        <div id="create-waypoints-list" class="mt-2">
-                            <small class="text-muted">Точки не отмечены</small>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-danger mt-1" id="clear-create-waypoints">
-                            <i class="fas fa-trash"></i> Очистить точки
-                        </button>
+                        <input type="file" name="gif_map" id="gif_map_create" class="form-control-file" accept=".gif">
+                        <small class="text-muted">Только GIF формат. Макс. 10MB.</small>
                     </div>
 
                     <hr>
@@ -206,20 +200,15 @@
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 @endpush
 
 @push('scripts')
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     Dropzone.autoDiscover = false;
 
     let createDropzone;
     let itineraryCounter = 0;
-    let createMap = null;
-    let createWaypointList = [];
-    let createMapMarkers = [];
 
     $(document).ready(function() {
         // Initialize Dropzone
@@ -317,12 +306,6 @@
                 console.log('Adding feature:', name, '=', value);
             });
 
-            // Add waypoints to FormData
-            createWaypointList.forEach(function(wp, i) {
-                formData.append('waypoints[' + i + '][latitude]', wp.latitude);
-                formData.append('waypoints[' + i + '][longitude]', wp.longitude);
-            });
-
             console.log('Form data prepared, submitting...');
 
             // Disable submit button
@@ -387,67 +370,6 @@
             };
 
             xhr.send(formData);
-        });
-
-        // Waypoints map
-        function initCreateMap() {
-            if (createMap) {
-                createMap.invalidateSize();
-                return;
-            }
-            createMap = L.map('create-tour-map').setView([42.4667, 59.6167], 12);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(createMap);
-            createMap.on('click', function(e) {
-                addCreateMarker(e.latlng.lat, e.latlng.lng);
-            });
-        }
-
-        function addCreateMarker(lat, lng) {
-            createWaypointList.push({latitude: lat, longitude: lng});
-            var idx = createWaypointList.length;
-            var marker = L.marker([lat, lng], {
-                icon: L.divIcon({
-                    html: '<div style="background:#6777ef;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);">' + idx + '</div>',
-                    iconSize: [26, 26],
-                    iconAnchor: [13, 13],
-                    className: ''
-                })
-            }).addTo(createMap);
-            createMapMarkers.push(marker);
-            updateCreateWaypointsList();
-        }
-
-        function clearCreateWaypointsFn() {
-            createMapMarkers.forEach(function(m) { if (createMap) createMap.removeLayer(m); });
-            createMapMarkers = [];
-            createWaypointList = [];
-            updateCreateWaypointsList();
-        }
-
-        function updateCreateWaypointsList() {
-            var el = document.getElementById('create-waypoints-list');
-            if (!el) return;
-            if (createWaypointList.length === 0) {
-                el.innerHTML = '<small class="text-muted">Hech qanday nuqta belgilanmagan</small>';
-                return;
-            }
-            var html = '<div class="d-flex flex-wrap" style="gap:4px;">';
-            createWaypointList.forEach(function(wp, i) {
-                html += '<span class="badge badge-primary">' + (i + 1) + ': ' + wp.latitude.toFixed(5) + ', ' + wp.longitude.toFixed(5) + '</span>';
-            });
-            html += '</div>';
-            el.innerHTML = html;
-        }
-
-        $('#createModal').on('shown.bs.modal', function() {
-            initCreateMap();
-        });
-
-        $('#clear-create-waypoints').on('click', function() {
-            clearCreateWaypointsFn();
         });
 
         // Add Itinerary (Day)
@@ -587,7 +509,6 @@
             createDropzone.removeAllFiles();
             $('#itinerariesContainer').empty();
             itineraryCounter = 0;
-            clearCreateWaypointsFn();
             // Re-enable submit button
             const $btn = $('#createForm button[type="submit"]');
             $btn.prop('disabled', false);
