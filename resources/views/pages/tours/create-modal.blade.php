@@ -106,7 +106,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Важная информация ({{ $language->name }})</label>
-                                <textarea name="important_info_{{ $language->code }}" class="form-control" rows="2"></textarea>
+                                <textarea name="important_info_{{ $language->code }}" id="create_important_info_{{ $language->code }}" class="form-control" rows="2"></textarea>
                             </div>
                         </div>
                         @endforeach
@@ -200,10 +200,13 @@
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
 @endpush
 
 @push('scripts')
 <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-ru-RU.min.js"></script>
 <script>
     Dropzone.autoDiscover = false;
 
@@ -222,6 +225,19 @@
             addRemoveLinks: true,
             dictDefaultMessage: "Перетащите изображения сюда или нажмите для выбора",
         });
+
+        // Initialize Summernote for important_info fields
+        @foreach($languages as $language)
+        $('#create_important_info_{{ $language->code }}').summernote({
+            height: 150,
+            lang: 'ru-RU',
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline']],
+                ['para', ['ul', 'ol']],
+                ['insert', ['link']],
+            ]
+        });
+        @endforeach
 
         // Handle form submit
         $('#createForm').on('submit', function(e) {
@@ -273,6 +289,11 @@
                     });
                 });
             });
+
+            // Sync Summernote content to textareas
+            @foreach($languages as $language)
+            $('#create_important_info_{{ $language->code }}').val($('#create_important_info_{{ $language->code }}').summernote('code'));
+            @endforeach
 
             // Create FormData from form
             const formData = new FormData(this);
@@ -514,6 +535,10 @@
             $btn.prop('disabled', false);
             const $icon = $btn.find('i');
             $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
+            // Reset Summernote
+            @foreach($languages as $language)
+            $('#create_important_info_{{ $language->code }}').summernote('reset');
+            @endforeach
         });
     });
 </script>

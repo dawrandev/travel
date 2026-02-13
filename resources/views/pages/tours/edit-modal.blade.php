@@ -214,9 +214,12 @@
 </div>
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-ru-RU.min.js"></script>
 <script>
     let editDropzone;
     let editItineraryCounter = 0;
@@ -347,6 +350,19 @@
             dictDefaultMessage: "Перетащите изображения",
         });
 
+        // Initialize Summernote for important_info fields
+        @foreach($languages as $language)
+        $('#edit_important_info_{{ $language->code }}').summernote({
+            height: 150,
+            lang: 'ru-RU',
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline']],
+                ['para', ['ul', 'ol']],
+                ['insert', ['link']],
+            ]
+        });
+        @endforeach
+
         // Handle edit form submit
         $('#editForm').on('submit', function(e) {
             e.preventDefault();
@@ -386,6 +402,12 @@
             });
 
             const files = editDropzone.getAcceptedFiles();
+
+            // Sync Summernote content to textareas
+            @foreach($languages as $language)
+            $('#edit_important_info_{{ $language->code }}').val($('#edit_important_info_{{ $language->code }}').summernote('code'));
+            @endforeach
+
             const formData = new FormData(this);
 
             // If new images uploaded, add them
@@ -582,6 +604,10 @@
             $btn.prop('disabled', false);
             const $icon = $btn.find('i');
             $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+            // Reset Summernote
+            @foreach($languages as $language)
+            $('#edit_important_info_{{ $language->code }}').summernote('reset');
+            @endforeach
             // Remove event listeners
             $('input[name="main_image_radio"]').off('change');
         });
@@ -617,7 +643,7 @@
                 $('#edit_slogan_{{ $language->code }}').val(translations['{{ $language->code }}'].slogan);
                 $('#edit_description_{{ $language->code }}').val(translations['{{ $language->code }}'].description);
                 $('#edit_routes_{{ $language->code }}').val(translations['{{ $language->code }}'].routes);
-                $('#edit_important_info_{{ $language->code }}').val(translations['{{ $language->code }}'].important_info);
+                $('#edit_important_info_{{ $language->code }}').summernote('code', translations['{{ $language->code }}'].important_info || '');
             }
             @endforeach
 

@@ -124,7 +124,7 @@
 
         $('#showDescription').text(ruTranslation?.description || '');
         $('#showRoutes').text(ruTranslation?.routes || '');
-        $('#showImportantInfo').text(ruTranslation?.important_info || 'Не указана');
+        $('#showImportantInfo').html(ruTranslation?.important_info || 'Не указана');
 
         // Itineraries - Group by day
         if (tour.itineraries && tour.itineraries.length > 0) {
