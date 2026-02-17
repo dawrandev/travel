@@ -59,6 +59,9 @@ Route::middleware('admin')->group(function () {
         Route::post('/banner', [AboutController::class, 'storeBanner'])->name('banner.store');
         Route::put('/banner/{id}', [AboutController::class, 'updateBanner'])->name('banner.update');
         Route::get('/banner/{id}/translations', [AboutController::class, 'getBannerTranslations'])->name('banner.translations');
+        Route::post('/{aboutId}/award', [AboutController::class, 'storeAward'])->name('award.store');
+        Route::put('/{aboutId}/award/{awardId}', [AboutController::class, 'updateAward'])->name('award.update');
+        Route::get('/{aboutId}/award/{awardId}/translations', [AboutController::class, 'getAwardTranslations'])->name('award.translations');
     });
 
     Route::prefix('contacts')->name('contacts.')->group(function () {

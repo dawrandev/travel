@@ -13,6 +13,22 @@ class AboutResource extends JsonResource
         $translation = $this->translations->firstWhere('lang_code', $lang)
             ?? $this->translations->first();
 
+        $award = null;
+        if ($this->award) {
+            $awardTranslation = $this->award->translations->firstWhere('lang_code', $lang)
+                ?? $this->award->translations->first();
+
+            $award = [
+                'description' => $awardTranslation->description ?? '',
+                'images' => $this->award->images->map(function ($image) {
+                    return [
+                        'id' => $image->id,
+                        'image_path' => $this->formatImagePath($image->image_path),
+                    ];
+                }),
+            ];
+        }
+
         return [
             'id' => $this->id,
             'title' => $translation->title ?? '',
@@ -23,6 +39,7 @@ class AboutResource extends JsonResource
                     'image_path' => $this->formatImagePath($image->image_path),
                 ];
             }),
+            'award' => $award,
         ];
     }
 

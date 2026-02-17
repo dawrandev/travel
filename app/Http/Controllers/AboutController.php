@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AboutBannerRequest;
 use App\Http\Requests\AboutRequest;
+use App\Http\Requests\AwardRequest;
 use App\Models\Language;
 use App\Services\AboutBannerService;
 use App\Services\AboutService;
+use App\Services\AwardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +18,8 @@ class AboutController extends Controller
 {
     public function __construct(
         protected AboutService $aboutService,
-        protected AboutBannerService $aboutBannerService
+        protected AboutBannerService $aboutBannerService,
+        protected AwardService $awardService
     ) {}
 
     public function index(): View
@@ -136,6 +139,48 @@ class AboutController extends Controller
             ],
             'translations' => $translations,
             'images' => $images
+        ]);
+    }
+
+    public function storeAward(AwardRequest $request, int $aboutId): RedirectResponse
+    {
+        $this->awardService->create($aboutId, $request->validated());
+        return redirect()->route('abouts.index')->with('success', 'Award успешно создан');
+    }
+
+    public function updateAward(AwardRequest $request, int $aboutId, int $awardId): RedirectResponse
+    {
+        $this->awardService->update($awardId, $request->validated());
+        return redirect()->route('abouts.index')->with('success', 'Award успешно обновлен');
+    }
+
+    public function getAwardTranslations(int $aboutId, int $awardId): JsonResponse
+    {
+        $award = $this->awardService->findById($awardId);
+
+        $translations = [];
+        foreach ($award->translations as $translation) {
+            $translations[$translation->lang_code] = [
+                'description' => $translation->description,
+            ];
+        }
+
+        $images = $award->images->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'image_path' => $image->image_path,
+                'sort_order' => $image->sort_order,
+            ];
+        })->values()->toArray();
+
+        return response()->json([
+            'success' => true,
+            'award' => [
+                'id' => $award->id,
+                'is_active' => $award->is_active,
+            ],
+            'translations' => $translations,
+            'images' => $images,
         ]);
     }
 }

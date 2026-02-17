@@ -76,6 +76,34 @@
                                                         },
                                                         "type": "object"
                                                     }
+                                                },
+                                                "award": {
+                                                    "description": "Award ma'lumoti (mavjud bo'lmasa null)",
+                                                    "properties": {
+                                                        "description": {
+                                                            "type": "string",
+                                                            "example": "Best Travel Agency 2024 mukofoti sohibi"
+                                                        },
+                                                        "images": {
+                                                            "description": "Award rasmlari",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 1
+                                                                    },
+                                                                    "image_path": {
+                                                                        "type": "string",
+                                                                        "example": "/storage/uploads/award-1.jpg"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
                                                 }
                                             },
                                             "type": "object"

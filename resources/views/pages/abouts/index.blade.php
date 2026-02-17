@@ -175,6 +175,92 @@
         </div>
     </div>
 </div>
+<!-- Award Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-trophy"></i> Award</h4>
+                <div class="card-header-action">
+                    @if($about)
+                        @if($about->award)
+                        <button class="btn btn-primary" onclick="editAward({{ $about->id }}, {{ $about->award->id }})">
+                            <i class="fas fa-edit"></i> Редактировать Award
+                        </button>
+                        @else
+                        <button class="btn btn-success" data-toggle="modal" data-target="#createAwardModal">
+                            <i class="fas fa-plus"></i> Добавить Award
+                        </button>
+                        @endif
+                    @endif
+                </div>
+            </div>
+            <div class="card-body">
+                @if(!$about)
+                <div class="text-center py-5">
+                    <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Сначала создайте основной контент "О нас"</h5>
+                </div>
+                @elseif($about->award)
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6 class="mb-3"><i class="fas fa-image"></i> Изображения ({{ $about->award->images->count() }})</h6>
+                        @if($about->award->images->count())
+                        <div class="row">
+                            @foreach($about->award->images->sortBy('sort_order') as $index => $awardImage)
+                            <div class="col-6 mb-3">
+                                <div class="position-relative image-wrapper">
+                                    <a href="{{ asset('storage/' . $awardImage->image_path) }}"
+                                       data-lightbox="award-gallery"
+                                       data-title="Award - {{ $index + 1 }}">
+                                        <img src="{{ asset('storage/' . $awardImage->image_path) }}"
+                                             class="img-fluid rounded shadow-sm"
+                                             alt="Award Image {{ $index + 1 }}"
+                                             style="width: 100%; height: 150px; object-fit: cover; cursor: pointer; transition: transform 0.3s ease;">
+                                    </a>
+                                    <span class="badge badge-primary position-absolute" style="top: 5px; right: 5px;">
+                                        {{ $index + 1 }}
+                                    </span>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        @else
+                            <p class="text-muted">Нет изображений</p>
+                        @endif
+                    </div>
+                    <div class="col-md-8">
+                        <h6 class="mb-3"><i class="fas fa-language"></i> Описания</h6>
+                        <div class="list-group mb-3">
+                            @foreach($about->award->translations as $translation)
+                            <div class="list-group-item">
+                                <span class="badge badge-info mr-2">{{ strtoupper($translation->lang_code) }}</span>
+                                {{ $translation->description }}
+                            </div>
+                            @endforeach
+                        </div>
+                        <h6><i class="fas fa-toggle-on"></i> Статус</h6>
+                        <span class="badge badge-{{ $about->award->is_active ? 'success' : 'danger' }} badge-lg">
+                            {{ $about->award->is_active ? 'Активен' : 'Неактивен' }}
+                        </span>
+                    </div>
+                </div>
+                @else
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-trophy fa-3x text-warning"></i>
+                    </div>
+                    <h5>Award не добавлен</h5>
+                    <p class="text-muted">Добавьте Award для страницы "О нас"</p>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#createAwardModal">
+                        <i class="fas fa-plus"></i> Добавить Award
+                    </button>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('modals')
@@ -182,6 +268,8 @@
 @include('pages.abouts.banner-edit-modal')
 @include('pages.abouts.create-modal')
 @include('pages.abouts.edit-modal')
+@include('pages.abouts.award-create-modal')
+@include('pages.abouts.award-edit-modal')
 @endpush
 
 @push('styles')

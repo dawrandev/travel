@@ -23,12 +23,26 @@ class AboutService
 
         return $abouts->map(function ($about) use ($langCode) {
             $translation = $about->translations->where('lang_code', $langCode)->first();
+
+            $award = null;
+            if ($about->award) {
+                $awardTranslation = $about->award->translations->where('lang_code', $langCode)->first();
+                $awardImage = $about->award->images->sortBy('sort_order')->first();
+                $award = [
+                    'id' => $about->award->id,
+                    'description' => $awardTranslation->description ?? null,
+                    'image' => $awardImage?->image_path,
+                    'is_active' => $about->award->is_active,
+                ];
+            }
+
             return [
                 'id' => $about->id,
                 'title' => $translation->title ?? 'N/A',
                 'description' => $translation->description ?? 'N/A',
                 'image' => $about->image,
-                'is_active' => $about->is_active
+                'is_active' => $about->is_active,
+                'award' => $award,
             ];
         });
     }

@@ -9,12 +9,12 @@ class AboutRepository
 {
     public function getAll(): Collection
     {
-        return About::with(['translations', 'images'])->get();
+        return About::with(['translations', 'images', 'award.translations', 'award.images'])->get();
     }
 
     public function findById(int $id): ?About
     {
-        return About::with(['translations', 'images'])->find($id);
+        return About::with(['translations', 'images', 'award.translations', 'award.images'])->find($id);
     }
 
     public function createImage(int $aboutId, array $data): void

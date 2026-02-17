@@ -50,6 +50,27 @@ class AboutController extends Controller
                                         ],
                                         type: "object"
                                     )
+                                ),
+                                new OA\Property(
+                                    property: "award",
+                                    type: "object",
+                                    nullable: true,
+                                    description: "Award ma'lumoti (mavjud bo'lmasa null)",
+                                    properties: [
+                                        new OA\Property(property: "description", type: "string", example: "Best Travel Agency 2024 mukofoti sohibi"),
+                                        new OA\Property(
+                                            property: "images",
+                                            type: "array",
+                                            description: "Award rasmlari",
+                                            items: new OA\Items(
+                                                properties: [
+                                                    new OA\Property(property: "id", type: "integer", example: 1),
+                                                    new OA\Property(property: "image_path", type: "string", example: "/storage/uploads/award-1.jpg")
+                                                ],
+                                                type: "object"
+                                            )
+                                        )
+                                    ]
                                 )
                             ]
                         )
@@ -64,9 +85,12 @@ class AboutController extends Controller
     )]
     public function index(): JsonResponse
     {
-        $about = About::with(['translations', 'images' => function ($q) {
-            $q->orderBy('sort_order');
-        }])->where('is_active', true)->first();
+        $about = About::with([
+            'translations',
+            'images' => fn($q) => $q->orderBy('sort_order'),
+            'award.translations',
+            'award.images' => fn($q) => $q->orderBy('sort_order'),
+        ])->where('is_active', true)->first();
 
         if (!$about) {
             return response()->json([
