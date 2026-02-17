@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Language;
+use App\Models\TourAccommodation;
 use App\Models\TourItineraryTranslation;
 use App\Repositories\TourRepository;
 use Illuminate\Support\Facades\DB;
@@ -64,6 +65,11 @@ class TourService
             if (isset($data['gif_map']) && $data['gif_map'] instanceof \Illuminate\Http\UploadedFile) {
                 $path = $data['gif_map']->store('uploads', 'public');
                 $tour->update(['gif_map' => $path]);
+            }
+
+            // Create accommodations
+            if (isset($data['accommodations']) && is_array($data['accommodations'])) {
+                $this->createAccommodations($tour->id, $data['accommodations']);
             }
 
             // Sync features (inclusions)
@@ -150,6 +156,31 @@ class TourService
                 $tour->update(['gif_map' => $path]);
             }
 
+            // Update accommodations
+            foreach ($tour->accommodations as $accommodation) {
+                if ($accommodation->image_path && Storage::disk('public')->exists($accommodation->image_path)) {
+                    // Only delete image if a new one is being uploaded for this day
+                    $hasNewImage = false;
+                    if (isset($data['accommodations'])) {
+                        foreach ($data['accommodations'] as $newAccomm) {
+                            if (isset($newAccomm['day_number']) && $newAccomm['day_number'] == $accommodation->day_number
+                                && isset($newAccomm['image']) && $newAccomm['image'] instanceof \Illuminate\Http\UploadedFile) {
+                                $hasNewImage = true;
+                                break;
+                            }
+                        }
+                    }
+                    if ($hasNewImage) {
+                        Storage::disk('public')->delete($accommodation->image_path);
+                    }
+                }
+            }
+            $tour->accommodations()->delete();
+
+            if (isset($data['accommodations']) && is_array($data['accommodations'])) {
+                $this->createAccommodations($tour->id, $data['accommodations']);
+            }
+
             // Update features (inclusions)
             $this->syncFeaturesFromRequest($tour->id, $data);
 
@@ -228,6 +259,43 @@ class TourService
                     'lang_code' => $langCode,
                     'activity_title' => $itinerary['activity_title_' . $langCode] ?? '',
                     'activity_description' => $itinerary['activity_description_' . $langCode] ?? '',
+                ]);
+            }
+        }
+    }
+
+    protected function createAccommodations(int $tourId, array $accommodations): void
+    {
+        $languages = Language::all();
+
+        foreach ($accommodations as $accommodation) {
+            if (empty($accommodation['day_number']) || empty($accommodation['type'])) {
+                continue;
+            }
+
+            $imagePath = null;
+
+            // Handle new image upload
+            if (isset($accommodation['image']) && $accommodation['image'] instanceof \Illuminate\Http\UploadedFile) {
+                $imagePath = $accommodation['image']->store('uploads', 'public');
+            } elseif (!empty($accommodation['existing_image_path'])) {
+                // Keep existing image path if no new image uploaded
+                $imagePath = $accommodation['existing_image_path'];
+            }
+
+            $accommodationId = $this->tourRepository->createAccommodation($tourId, [
+                'day_number' => $accommodation['day_number'],
+                'type'       => $accommodation['type'],
+                'price'      => $accommodation['price'] ?? null,
+                'image_path' => $imagePath,
+            ]);
+
+            foreach ($languages as $language) {
+                $langCode = $language->code;
+                $this->tourRepository->createAccommodationTranslation($accommodationId, [
+                    'lang_code'   => $langCode,
+                    'name'        => $accommodation['name_' . $langCode] ?? '',
+                    'description' => $accommodation['description_' . $langCode] ?? '',
                 ]);
             }
         }

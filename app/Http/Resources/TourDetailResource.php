@@ -100,6 +100,22 @@ class TourDetailResource extends JsonResource
                 ->values(),
 
             'gif_map' => $this->gif_map ? '/storage/' . $this->gif_map : null,
+
+            'accommodations' => $this->accommodations->map(function ($accommodation) use ($lang) {
+                $accTranslation = $accommodation->translations->firstWhere('lang_code', $lang)
+                    ?? $accommodation->translations->first();
+
+                return [
+                    'day_number'  => $accommodation->day_number,
+                    'type'        => $accommodation->type,
+                    'name'        => $accTranslation->name ?? '',
+                    'description' => $accTranslation->description ?? '',
+                    'price'       => $accommodation->price !== null ? (float) $accommodation->price : null,
+                    'image'       => $accommodation->image_path
+                        ? '/storage/uploads/' . basename($accommodation->image_path)
+                        : null,
+                ];
+            })->values(),
         ];
     }
 

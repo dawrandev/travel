@@ -71,6 +71,10 @@
                     </div>
                 </div>
 
+                <!-- Accommodations -->
+                <h5 class="mt-3"><i class="fas fa-bed"></i> Turar joy / Tavsiya</h5>
+                <div id="showAccommodations"></div>
+
                 <!-- GIF Route Map -->
                 <h6 class="mt-3 mb-2"><i class="fas fa-film"></i> Маршрутная карта</h6>
                 <div id="showGifMap" style="display:none;">
@@ -208,6 +212,30 @@
 
         $('#showIncluded').html(includedHtml || '<p class="text-muted">Нет функций</p>');
         $('#showExcluded').html(excludedHtml || '<p class="text-muted">Нет функций</p>');
+
+        // Accommodations
+        let accHtml = '';
+        if (tour.accommodations && tour.accommodations.length > 0) {
+            tour.accommodations.forEach(acc => {
+                const ruAccTrans = acc.translations
+                    ? (acc.translations.find(t => t.lang_code === 'ru') || acc.translations[0])
+                    : null;
+                const typeBadge = acc.type === 'accommodation'
+                    ? '<span class="badge badge-info">Turar joy</span>'
+                    : '<span class="badge badge-warning">Tavsiya</span>';
+                accHtml += `
+                    <div class="mb-2 p-2" style="border:1px solid #e0e0e0; border-radius:4px;">
+                        <strong>Kun ${acc.day_number}</strong> ${typeBadge}
+                        ${acc.price !== null && acc.price !== undefined ? '<span class="ml-2 text-muted">$' + parseFloat(acc.price).toFixed(2) + '</span>' : ''}
+                        ${ruAccTrans ? '<div><strong>' + (ruAccTrans.name || '') + '</strong> — ' + (ruAccTrans.description || '') + '</div>' : ''}
+                        ${acc.image_path ? '<img src="/storage/uploads/' + acc.image_path.split('/').pop() + '" style="max-height:60px; border-radius:4px; margin-top:4px;">' : ''}
+                    </div>
+                `;
+            });
+        } else {
+            accHtml = '<p class="text-muted">Turar joy qo\'shilmagan</p>';
+        }
+        $('#showAccommodations').html(accHtml);
 
         // GIF map
         if (tour.gif_map) {

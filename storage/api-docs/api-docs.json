@@ -1603,18 +1603,72 @@
                                                 "images": {
                                                     "type": "array",
                                                     "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "url": {
+                                                                "type": "string",
+                                                                "example": "/storage/uploads/image.jpg"
+                                                            },
+                                                            "is_main": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
                                                         "type": "object"
                                                     }
                                                 },
                                                 "itineraries": {
                                                     "type": "array",
                                                     "items": {
+                                                        "properties": {
+                                                            "day_number": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "event_time": {
+                                                                "type": "string",
+                                                                "example": "09:00"
+                                                            },
+                                                            "activity_title": {
+                                                                "type": "string",
+                                                                "example": "Shahar sayohati"
+                                                            },
+                                                            "activity_description": {
+                                                                "type": "string",
+                                                                "example": "Shahar markazini ko'rib chiqish"
+                                                            }
+                                                        },
                                                         "type": "object"
                                                     }
                                                 },
                                                 "features": {
                                                     "type": "array",
                                                     "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Transfer"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Aeroportdan olib kelish"
+                                                            },
+                                                            "icon": {
+                                                                "type": "string",
+                                                                "example": "fas fa-bus"
+                                                            },
+                                                            "is_included": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
                                                         "type": "object"
                                                     }
                                                 },
@@ -1623,31 +1677,71 @@
                                                     "example": "/storage/uploads/route.gif",
                                                     "nullable": true
                                                 },
-                                                "faqs": {
-                                                    "description": "Tourga tegishli FAQ lar",
+                                                "accommodations": {
+                                                    "description": "Har bir kun uchun turar joy yoki tavsiya",
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
-                                                            "id": {
+                                                            "day_number": {
+                                                                "description": "Qaysi kun",
                                                                 "type": "integer",
                                                                 "example": 1
                                                             },
-                                                            "question": {
+                                                            "type": {
+                                                                "description": "accommodation — turar joy bor; recommendation — tavsiya",
                                                                 "type": "string",
-                                                                "example": "Nukus madaniy turi qancha vaqt davom etadi?"
+                                                                "enum": [
+                                                                    "accommodation",
+                                                                    "recommendation"
+                                                                ],
+                                                                "example": "accommodation"
                                                             },
-                                                            "answer": {
+                                                            "name": {
                                                                 "type": "string",
-                                                                "example": "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."
+                                                                "example": "Hotel Jipek Joli"
                                                             },
-                                                            "sort_order": {
-                                                                "type": "integer",
-                                                                "example": 1
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Qulay mehmonxona, barcha qulayliklar bilan"
                                                             },
-                                                            "faq_category_id": {
-                                                                "type": "integer",
-                                                                "example": 1,
+                                                            "price": {
+                                                                "type": "number",
+                                                                "example": 50,
                                                                 "nullable": true
+                                                            },
+                                                            "image": {
+                                                                "type": "string",
+                                                                "example": "/storage/uploads/hotel.jpg",
+                                                                "nullable": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "faq": {
+                                                    "description": "Tourga tegishli FAQ lar, kategoriya bo'yicha guruhlanган",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Umumiy savollar"
+                                                            },
+                                                            "questions": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "question": {
+                                                                            "type": "string",
+                                                                            "example": "Nukus madaniy turi qancha vaqt davom etadi?"
+                                                                        },
+                                                                        "answer": {
+                                                                            "type": "string",
+                                                                            "example": "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
                                                             }
                                                         },
                                                         "type": "object"

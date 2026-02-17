@@ -158,21 +158,81 @@ class TourController extends Controller
                                     ]
                                 ),
                                 new OA\Property(property: "main_image", type: "string", example: "/storage/uploads/image.jpg"),
-                                new OA\Property(property: "images", type: "array", items: new OA\Items(type: "object")),
-                                new OA\Property(property: "itineraries", type: "array", items: new OA\Items(type: "object")),
-                                new OA\Property(property: "features", type: "array", items: new OA\Items(type: "object")),
-                                new OA\Property(property: "gif_map", type: "string", nullable: true, example: "/storage/uploads/route.gif"),
                                 new OA\Property(
-                                    property: "faqs",
+                                    property: "images",
                                     type: "array",
-                                    description: "Tourga tegishli FAQ lar",
                                     items: new OA\Items(
                                         properties: [
                                             new OA\Property(property: "id", type: "integer", example: 1),
-                                            new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
-                                            new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
-                                            new OA\Property(property: "sort_order", type: "integer", example: 1),
-                                            new OA\Property(property: "faq_category_id", type: "integer", example: 1, nullable: true),
+                                            new OA\Property(property: "url", type: "string", example: "/storage/uploads/image.jpg"),
+                                            new OA\Property(property: "is_main", type: "boolean", example: true),
+                                        ]
+                                    )
+                                ),
+                                new OA\Property(
+                                    property: "itineraries",
+                                    type: "array",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "day_number", type: "integer", example: 1),
+                                            new OA\Property(property: "event_time", type: "string", example: "09:00"),
+                                            new OA\Property(property: "activity_title", type: "string", example: "Shahar sayohati"),
+                                            new OA\Property(property: "activity_description", type: "string", example: "Shahar markazini ko'rib chiqish"),
+                                        ]
+                                    )
+                                ),
+                                new OA\Property(
+                                    property: "features",
+                                    type: "array",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "id", type: "integer", example: 1),
+                                            new OA\Property(property: "name", type: "string", example: "Transfer"),
+                                            new OA\Property(property: "description", type: "string", example: "Aeroportdan olib kelish"),
+                                            new OA\Property(property: "icon", type: "string", example: "fas fa-bus"),
+                                            new OA\Property(property: "is_included", type: "boolean", example: true),
+                                        ]
+                                    )
+                                ),
+                                new OA\Property(property: "gif_map", type: "string", nullable: true, example: "/storage/uploads/route.gif"),
+                                new OA\Property(
+                                    property: "accommodations",
+                                    type: "array",
+                                    description: "Har bir kun uchun turar joy yoki tavsiya",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "day_number", type: "integer", example: 1, description: "Qaysi kun"),
+                                            new OA\Property(
+                                                property: "type",
+                                                type: "string",
+                                                enum: ["accommodation", "recommendation"],
+                                                example: "accommodation",
+                                                description: "accommodation — turar joy bor; recommendation — tavsiya"
+                                            ),
+                                            new OA\Property(property: "name", type: "string", example: "Hotel Jipek Joli"),
+                                            new OA\Property(property: "description", type: "string", example: "Qulay mehmonxona, barcha qulayliklar bilan"),
+                                            new OA\Property(property: "price", type: "number", nullable: true, example: 50.00),
+                                            new OA\Property(property: "image", type: "string", nullable: true, example: "/storage/uploads/hotel.jpg"),
+                                        ]
+                                    )
+                                ),
+                                new OA\Property(
+                                    property: "faq",
+                                    type: "array",
+                                    description: "Tourga tegishli FAQ lar, kategoriya bo'yicha guruhlanган",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "title", type: "string", example: "Umumiy savollar"),
+                                            new OA\Property(
+                                                property: "questions",
+                                                type: "array",
+                                                items: new OA\Items(
+                                                    properties: [
+                                                        new OA\Property(property: "question", type: "string", example: "Nukus madaniy turi qancha vaqt davom etadi?"),
+                                                        new OA\Property(property: "answer", type: "string", example: "Tur 1 kun davom etadi va soat 09:00 dan 18:00 gacha boradi."),
+                                                    ]
+                                                )
+                                            ),
                                         ]
                                     )
                                 ),
@@ -194,6 +254,7 @@ class TourController extends Controller
             'features.translations',
             'faqs.translations',
             'faqs.category.translations',
+            'accommodations.translations',
         ])
             ->where('is_active', true)
             ->findOrFail($id);

@@ -33,6 +33,12 @@ class TourRequest extends FormRequest
             'itineraries.*.event_time' => 'required|date_format:H:i:s,H:i',
 
             'gif_map' => 'nullable|file|mimes:gif|max:10240',
+
+            'accommodations'              => 'nullable|array',
+            'accommodations.*.day_number' => 'required_with:accommodations|integer|min:1',
+            'accommodations.*.type'       => 'required_with:accommodations|in:accommodation,recommendation',
+            'accommodations.*.price'      => 'nullable|numeric|min:0',
+            'accommodations.*.image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ];
 
         // Add validation rules for all languages
@@ -48,6 +54,10 @@ class TourRequest extends FormRequest
             // Itinerary translations
             $rules['itineraries.*.activity_title_' . $code] = 'required_with:itineraries|string|max:255';
             $rules['itineraries.*.activity_description_' . $code] = 'required_with:itineraries|string';
+
+            // Accommodation translations
+            $rules['accommodations.*.name_' . $code] = 'required_with:accommodations|string|max:255';
+            $rules['accommodations.*.description_' . $code] = 'required_with:accommodations|string';
         }
 
         return $rules;

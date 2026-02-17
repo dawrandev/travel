@@ -81,4 +81,9 @@ class Tour extends Model
         return $this->hasMany(Faq::class);
     }
 
+    public function accommodations()
+    {
+        return $this->hasMany(TourAccommodation::class)->orderBy('day_number');
+    }
+
 }

@@ -327,7 +327,38 @@
                 console.log('Adding feature:', name, '=', value);
             });
 
-            console.log('Form data prepared, submitting...');
+            // Collect accommodations
+            const accommLangsForSubmit = @json($languages);
+            let accommIndex = 0;
+            $('.itinerary-day').each(function() {
+                const $day = $(this);
+                const dayNumber = $day.data('day');
+                const selectedType = $day.find('.accomm-type-radio:checked').val();
+
+                if (selectedType && selectedType !== 'none') {
+                    formData.append('accommodations[' + accommIndex + '][day_number]', dayNumber);
+                    formData.append('accommodations[' + accommIndex + '][type]', selectedType);
+
+                    const price = $day.find('input[name="accomm_day_' + dayNumber + '[price]"]').val();
+                    if (price) {
+                        formData.append('accommodations[' + accommIndex + '][price]', price);
+                    }
+
+                    const imageInput = $day.find('input[name="accomm_day_' + dayNumber + '[image_file]"]')[0];
+                    if (imageInput && imageInput.files.length > 0) {
+                        formData.append('accommodations[' + accommIndex + '][image]', imageInput.files[0]);
+                    }
+
+                    accommLangsForSubmit.forEach(function(lang) {
+                        const nameVal = $day.find('input[name="accomm_day_' + dayNumber + '[name_' + lang.code + ']"]').val();
+                        const descVal = $day.find('textarea[name="accomm_day_' + dayNumber + '[description_' + lang.code + ']"]').val();
+                        formData.append('accommodations[' + accommIndex + '][name_' + lang.code + ']', nameVal || '');
+                        formData.append('accommodations[' + accommIndex + '][description_' + lang.code + ']', descVal || '');
+                    });
+
+                    accommIndex++;
+                }
+            });
 
             // Disable submit button
             $submitBtn.prop('disabled', true);
@@ -462,6 +493,34 @@
         function addDay(dayNumber) {
             let dayTimeCounter = 1;
             const dayId = `day_${dayNumber}`;
+            const accommLangs = @json($languages);
+
+            let accommTabsHtml = '';
+            let accommContentHtml = '';
+            accommLangs.forEach((lang, idx) => {
+                const isActive = idx === 0 ? 'active' : '';
+                const showActive = idx === 0 ? 'show active' : '';
+                accommTabsHtml += `
+                    <li class="nav-item">
+                        <a class="nav-link ${isActive}" data-toggle="pill" href="#accomm_day_${dayNumber}_lang_${lang.code}">
+                            ${lang.name}
+                        </a>
+                    </li>
+                `;
+                accommContentHtml += `
+                    <div class="tab-pane fade ${showActive}" id="accomm_day_${dayNumber}_lang_${lang.code}">
+                        <div class="form-group">
+                            <label>Nomi (${lang.name}) <span class="text-danger">*</span></label>
+                            <input type="text" name="accomm_day_${dayNumber}[name_${lang.code}]" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label>Tavsif (${lang.name})</label>
+                            <textarea name="accomm_day_${dayNumber}[description_${lang.code}]" class="form-control form-control-sm" rows="2"></textarea>
+                        </div>
+                    </div>
+                `;
+            });
+
             let html = `
                 <div class="mb-4 p-3 itinerary-day" data-day="${dayNumber}" style="border: 2px solid #6777ef; border-radius: 4px; position: relative;">
                     <button type="button" class="btn btn-sm btn-danger remove-day" style="position: absolute; top: 10px; right: 10px;">
@@ -484,6 +543,57 @@
                     <button type="button" class="btn btn-sm btn-success add-time-to-day" data-day="${dayNumber}">
                         <i class="fas fa-plus"></i> Добавить время
                     </button>
+
+                    <!-- Accommodation Section -->
+                    <div class="accommodation-section mt-3 p-2" style="border: 1px dashed #ccc; border-radius:4px; background:#fff;">
+                        <h6 class="mb-2" style="font-size:0.9em; color:#555;">
+                            <i class="fas fa-bed"></i> Turar joy / Tavsiya
+                        </h6>
+                        <div class="d-flex mb-2 flex-wrap">
+                            <div class="custom-control custom-radio mr-3 mb-1">
+                                <input type="radio" class="custom-control-input accomm-type-radio"
+                                       name="accomm_day_${dayNumber}[type]"
+                                       id="accomm_none_${dayNumber}" value="none" checked>
+                                <label class="custom-control-label" for="accomm_none_${dayNumber}">Yo'q</label>
+                            </div>
+                            <div class="custom-control custom-radio mr-3 mb-1">
+                                <input type="radio" class="custom-control-input accomm-type-radio"
+                                       name="accomm_day_${dayNumber}[type]"
+                                       id="accomm_hotel_${dayNumber}" value="accommodation">
+                                <label class="custom-control-label" for="accomm_hotel_${dayNumber}">Turar joy bor</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-1">
+                                <input type="radio" class="custom-control-input accomm-type-radio"
+                                       name="accomm_day_${dayNumber}[type]"
+                                       id="accomm_rec_${dayNumber}" value="recommendation">
+                                <label class="custom-control-label" for="accomm_rec_${dayNumber}">Tavsiya</label>
+                            </div>
+                        </div>
+                        <div class="accomm-detail-fields" style="display:none;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Narx ($)</label>
+                                        <input type="number" name="accomm_day_${dayNumber}[price]"
+                                               class="form-control form-control-sm" step="0.01" min="0" placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Rasm</label>
+                                        <input type="file" name="accomm_day_${dayNumber}[image_file]"
+                                               class="form-control-file" accept="image/jpeg,image/png,image/jpg,image/webp">
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="nav nav-pills mb-2" role="tablist">
+                                ${accommTabsHtml}
+                            </ul>
+                            <div class="tab-content">
+                                ${accommContentHtml}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
             $('#itinerariesContainer').append(html);
@@ -502,6 +612,16 @@
         // Remove Day
         $(document).on('click', '.remove-day', function() {
             $(this).closest('.itinerary-day').remove();
+        });
+
+        // Show/hide accommodation fields based on type
+        $(document).on('change', '.accomm-type-radio', function() {
+            const $section = $(this).closest('.accommodation-section');
+            if ($(this).val() !== 'none') {
+                $section.find('.accomm-detail-fields').show();
+            } else {
+                $section.find('.accomm-detail-fields').hide();
+            }
         });
 
         // Remove Time

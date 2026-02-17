@@ -29,7 +29,7 @@ class TourRepository
 
     public function findById(int $id): ?Tour
     {
-        return Tour::with(['translations', 'category.translations', 'images', 'itineraries.translations', 'features.translations'])
+        return Tour::with(['translations', 'category.translations', 'images', 'itineraries.translations', 'features.translations', 'accommodations.translations'])
             ->find($id);
     }
 
@@ -75,5 +75,16 @@ class TourRepository
     public function syncFeaturesWithPivot(int $tourId, array $featuresData): void
     {
         Tour::find($tourId)->features()->sync($featuresData);
+    }
+
+    public function createAccommodation(int $tourId, array $data): int
+    {
+        $accommodation = Tour::find($tourId)->accommodations()->create($data);
+        return $accommodation->id;
+    }
+
+    public function createAccommodationTranslation(int $accommodationId, array $data): void
+    {
+        \App\Models\TourAccommodation::find($accommodationId)->translations()->create($data);
     }
 }

@@ -80,6 +80,26 @@ class TourController extends Controller
             $features[$feature->id] = $feature->pivot->is_included ? 'included' : 'excluded';
         }
 
+        $accommodations = [];
+        foreach ($tour->accommodations as $accommodation) {
+            $accTranslations = [];
+            foreach ($accommodation->translations as $trans) {
+                $accTranslations[$trans->lang_code] = [
+                    'name'        => $trans->name,
+                    'description' => $trans->description,
+                ];
+            }
+
+            $accommodations[] = [
+                'day_number'  => $accommodation->day_number,
+                'type'        => $accommodation->type,
+                'price'       => $accommodation->price,
+                'image_path'  => $accommodation->image_path,
+                'image_url'   => $accommodation->image_path ? '/storage/uploads/' . basename($accommodation->image_path) : null,
+                'translations' => $accTranslations,
+            ];
+        }
+
         return response()->json([
             'success' => true,
             'tour' => [
@@ -98,6 +118,7 @@ class TourController extends Controller
             'itineraries' => $itineraries,
             'features' => $features,
             'images' => $tour->images,
+            'accommodations' => $accommodations,
         ]);
     }
 
