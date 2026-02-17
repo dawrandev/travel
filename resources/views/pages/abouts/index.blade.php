@@ -180,16 +180,16 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4><i class="fas fa-trophy"></i> Award</h4>
+                <h4><i class="fas fa-trophy"></i> Награда</h4>
                 <div class="card-header-action">
                     @if($about)
                         @if($about->award)
                         <button class="btn btn-primary" onclick="editAward({{ $about->id }}, {{ $about->award->id }})">
-                            <i class="fas fa-edit"></i> Редактировать Award
+                            <i class="fas fa-edit"></i> Редактировать награду
                         </button>
                         @else
                         <button class="btn btn-success" data-toggle="modal" data-target="#createAwardModal">
-                            <i class="fas fa-plus"></i> Добавить Award
+                            <i class="fas fa-plus"></i> Добавить награду
                         </button>
                         @endif
                     @endif
@@ -250,10 +250,10 @@
                     <div class="mb-3">
                         <i class="fas fa-trophy fa-3x text-warning"></i>
                     </div>
-                    <h5>Award не добавлен</h5>
-                    <p class="text-muted">Добавьте Award для страницы "О нас"</p>
+                    <h5>Награда не добавлена</h5>
+                    <p class="text-muted">Добавьте награду для страницы "О нас"</p>
                     <button class="btn btn-success" data-toggle="modal" data-target="#createAwardModal">
-                        <i class="fas fa-plus"></i> Добавить Award
+                        <i class="fas fa-plus"></i> Добавить награду
                     </button>
                 </div>
                 @endif

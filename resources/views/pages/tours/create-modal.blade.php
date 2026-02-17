@@ -510,11 +510,11 @@
                 accommContentHtml += `
                     <div class="tab-pane fade ${showActive}" id="accomm_day_${dayNumber}_lang_${lang.code}">
                         <div class="form-group">
-                            <label>Nomi (${lang.name}) <span class="text-danger">*</span></label>
+                            <label>Название (${lang.name}) <span class="text-danger">*</span></label>
                             <input type="text" name="accomm_day_${dayNumber}[name_${lang.code}]" class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
-                            <label>Tavsif (${lang.name})</label>
+                            <label>Описание (${lang.name})</label>
                             <textarea name="accomm_day_${dayNumber}[description_${lang.code}]" class="form-control form-control-sm" rows="2"></textarea>
                         </div>
                     </div>
@@ -547,40 +547,40 @@
                     <!-- Accommodation Section -->
                     <div class="accommodation-section mt-3 p-2" style="border: 1px dashed #ccc; border-radius:4px; background:#fff;">
                         <h6 class="mb-2" style="font-size:0.9em; color:#555;">
-                            <i class="fas fa-bed"></i> Turar joy / Tavsiya
+                            <i class="fas fa-bed"></i> Размещение / Рекомендация
                         </h6>
                         <div class="d-flex mb-2 flex-wrap">
                             <div class="custom-control custom-radio mr-3 mb-1">
                                 <input type="radio" class="custom-control-input accomm-type-radio"
                                        name="accomm_day_${dayNumber}[type]"
                                        id="accomm_none_${dayNumber}" value="none" checked>
-                                <label class="custom-control-label" for="accomm_none_${dayNumber}">Yo'q</label>
+                                <label class="custom-control-label" for="accomm_none_${dayNumber}">Нет</label>
                             </div>
                             <div class="custom-control custom-radio mr-3 mb-1">
                                 <input type="radio" class="custom-control-input accomm-type-radio"
                                        name="accomm_day_${dayNumber}[type]"
                                        id="accomm_hotel_${dayNumber}" value="accommodation">
-                                <label class="custom-control-label" for="accomm_hotel_${dayNumber}">Turar joy bor</label>
+                                <label class="custom-control-label" for="accomm_hotel_${dayNumber}">Есть размещение</label>
                             </div>
                             <div class="custom-control custom-radio mb-1">
                                 <input type="radio" class="custom-control-input accomm-type-radio"
                                        name="accomm_day_${dayNumber}[type]"
                                        id="accomm_rec_${dayNumber}" value="recommendation">
-                                <label class="custom-control-label" for="accomm_rec_${dayNumber}">Tavsiya</label>
+                                <label class="custom-control-label" for="accomm_rec_${dayNumber}">Рекомендация</label>
                             </div>
                         </div>
                         <div class="accomm-detail-fields" style="display:none;">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>Narx ($)</label>
+                                        <label>Цена ($)</label>
                                         <input type="number" name="accomm_day_${dayNumber}[price]"
                                                class="form-control form-control-sm" step="0.01" min="0" placeholder="0.00">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group">
-                                        <label>Rasm</label>
+                                        <label>Изображение</label>
                                         <input type="file" name="accomm_day_${dayNumber}[image_file]"
                                                class="form-control-file" accept="image/jpeg,image/png,image/jpg,image/webp">
                                     </div>

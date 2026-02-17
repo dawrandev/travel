@@ -72,7 +72,7 @@
                 </div>
 
                 <!-- Accommodations -->
-                <h5 class="mt-3"><i class="fas fa-bed"></i> Turar joy / Tavsiya</h5>
+                <h5 class="mt-3"><i class="fas fa-bed"></i> Размещение / Рекомендация</h5>
                 <div id="showAccommodations"></div>
 
                 <!-- GIF Route Map -->
@@ -221,11 +221,11 @@
                     ? (acc.translations.find(t => t.lang_code === 'ru') || acc.translations[0])
                     : null;
                 const typeBadge = acc.type === 'accommodation'
-                    ? '<span class="badge badge-info">Turar joy</span>'
-                    : '<span class="badge badge-warning">Tavsiya</span>';
+                    ? '<span class="badge badge-info">Размещение</span>'
+                    : '<span class="badge badge-warning">Рекомендация</span>';
                 accHtml += `
                     <div class="mb-2 p-2" style="border:1px solid #e0e0e0; border-radius:4px;">
-                        <strong>Kun ${acc.day_number}</strong> ${typeBadge}
+                        <strong>День ${acc.day_number}</strong> ${typeBadge}
                         ${acc.price !== null && acc.price !== undefined ? '<span class="ml-2 text-muted">$' + parseFloat(acc.price).toFixed(2) + '</span>' : ''}
                         ${ruAccTrans ? '<div><strong>' + (ruAccTrans.name || '') + '</strong> — ' + (ruAccTrans.description || '') + '</div>' : ''}
                         ${acc.image_path ? '<img src="/storage/uploads/' + acc.image_path.split('/').pop() + '" style="max-height:60px; border-radius:4px; margin-top:4px;">' : ''}
@@ -233,7 +233,7 @@
                 `;
             });
         } else {
-            accHtml = '<p class="text-muted">Turar joy qo\'shilmagan</p>';
+            accHtml = '<p class="text-muted">Размещение не добавлено</p>';
         }
         $('#showAccommodations').html(accHtml);
 
