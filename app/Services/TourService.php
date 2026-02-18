@@ -5,10 +5,12 @@ namespace App\Services;
 use App\Models\Language;
 use App\Models\TourAccommodation;
 use App\Models\TourItineraryTranslation;
+use App\Models\TourTranslation;
 use App\Repositories\TourRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TourService
 {
@@ -212,12 +214,22 @@ class TourService
         $languages = Language::all();
         foreach ($languages as $language) {
             $langCode = $language->code;
+            $title = $data['title_' . $langCode] ?? '';
+            $baseSlug = Str::slug($title);
+            $slug = $baseSlug;
+            $count = 1;
+            while (TourTranslation::where('slug', $slug)
+                ->where('lang_code', $langCode)
+                ->exists()) {
+                $slug = $baseSlug . '-' . $count++;
+            }
             $this->tourRepository->createTranslation($tourId, [
-                'title' => $data['title_' . $langCode] ?? '',
+                'title' => $title,
                 'slogan' => $data['slogan_' . $langCode] ?? '',
                 'description' => $data['description_' . $langCode] ?? '',
                 'routes' => $data['routes_' . $langCode] ?? '',
                 'important_info' => $data['important_info_' . $langCode] ?? '',
+                'slug' => $slug ?: null,
                 'lang_code' => $langCode,
             ]);
         }

@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TourResource;
 use App\Http\Resources\TourDetailResource;
 use App\Models\Tour;
+use App\Repositories\TourRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class TourController extends Controller
 {
+    public function __construct(
+        protected TourRepository $tourRepository
+    ) {}
+
     #[OA\Get(
         path: "/tours",
         tags: ["Tours"],
@@ -104,10 +109,10 @@ class TourController extends Controller
     }
 
     #[OA\Get(
-        path: "/tours/{id}",
+        path: "/tours/{slug}",
         tags: ["Tours"],
         summary: "Bitta turni olish",
-        description: "ID bo'yicha turni batafsil ma'lumotlari bilan qaytaradi",
+        description: "Slug bo'yicha turni batafsil ma'lumotlari bilan qaytaradi",
         parameters: [
             new OA\Parameter(
                 name: "Accept-Language",
@@ -117,11 +122,11 @@ class TourController extends Controller
                 schema: new OA\Schema(type: "string", default: "uz", enum: ["uz", "ru", "kk", "en"])
             ),
             new OA\Parameter(
-                name: "id",
+                name: "slug",
                 in: "path",
-                description: "Tur ID",
+                description: "Tur slug (masalan: nukus-cultural-one-day-tour)",
                 required: true,
-                schema: new OA\Schema(type: "integer", example: 1)
+                schema: new OA\Schema(type: "string", example: "nukus-cultural-one-day-tour")
             )
         ],
         responses: [
@@ -244,20 +249,13 @@ class TourController extends Controller
             new OA\Response(response: 404, description: "Tur topilmadi")
         ]
     )]
-    public function show(int $id): JsonResponse
+    public function show(string $slug): JsonResponse
     {
-        $tour = Tour::with([
-            'translations',
-            'category.translations',
-            'images',
-            'itineraries.translations',
-            'features.translations',
-            'faqs.translations',
-            'faqs.category.translations',
-            'accommodations.translations',
-        ])
-            ->where('is_active', true)
-            ->findOrFail($id);
+        $tour = $this->tourRepository->findBySlug($slug);
+
+        if (!$tour) {
+            return response()->json(['success' => false, 'message' => 'Tour not found'], 404);
+        }
 
         return response()->json([
             'success' => true,

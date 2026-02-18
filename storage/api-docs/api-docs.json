@@ -1478,14 +1478,14 @@
                 }
             }
         },
-        "/tours/{id}": {
+        "/tours/{slug}": {
             "get": {
                 "tags": [
                     "Tours"
                 ],
                 "summary": "Bitta turni olish",
-                "description": "ID bo'yicha turni batafsil ma'lumotlari bilan qaytaradi",
-                "operationId": "fa8aa004421412a6e82a7d725bb7eba1",
+                "description": "Slug bo'yicha turni batafsil ma'lumotlari bilan qaytaradi",
+                "operationId": "2788045bfd57aa015f6605064b4cd0d9",
                 "parameters": [
                     {
                         "name": "Accept-Language",
@@ -1504,13 +1504,13 @@
                         }
                     },
                     {
-                        "name": "id",
+                        "name": "slug",
                         "in": "path",
-                        "description": "Tur ID",
+                        "description": "Tur slug (masalan: nukus-cultural-one-day-tour)",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "example": 1
+                            "type": "string",
+                            "example": "nukus-cultural-one-day-tour"
                         }
                     }
                 ],

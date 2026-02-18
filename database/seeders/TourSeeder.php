@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TourSeeder extends Seeder
 {
@@ -277,6 +278,7 @@ class TourSeeder extends Seeder
                     'description' => $trans['description'],
                     'routes' => $trans['routes'],
                     'important_info' => $trans['important_info'],
+                    'slug' => Str::slug($trans['title']),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

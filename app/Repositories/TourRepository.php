@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Tour;
+use App\Models\TourTranslation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -31,6 +32,19 @@ class TourRepository
     {
         return Tour::with(['translations', 'category.translations', 'images', 'itineraries.translations', 'features.translations', 'accommodations.translations'])
             ->find($id);
+    }
+
+    public function findBySlug(string $slug): ?Tour
+    {
+        $translation = TourTranslation::where('slug', $slug)->first();
+        if (!$translation) return null;
+
+        return Tour::with([
+            'translations', 'category.translations', 'images',
+            'itineraries.translations', 'features.translations',
+            'faqs.translations', 'faqs.category.translations',
+            'accommodations.translations',
+        ])->where('is_active', true)->find($translation->tour_id);
     }
 
     public function create(array $data): Tour

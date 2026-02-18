@@ -34,7 +34,7 @@ Route::get('/categories', [CategoryController::class, 'index']);
 // Tours
 Route::get('/tours', [TourController::class, 'index']);
 Route::get('/tours/top-rated', [TourController::class, 'topRated']);
-Route::get('/tours/{id}', [TourController::class, 'show']);
+Route::get('/tours/{slug}', [TourController::class, 'show']);
 
 // Reviews
 Route::get('/reviews', [ReviewController::class, 'index']);

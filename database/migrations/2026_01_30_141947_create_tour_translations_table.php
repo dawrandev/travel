@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('description');
             $table->text('routes');
             $table->text('important_info')->nullable();
+            $table->string('slug')->nullable();
+            $table->unique(['slug', 'lang_code']);
             $table->timestamps();
         });
     }
