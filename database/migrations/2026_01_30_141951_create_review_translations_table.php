@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('review_id')->constrained('reviews')->onDelete('cascade');
             $table->string('lang_code', 5);
-            $table->string('city');
+            $table->string('city')->nullable();
             $table->text('comment');
             $table->timestamps();
         });

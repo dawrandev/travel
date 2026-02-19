@@ -23,18 +23,49 @@ class ReviewController extends Controller
 
     public function index(): View
     {
-        $reviews = $this->reviewService->getAll();
+        // Get only admin reviews for the old index page
+        $reviews = \App\Models\Review::with('translations', 'tour.translations')
+            ->where('client_created', false)
+            ->orderBy('created_at', 'desc')
+            ->get();
         $banner = ReviewBanner::first();
         $languages = Language::where('is_active', true)->get();
         $tours = Tour::with('translations')->get();
-        return view('pages.reviews.index', compact('reviews', 'banner', 'languages', 'tours'));
+        $pendingCount = \App\Models\Review::where('client_created', true)->where('is_checked', false)->count();
+        return view('pages.reviews.index', compact('reviews', 'banner', 'languages', 'tours', 'pendingCount'));
+    }
+
+    public function adminReviews(): View
+    {
+        $reviews = \App\Models\Review::with('translations', 'tour.translations')
+            ->where('client_created', false)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $banner = ReviewBanner::first();
+        $languages = Language::where('is_active', true)->get();
+        $tours = Tour::with('translations')->get();
+        return view('pages.reviews.admin-reviews', compact('reviews', 'banner', 'languages', 'tours'));
+    }
+
+    public function clientReviews(): View
+    {
+        $reviews = \App\Models\Review::with('translations', 'tour.translations')
+            ->where('client_created', true)
+            ->orderBy('is_checked', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $languages = Language::where('is_active', true)->get();
+        $tours = Tour::with('translations')->get();
+        $pendingCount = \App\Models\Review::where('client_created', true)->where('is_checked', false)->count();
+        return view('pages.reviews.client-reviews', compact('reviews', 'languages', 'tours', 'pendingCount'));
     }
 
     public function filter(Request $request): JsonResponse
     {
         $langCode = $request->get('lang_code', 'ru');
         $search = $request->get('search');
-        $reviews = $this->reviewService->getAllByLanguage($langCode, $search);
+        $adminOnly = $request->get('adminOnly', false);
+        $reviews = $this->reviewService->getAllByLanguage($langCode, $search, $adminOnly);
 
         return response()->json([
             'success' => true,
@@ -86,6 +117,13 @@ class ReviewController extends Controller
     {
         $this->reviewService->delete($id);
         return redirect()->route('reviews.index')->with('success', 'Отзыв успешно удален');
+    }
+
+    public function approve(int $id): RedirectResponse
+    {
+        $review = \App\Models\Review::findOrFail($id);
+        $review->update(['is_checked' => true]);
+        return redirect()->route('reviews.index')->with('success', 'Отзыв успешно одобрен');
     }
 
     public function storeBanner(ReviewBannerRequest $request): RedirectResponse

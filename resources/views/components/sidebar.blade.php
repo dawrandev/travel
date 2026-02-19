@@ -20,8 +20,34 @@
              <li class="dropdown {{ Request::is('categories') ? 'active' : '' }}">
                  <a href="{{ route('categories.index') }}" class="nav-link"><i data-feather="folder"></i><span>Категории туров</span></a>
              </li>
-             <li class="dropdown {{ Request::is('reviews') ? 'active' : '' }}">
-                 <a href="{{ route('reviews.index') }}" class="nav-link"><i data-feather="star"></i><span>Отзывы</span></a>
+             <li class="dropdown {{ Request::is('reviews*') ? 'active' : '' }}">
+                 <a href="#" class="menu-toggle nav-link has-dropdown" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                     <span style="display: flex; align-items: center; gap: 8px;">
+                         <i data-feather="star"></i>
+                         <span>Отзывы</span>
+                     </span>
+                     @php
+                     $pendingReviewsCount = \App\Models\Review::where('client_created', true)->where('is_checked', false)->count();
+                     @endphp
+                     @if($pendingReviewsCount > 0)
+                     <span class="badge badge-warning" style="width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 10px; font-weight: 600; margin-right: 5px; flex-shrink: 0;">{{ $pendingReviewsCount }}</span>
+                     @endif
+                 </a>
+                 <ul class="dropdown-menu">
+                     <li>
+                         <a class="nav-link" href="{{ route('reviews.admin') }}">
+                             <i data-feather="user"></i> Админ отзывы
+                         </a>
+                     </li>
+                     <li>
+                         <a class="nav-link" href="{{ route('reviews.client') }}">
+                             <i data-feather="users"></i> Отзывы клиентов
+                             @if($pendingReviewsCount > 0)
+                             <span class="badge badge-warning" style="width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 0; font-size: 10px; font-weight: 600; margin-left: 5px;">{{ $pendingReviewsCount }}</span>
+                             @endif
+                         </a>
+                     </li>
+                 </ul>
              </li>
              <li class="dropdown {{ Request::is('bookings') ? 'active' : '' }}">
                  <a href="{{ route('bookings.index') }}" class="nav-link">

@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="section-header">
-    <h1>Отзывы</h1>
+    <h1>Админ Отзывы</h1>
     <div class="section-header-breadcrumb">
         <div class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i> Панель управления</a></div>
-        <div class="breadcrumb-item active">Отзывы</div>
+        <div class="breadcrumb-item active">Админ Отзывы</div>
         <div class="breadcrumb-item">
             <button class="btn btn-warning rounded-pill" data-toggle="modal" data-target="#createModal">
                 <i class="fas fa-plus"></i> Добавить отзыв
@@ -105,12 +105,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h4>
-                    Список отзывов
-                    @if($pendingCount > 0)
-                    <span class="badge badge-warning ml-2">Ожидают проверки: {{ $pendingCount }}</span>
-                    @endif
-                </h4>
+                <h4>Админ Отзывы</h4>
                 <div class="card-header-action d-flex align-items-center" style="gap: 10px;">
                     <input type="text" class="form-control" id="searchInput" placeholder="Поиск по имени, городу, комментарию..." style="width: 300px;">
 
@@ -136,8 +131,6 @@
                                 <th class="text-center">Видео</th>
                                 <th class="text-center">Ссылка</th>
                                 <th>Комментарий</th>
-                                <th>Тип</th>
-                                <th>Статус проверки</th>
                                 <th>Порядок</th>
                                 <th>Статус</th>
                                 <th>Действия</th>
@@ -181,23 +174,6 @@
                                 </td>
 
                                 <td>{{ Str::limit($review->translations->first()->comment ?? 'N/A', 50) }}</td>
-
-                                <td>
-                                    @if($review->client_created)
-                                    <span class="badge badge-warning">Клиент</span>
-                                    @else
-                                    <span class="badge badge-info">Админ</span>
-                                    @endif
-                                </td>
-
-                                <td>
-                                    @if($review->is_checked)
-                                    <span class="badge badge-success">Одобрен</span>
-                                    @else
-                                    <span class="badge badge-warning">Ожидает</span>
-                                    @endif
-                                </td>
-
                                 <td>{{ $review->sort_order }}</td>
                                 <td>
                                     @if($review->is_active)
@@ -210,15 +186,6 @@
                                     <button class="btn btn-sm btn-info" onclick="showReview({{ $review->id }})" title="Просмотр">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    @if(!$review->is_checked)
-                                    <form action="{{ route('reviews.approve', $review->id) }}" method="POST" style="display:inline-block;">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="btn btn-sm btn-success" title="Одобрить">
-                                            <i class="fas fa-check"></i> Одобрить
-                                        </button>
-                                    </form>
-                                    @endif
                                     <button class="btn btn-sm btn-primary" onclick="editReview({{ $review->id }})" title="Редактировать">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -275,7 +242,7 @@
             }, 500); // Wait 500ms after user stops typing
         });
 
-        // Language filter - trigger AJAX
+        // Language filter
         $('#languageFilter').on('change', function() {
             filterReviews();
         });
@@ -283,6 +250,8 @@
         function filterReviews() {
             var search = $('#searchInput').val();
             var langCode = $('#languageFilter').val();
+
+            console.log('Filter AJAX called:', {search, langCode, adminOnly: true});
 
             $.ajax({
                 url: ROUTES.filter,
@@ -293,11 +262,14 @@
                     adminOnly: true
                 },
                 success: function(response) {
+                    console.log('Filter response:', response);
                     if (response.success) {
+                        console.log('Updating table with', response.data.length, 'reviews');
                         updateTable(response.data);
                     }
                 },
-                error: function() {
+                error: function(xhr) {
+                    console.error('Filter AJAX error:', xhr);
                     swal({
                         title: 'Ошибка!',
                         text: 'Ошибка при загрузке данных',
@@ -313,7 +285,7 @@
             tbody.empty();
 
             if (reviews.length === 0) {
-                tbody.append('<tr><td colspan="13" class="text-center">Нет данных</td></tr>');
+                tbody.append('<tr><td colspan="11" class="text-center">Нет данных</td></tr>');
                 return;
             }
 
@@ -321,14 +293,6 @@
                 var statusBadge = review.is_active ?
                     '<span class="badge badge-success">Активен</span>' :
                     '<span class="badge badge-danger">Неактивен</span>';
-
-                var typeBadge = review.client_created ?
-                    '<span class="badge badge-warning">Клиент</span>' :
-                    '<span class="badge badge-info">Админ</span>';
-
-                var checkedBadge = review.is_checked ?
-                    '<span class="badge badge-success">Одобрен</span>' :
-                    '<span class="badge badge-warning">Ожидает</span>';
 
                 var stars = '';
                 for (var i = 1; i <= 5; i++) {
@@ -351,14 +315,6 @@
                     review.comment.substring(0, 50) + '...' :
                     (review.comment || 'N/A');
 
-                var approveBtn = !review.is_checked ?
-                    '<form action="/reviews/' + review.id + '/approve" method="POST" style="display:inline-block;">' +
-                    '@csrf @method("PUT")' +
-                    '<button type="submit" class="btn btn-sm btn-success" title="Одобрить">' +
-                    '<i class="fas fa-check"></i> Одобрить' +
-                    '</button>' +
-                    '</form>' : '';
-
                 var row = '<tr>' +
                     '<td>' + (index + 1) + '</td>' +
                     '<td>' + review.user_name + '</td>' +
@@ -368,15 +324,12 @@
                     '<td class="text-center">' + videoContent + '</td>' +
                     '<td class="text-center">' + reviewLinkContent + '</td>' +
                     '<td>' + comment + '</td>' +
-                    '<td>' + typeBadge + '</td>' +
-                    '<td>' + checkedBadge + '</td>' +
                     '<td>' + review.sort_order + '</td>' +
                     '<td>' + statusBadge + '</td>' +
                     '<td style="white-space: nowrap;">' +
                     '<button class="btn btn-sm btn-info" onclick="showReview(' + review.id + ')" title="Просмотр">' +
                     '<i class="fas fa-eye"></i>' +
                     '</button> ' +
-                    approveBtn +
                     '<button class="btn btn-sm btn-primary" onclick="editReview(' + review.id + ')" title="Редактировать">' +
                     '<i class="fas fa-edit"></i>' +
                     '</button> ' +

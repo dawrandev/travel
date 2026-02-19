@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tour_id')->constrained('tours')->onDelete('cascade');
             $table->string('user_name');
+            $table->string('email')->nullable();
             $table->integer('rating')->default(5);
             $table->string('video_url')->nullable();
             $table->string('review_url')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_checked')->default(true);
+            $table->boolean('client_created')->default(false);
             $table->integer('sort_order')->default(0);
             $table->timestamps();
         });

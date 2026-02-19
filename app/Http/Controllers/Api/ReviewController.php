@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreClientReviewRequest;
 use App\Http\Resources\ReviewBannerResource;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
@@ -73,7 +74,8 @@ class ReviewController extends Controller
         $lang = $request->header('Accept-Language', 'uz');
 
         $query = Review::with(['translations', 'tour.translations'])
-            ->where('is_active', true);
+            ->where('is_active', true)
+            ->where('is_checked', true);
 
         // Filter by tour if provided
         if ($request->has('tour_id')) {
@@ -88,6 +90,41 @@ class ReviewController extends Controller
             'success' => true,
             'data' => ReviewResource::collection($reviews)
         ]);
+    }
+
+    public function store(StoreClientReviewRequest $request): JsonResponse
+    {
+        $review = Review::create([
+            'tour_id' => $request->tour_id,
+            'user_name' => $request->name,
+            'email' => $request->email,
+            'rating' => $request->rating,
+            'is_active' => true,
+            'is_checked' => false,
+            'client_created' => true,
+            'sort_order' => 0,
+        ]);
+
+        $lang = $request->header('Accept-Language', 'uz');
+        $review->translations()->create([
+            'lang_code' => $lang,
+            'city' => null,
+            'comment' => $request->comment,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your review has been submitted and is pending approval',
+            'data' => [
+                'id' => $review->id,
+                'tour_id' => $review->tour_id,
+                'name' => $review->user_name,
+                'rating' => $review->rating,
+                'comment' => $request->comment,
+                'is_checked' => false,
+                'created_at' => $review->created_at,
+            ]
+        ], 201);
     }
 
     #[OA\Get(

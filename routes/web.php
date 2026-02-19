@@ -19,6 +19,13 @@ use App\Http\Controllers\LanguageController;
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login.post');
 
+// Public routes
+Route::get('/reviews/add', function() {
+    return view('public.reviews.add', [
+        'tours' => \App\Models\Tour::with('translations')->get()
+    ]);
+})->name('reviews.add');
+
 Route::middleware('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -91,10 +98,13 @@ Route::middleware('admin')->group(function () {
 
     Route::prefix('reviews')->name('reviews.')->group(function () {
         Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::get('/admin', [ReviewController::class, 'adminReviews'])->name('admin');
+        Route::get('/client', [ReviewController::class, 'clientReviews'])->name('client');
         Route::get('/filter', [ReviewController::class, 'filter'])->name('filter');
         Route::get('/{id}/translations', [ReviewController::class, 'getTranslations']);
         Route::post('/', [ReviewController::class, 'store'])->name('store');
         Route::put('/{id}', [ReviewController::class, 'update'])->name('update');
+        Route::put('/{id}/approve', [ReviewController::class, 'approve'])->name('approve');
         Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
         Route::post('/banner', [ReviewController::class, 'storeBanner'])->name('banner.store');
         Route::put('/banner/{id}', [ReviewController::class, 'updateBanner'])->name('banner.update');

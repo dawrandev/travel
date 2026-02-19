@@ -16,9 +16,21 @@ class ReviewService
         return $this->reviewRepository->getAll();
     }
 
-    public function getAllByLanguage(string $langCode, ?string $search = null)
+    public function getAllByLanguage(string $langCode, ?string $search = null, $adminOnly = null)
     {
         $reviews = $this->reviewRepository->getAll();
+
+        // Convert string "true"/"false" to boolean (from AJAX requests)
+        if (is_string($adminOnly)) {
+            $adminOnly = filter_var($adminOnly, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        }
+
+        // Filter by client_created
+        if ($adminOnly === true) {
+            $reviews = $reviews->where('client_created', false);
+        } elseif ($adminOnly === false) {
+            $reviews = $reviews->where('client_created', true);
+        }
 
         $mappedReviews = $reviews->map(function ($review) use ($langCode) {
             $translation = $review->translations->where('lang_code', $langCode)->first();
@@ -32,7 +44,9 @@ class ReviewService
                 'review_url' => $review->review_url,
                 'tour_name' => $review->tour->translations->where('lang_code', $langCode)->first()->title ?? 'N/A',
                 'sort_order' => $review->sort_order,
-                'is_active' => $review->is_active
+                'is_active' => $review->is_active,
+                'client_created' => $review->client_created,
+                'is_checked' => $review->is_checked
             ];
         });
 
