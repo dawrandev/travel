@@ -50,7 +50,7 @@ class ContactService
         $contact = $this->contactRepository->create($data);
 
         // Create translations for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->contactRepository->createTranslation($contact->id, [
@@ -70,7 +70,7 @@ class ContactService
         // Delete old translations and create new ones
         $contact->translations()->delete();
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->contactRepository->createTranslation($contact->id, [

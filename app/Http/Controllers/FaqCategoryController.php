@@ -19,7 +19,7 @@ class FaqCategoryController extends Controller
     public function index(): View
     {
         $faqCategories = $this->faqCategoryService->getAll();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         return view('pages.faq-categories.index', compact('faqCategories', 'languages'));
     }
 

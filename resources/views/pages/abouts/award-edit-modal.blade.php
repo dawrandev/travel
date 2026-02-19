@@ -57,7 +57,7 @@
                 </div>
                 <div class="modal-footer bg-whitesmoke br">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-warning" id="editAwardSubmitBtn">
                         <i class="fas fa-sync-alt"></i> Обновить
                     </button>
                 </div>
@@ -96,6 +96,9 @@
                 files.forEach(file => formData.append('images[]', file));
             }
 
+            const $submitBtn = $('#editAwardSubmitBtn');
+            $submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Обновление...');
+
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
@@ -112,6 +115,7 @@
                         errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
                     }
                     swal({ title: 'Ошибка!', text: errorMsg, icon: 'error', button: 'ОК' });
+                    $submitBtn.prop('disabled', false).html('<i class="fas fa-sync-alt"></i> Обновить');
                 }
             });
         });

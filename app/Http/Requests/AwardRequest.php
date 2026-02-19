@@ -22,7 +22,7 @@ class AwardRequest extends FormRequest
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['description_' . $language->code] = 'required|string';
         }
@@ -38,7 +38,7 @@ class AwardRequest extends FormRequest
             'images.*.max' => 'Максимальный размер изображения 5MB',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['description_' . $language->code . '.required'] = 'Описание (' . $language->name . ') обязательно';
         }

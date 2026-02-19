@@ -24,7 +24,7 @@ class ContactController extends Controller
     {
         $contacts = $this->contactService->getAll();
         $banner = ContactBanner::first();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         return view('pages.contacts.index', compact('contacts', 'banner', 'languages'));
     }
 

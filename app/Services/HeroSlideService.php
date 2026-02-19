@@ -52,7 +52,7 @@ class HeroSlideService
 
         $heroSlide = $this->heroSlideRepository->create($data);
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->heroSlideRepository->createTranslation($heroSlide->id, [
@@ -85,7 +85,7 @@ class HeroSlideService
 
         $heroSlide->translations()->delete();
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->heroSlideRepository->createTranslation($heroSlide->id, [

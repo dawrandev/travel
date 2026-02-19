@@ -24,7 +24,7 @@ class TourController extends Controller
         $tours = $this->tourService->getAllByCategory($categoryId);
         $categories = Category::with('translations')->where('is_active', true)->get();
         $features = Feature::with('translations')->get();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
 
         return view('pages.tours.index', compact('tours', 'categories', 'features', 'languages'));
     }

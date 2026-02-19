@@ -25,7 +25,7 @@ class ReviewController extends Controller
     {
         $reviews = $this->reviewService->getAll();
         $banner = ReviewBanner::first();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         $tours = Tour::with('translations')->get();
         return view('pages.reviews.index', compact('reviews', 'banner', 'languages', 'tours'));
     }

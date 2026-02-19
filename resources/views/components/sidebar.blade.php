@@ -59,6 +59,9 @@
              <li class="dropdown {{ Request::is('abouts') ? 'active' : '' }}">
                  <a href="{{ route('abouts.index') }}" class="nav-link"><i data-feather="info"></i><span>О нас</span></a>
              </li>
+             <li class="dropdown {{ Request::is('languages') ? 'active' : '' }}">
+                 <a href="{{ route('languages.index') }}" class="nav-link"><i data-feather="globe"></i><span>Языки</span></a>
+             </li>
          </ul>
      </aside>
  </div>

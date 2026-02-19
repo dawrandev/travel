@@ -21,7 +21,7 @@ class FaqController extends Controller
     public function index(): View
     {
         $faqs = $this->faqService->getAll();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         $tours = Tour::with('translations')->get();
         $categories = FaqCategory::with('translations')
             ->where('is_active', true)

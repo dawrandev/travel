@@ -44,7 +44,7 @@ class CategoryService
         $category = $this->categoryRepository->create($data);
 
         // Create translations for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->categoryRepository->createTranslation($category->id, [
@@ -68,7 +68,7 @@ class CategoryService
         // Delete old translations and create new ones
         $category->translations()->delete();
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->categoryRepository->createTranslation($category->id, [

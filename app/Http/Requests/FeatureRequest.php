@@ -18,7 +18,7 @@ class FeatureRequest extends FormRequest
             'icon' => 'required|string|max:100',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['name_' . $language->code] = 'required|string|max:255';
             $rules['description_' . $language->code] = 'required|string';
@@ -35,7 +35,7 @@ class FeatureRequest extends FormRequest
             'icon.max' => 'Название иконки слишком длинное',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['name_' . $language->code . '.required'] = 'Название (' . $language->name . ') обязательно';
             $messages['description_' . $language->code . '.required'] = 'Описание (' . $language->name . ') обязательно';

@@ -22,7 +22,7 @@ class FaqRequest extends FormRequest
         ];
 
         // Add validation rules for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['question_' . $language->code] = 'required|string|max:255';
             $rules['answer_' . $language->code] = 'required|string';
@@ -37,7 +37,7 @@ class FaqRequest extends FormRequest
             'tour_id.exists' => 'Выбранный тур не существует',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['question_' . $language->code . '.required'] = 'Вопрос (' . $language->name . ') обязателен';
             $messages['answer_' . $language->code . '.required'] = 'Ответ (' . $language->name . ') обязателен';

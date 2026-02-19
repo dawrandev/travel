@@ -28,7 +28,7 @@ class ContactRequest extends FormRequest
         ];
 
         // Add validation rules for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['address_' . $language->code] = 'required|string';
         }
@@ -44,7 +44,7 @@ class ContactRequest extends FormRequest
             'email.email' => 'Email должен быть действительным',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['address_' . $language->code . '.required'] = 'Адрес (' . $language->name . ') обязателен';
         }

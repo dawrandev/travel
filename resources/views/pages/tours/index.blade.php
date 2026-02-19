@@ -54,8 +54,8 @@
                     </span>
                 </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ $tour->translations->where('lang_code', 'ru')->first()->title ?? $tour->translations->first()->title ?? 'N/A' }}</h5>
+            <div class="card-body d-flex flex-column" style="min-height: 380px;">
+                <h5 class="card-title" style="min-height: 50px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ $tour->translations->where('lang_code', 'ru')->first()->title ?? $tour->translations->first()->title ?? 'N/A' }}</h5>
 
                 <div class="tour-details-minimal mb-3">
                     <p class="text-muted mb-1" style="font-size: 13px;">
@@ -80,11 +80,11 @@
                     </span>
                 </div>
 
-                <p class="card-text text-muted" style="font-size: 12px; line-height: 1.4;">
+                <p class="card-text text-muted flex-grow-1" style="font-size: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
                     {{ Str::limit($tour->translations->where('lang_code', 'ru')->first()->description ?? $tour->translations->first()->description ?? '', 70) }}
                 </p>
 
-                <div class="btn-group w-100 mt-2" role="group">
+                <div class="btn-group w-100 mt-auto" role="group">
                     <button type="button" class="btn btn-outline-info btn-sm" onclick="showTour({{ $tour->id }})">
                         <i class="fas fa-eye"></i>
                     </button>

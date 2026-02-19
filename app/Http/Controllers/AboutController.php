@@ -26,7 +26,7 @@ class AboutController extends Controller
     {
         $about = $this->aboutService->getAll()->first();
         $banner = \App\Models\AboutBanner::first();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         return view('pages.abouts.index', compact('about', 'banner', 'languages'));
     }
 

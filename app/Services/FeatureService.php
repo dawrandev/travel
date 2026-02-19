@@ -42,7 +42,7 @@ class FeatureService
         $feature = $this->featureRepository->create($data);
 
         // Create translations for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->featureRepository->createTranslation($feature->id, [
@@ -63,7 +63,7 @@ class FeatureService
 
         $feature->translations()->delete();
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->featureRepository->createTranslation($feature->id, [

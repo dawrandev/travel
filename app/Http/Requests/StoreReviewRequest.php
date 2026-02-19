@@ -25,7 +25,7 @@ class StoreReviewRequest extends FormRequest
         ];
 
         // Add validation rules for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['city_' . $language->code] = 'required|string|max:255';
             $rules['comment_' . $language->code] = 'required|string';
@@ -47,7 +47,7 @@ class StoreReviewRequest extends FormRequest
             'review_url.url' => 'Некорректный URL отзыва',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['city_' . $language->code . '.required'] = 'Город (' . $language->name . ') обязателен';
             $messages['comment_' . $language->code . '.required'] = 'Комментарий (' . $language->name . ') обязателен';

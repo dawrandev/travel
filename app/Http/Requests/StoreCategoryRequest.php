@@ -19,7 +19,7 @@ class StoreCategoryRequest extends FormRequest
             'is_active' => 'nullable|boolean',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['name_' . $language->code] = 'required|string|max:255';
         }
@@ -31,7 +31,7 @@ class StoreCategoryRequest extends FormRequest
     {
         $messages = [];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['name_' . $language->code . '.required'] = 'Название (' . $language->name . ') обязательно';
             $messages['name_' . $language->code . '.max'] = 'Название (' . $language->name . ') не должно превышать 255 символов';

@@ -20,7 +20,7 @@ class FaqCategoryRequest extends FormRequest
         ];
 
         // Add validation rules for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['name_' . $language->code] = 'required|string|max:255';
         }
@@ -32,7 +32,7 @@ class FaqCategoryRequest extends FormRequest
     {
         $messages = [];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['name_' . $language->code . '.required'] = 'Название (' . $language->name . ') обязательно';
         }

@@ -22,7 +22,7 @@ class AboutBannerRequest extends FormRequest
             'is_active' => 'nullable|boolean',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['banner_title_' . $language->code] = 'required|string|max:255';
         }
@@ -39,7 +39,7 @@ class AboutBannerRequest extends FormRequest
             'images.*.max' => 'Максимальный размер изображения 10MB',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['banner_title_' . $language->code . '.required'] = 'Заголовок баннера (' . $language->name . ') обязателен';
         }

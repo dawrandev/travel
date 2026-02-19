@@ -51,7 +51,7 @@
                 </div>
                 <div class="modal-footer bg-whitesmoke br">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-warning" id="createAwardSubmitBtn">
                         <i class="fas fa-save"></i> Сохранить
                     </button>
                 </div>
@@ -87,6 +87,9 @@
                 return;
             }
 
+            const $submitBtn = $('#createAwardSubmitBtn');
+            $submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Сохранение...');
+
             const formData = new FormData(this);
             formData.delete('images[]');
             formData.delete('images');
@@ -108,6 +111,7 @@
                         errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
                     }
                     swal({ title: 'Ошибка!', text: errorMsg, icon: 'error', button: 'ОК' });
+                    $submitBtn.prop('disabled', false).html('<i class="fas fa-save"></i> Сохранить');
                 }
             });
         });

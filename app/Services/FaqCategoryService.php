@@ -45,7 +45,7 @@ class FaqCategoryService
         $category = $this->faqCategoryRepository->create($data);
 
         // Create translations for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->faqCategoryRepository->createTranslation($category->id, [
@@ -69,7 +69,7 @@ class FaqCategoryService
         // Delete old translations and create new ones
         $this->faqCategoryRepository->deleteTranslations($category->id);
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->faqCategoryRepository->createTranslation($category->id, [

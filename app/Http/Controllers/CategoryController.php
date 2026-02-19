@@ -24,7 +24,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryService->getAll();
         $banner = CategoryBanner::first();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         return view('pages.categories.index', compact('categories', 'banner', 'languages'));
     }
 

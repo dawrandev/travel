@@ -64,7 +64,7 @@ class ReviewService
         $review = $this->reviewRepository->create($data);
 
         // Create translations for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->reviewRepository->createTranslation($review->id, [
@@ -90,7 +90,7 @@ class ReviewService
         // Delete old translations and create new ones
         $review->translations()->delete();
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->reviewRepository->createTranslation($review->id, [

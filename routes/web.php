@@ -14,6 +14,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TourController;
+use App\Http\Controllers\LanguageController;
 
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login.post');
@@ -130,5 +131,13 @@ Route::middleware('admin')->group(function () {
         Route::get('/{id}/show', [QuestionController::class, 'show'])->name('show');
         Route::put('/{id}/status', [QuestionController::class, 'updateStatus'])->name('updateStatus');
         Route::delete('/{id}', [QuestionController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('languages')->name('languages.')->group(function () {
+        Route::get('/', [LanguageController::class, 'index'])->name('index');
+        Route::get('/{id}', [LanguageController::class, 'show'])->name('show');
+        Route::post('/', [LanguageController::class, 'store'])->name('store');
+        Route::put('/{id}', [LanguageController::class, 'update'])->name('update');
+        Route::delete('/{id}', [LanguageController::class, 'destroy'])->name('destroy');
     });
 });

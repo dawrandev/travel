@@ -19,7 +19,7 @@ class HeroSlideController extends Controller
     public function index(): View
     {
         $heroSlides = $this->heroSlideService->getAll();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         return view('pages.hero-slides.index', compact('heroSlides', 'languages'));
     }
 

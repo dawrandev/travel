@@ -211,7 +211,7 @@ class TourService
 
     protected function createTranslations(int $tourId, array $data)
     {
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $title = $data['title_' . $langCode] ?? '';
@@ -250,7 +250,7 @@ class TourService
 
     protected function createItineraries(int $tourId, array $itineraries)
     {
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
 
         foreach ($itineraries as $itinerary) {
             // Skip if day_number or event_time is missing
@@ -278,7 +278,7 @@ class TourService
 
     protected function createAccommodations(int $tourId, array $accommodations): void
     {
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
 
         foreach ($accommodations as $accommodation) {
             if (empty($accommodation['day_number']) || empty($accommodation['type'])) {

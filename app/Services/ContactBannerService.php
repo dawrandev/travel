@@ -45,7 +45,7 @@ class ContactBannerService
             }
         }
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->contactBannerRepository->createTranslation($banner->id, [
@@ -85,7 +85,7 @@ class ContactBannerService
         $this->contactBannerRepository->update($banner, ['is_active' => $data['is_active']]);
 
         $banner->translations()->delete();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->contactBannerRepository->createTranslation($banner->id, [

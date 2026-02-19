@@ -40,7 +40,7 @@ class AwardService
             }
         }
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->awardRepository->createTranslation($award->id, [
@@ -76,7 +76,7 @@ class AwardService
         }
 
         $award->translations()->delete();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->awardRepository->createTranslation($award->id, [

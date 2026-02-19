@@ -42,7 +42,7 @@ class TourRequest extends FormRequest
         ];
 
         // Add validation rules for all languages
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $code = $language->code;
             $rules['title_' . $code] = 'required|string|max:255';
@@ -76,7 +76,7 @@ class TourRequest extends FormRequest
             'itineraries.min' => 'Добавьте хотя бы один день в маршрут',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $code = $language->code;
             $messages['title_' . $code . '.required'] = 'Название (' . $language->name . ') обязательно';

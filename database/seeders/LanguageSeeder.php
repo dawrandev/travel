@@ -16,7 +16,7 @@ class LanguageSeeder extends Seeder
             ['name' => 'English', 'code' => 'en', 'is_active' => true],
             ['name' => 'Karakalpak', 'code' => 'kk', 'is_active' => true],
             ['name' => 'Uzbek', 'code' => 'uz', 'is_active' => true],
-            ['name' => 'Russian', 'code' => 'ru', 'is_active' => false],
+            ['name' => 'Russian', 'code' => 'ru', 'is_active' => true],
         ];
 
         foreach ($languages as $language) {

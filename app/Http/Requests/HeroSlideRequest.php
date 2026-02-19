@@ -25,7 +25,7 @@ class HeroSlideRequest extends FormRequest
             $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240';
         }
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $rules['title_' . $language->code] = 'required|string|max:255';
             $rules['subtitle_' . $language->code] = 'required|string|max:255';
@@ -43,7 +43,7 @@ class HeroSlideRequest extends FormRequest
             'image.max' => 'Максимальный размер изображения 10MB',
         ];
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $messages['title_' . $language->code . '.required'] = 'Заголовок (' . $language->name . ') обязателен';
             $messages['subtitle_' . $language->code . '.required'] = 'Подзаголовок (' . $language->name . ') обязателен';

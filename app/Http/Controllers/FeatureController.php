@@ -19,7 +19,7 @@ class FeatureController extends Controller
     public function index(): View
     {
         $features = $this->featureService->getAll();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         return view('pages.features.index', compact('features', 'languages'));
     }
 

@@ -68,7 +68,7 @@ class AboutService
             }
         }
 
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->aboutRepository->createTranslation($about->id, [
@@ -105,7 +105,7 @@ class AboutService
         }
 
         $about->translations()->delete();
-        $languages = Language::all();
+        $languages = Language::where('is_active', true)->get();
         foreach ($languages as $language) {
             $langCode = $language->code;
             $this->aboutRepository->createTranslation($about->id, [
