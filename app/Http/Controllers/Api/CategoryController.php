@@ -40,9 +40,9 @@ class CategoryController extends Controller
                             items: new OA\Items(
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
-                                    new OA\Property(property: "name", type: "string", example: "Tabiiy safari"),
-                                    new OA\Property(property: "sort_order", type: "integer", example: 1),
-                                    new OA\Property(property: "is_active", type: "boolean", example: true),
+                                    new OA\Property(property: "name", type: "string", nullable: false, example: "Tabiiy safari"),
+                                    new OA\Property(property: "sort_order", type: "integer", nullable: false, example: 1),
+                                    new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                 ]
                             )
                         ),

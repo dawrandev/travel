@@ -37,10 +37,10 @@ class HeroSlideController extends Controller
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
                                     // Rasm yo'li standart ko'rinishda namuna
-                                    new OA\Property(property: "image_path", type: "string", example: "/storage/uploads/hero-banner-1.jpg"),
-                                    new OA\Property(property: "sort_order", type: "integer", example: 1),
-                                    new OA\Property(property: "title", type: "string", example: "Sayohatni biz bilan boshlang"),
-                                    new OA\Property(property: "subtitle", type: "string", example: "Eng unutilmas lahzalar"),
+                                    new OA\Property(property: "image_path", type: "string", nullable: false, example: "/storage/uploads/hero-banner-1.jpg"),
+                                    new OA\Property(property: "sort_order", type: "integer", nullable: false, example: 1),
+                                    new OA\Property(property: "title", type: "string", nullable: false, example: "Sayohatni biz bilan boshlang"),
+                                    new OA\Property(property: "subtitle", type: "string", nullable: false, example: "Eng unutilmas lahzalar"),
                                     new OA\Property(property: "description", type: "string", nullable: true, example: "Ekspeditsiyalar haqida qisqacha ma'lumot")
                                 ]
                             )

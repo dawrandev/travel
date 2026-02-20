@@ -37,8 +37,8 @@ class AboutController extends Controller
                             type: "object",
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
-                                new OA\Property(property: "title", type: "string", example: "Sarguzashtlar olami"),
-                                new OA\Property(property: "description", type: "string", example: "Biz haqimizda batafsil..."),
+                                new OA\Property(property: "title", type: "string", nullable: false, example: "Sarguzashtlar olami"),
+                                new OA\Property(property: "description", type: "string", nullable: false, example: "Biz haqimizda batafsil..."),
                                 new OA\Property(
                                     property: "images",
                                     type: "array",
@@ -57,7 +57,7 @@ class AboutController extends Controller
                                     nullable: true,
                                     description: "Award ma'lumoti (mavjud bo'lmasa null)",
                                     properties: [
-                                        new OA\Property(property: "description", type: "string", example: "Best Travel Agency 2024 mukofoti sohibi"),
+                                        new OA\Property(property: "description", type: "string", nullable: false, example: "Best Travel Agency 2024 mukofoti sohibi"),
                                         new OA\Property(
                                             property: "images",
                                             type: "array",

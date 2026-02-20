@@ -62,6 +62,7 @@ class BookingController extends Controller
                     new OA\Property(
                         property: "secondary_phone",
                         type: "string",
+                        nullable: true,
                         description: "Qo'shimcha telefon raqam (ixtiyoriy)",
                         example: "+998909876543"
                     ),
@@ -75,6 +76,7 @@ class BookingController extends Controller
                     new OA\Property(
                         property: "message",
                         type: "string",
+                        nullable: true,
                         description: "Xabar/izoh (ixtiyoriy)",
                         example: "Men vegetarian ovqat xohlayman"
                     ),
@@ -100,9 +102,9 @@ class BookingController extends Controller
                                 new OA\Property(property: "starting_date", type: "string", example: "2026-02-15"),
                                 new OA\Property(property: "ending_date", type: "string", example: "2026-02-20"),
                                 new OA\Property(property: "primary_phone", type: "string", example: "+998901234567"),
-                                new OA\Property(property: "secondary_phone", type: "string", example: "+998909876543"),
+                                new OA\Property(property: "secondary_phone", type: "string", nullable: true, example: "+998909876543"),
                                 new OA\Property(property: "email", type: "string", example: "alisher@example.com"),
-                                new OA\Property(property: "message", type: "string", example: "Men vegetarian ovqat xohlayman"),
+                                new OA\Property(property: "message", type: "string", nullable: true, example: "Men vegetarian ovqat xohlayman"),
                                 new OA\Property(property: "status", type: "string", example: "pending"),
                             ]
                         ),

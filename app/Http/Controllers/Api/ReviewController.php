@@ -49,7 +49,7 @@ class ReviewController extends Controller
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
                                     new OA\Property(property: "user_name", type: "string", example: "Alisher Navoiy"),
-                                    new OA\Property(property: "city", type: "string", example: "Toshkent"),
+                                    new OA\Property(property: "city", type: "string", nullable: true, example: "Toshkent"),
                                     new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."),
                                     new OA\Property(property: "rating", type: "integer", example: 5),
                                     new OA\Property(property: "video_url", type: "string", nullable: true, example: "https://youtube.com/watch?v=xxx"),
@@ -215,7 +215,7 @@ class ReviewController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "user_name", type: "string", example: "Alisher Navoiy"),
-                                new OA\Property(property: "city", type: "string", example: "Toshkent"),
+                                new OA\Property(property: "city", type: "string", nullable: true, example: "Toshkent"),
                                 new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."),
                                 new OA\Property(property: "rating", type: "integer", example: 5),
                                 new OA\Property(property: "video_url", type: "string", nullable: true, example: "https://youtube.com/watch?v=xxx"),

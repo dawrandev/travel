@@ -54,11 +54,13 @@
                                                 },
                                                 "title": {
                                                     "type": "string",
-                                                    "example": "Sarguzashtlar olami"
+                                                    "example": "Sarguzashtlar olami",
+                                                    "nullable": false
                                                 },
                                                 "description": {
                                                     "type": "string",
-                                                    "example": "Biz haqimizda batafsil..."
+                                                    "example": "Biz haqimizda batafsil...",
+                                                    "nullable": false
                                                 },
                                                 "images": {
                                                     "description": "Rasmlar ro'yxati (tartiblangan)",
@@ -82,7 +84,8 @@
                                                     "properties": {
                                                         "description": {
                                                             "type": "string",
-                                                            "example": "Best Travel Agency 2024 mukofoti sohibi"
+                                                            "example": "Best Travel Agency 2024 mukofoti sohibi",
+                                                            "nullable": false
                                                         },
                                                         "images": {
                                                             "description": "Award rasmlari",
@@ -242,7 +245,8 @@
                                     "secondary_phone": {
                                         "description": "Qo'shimcha telefon raqam (ixtiyoriy)",
                                         "type": "string",
-                                        "example": "+998909876543"
+                                        "example": "+998909876543",
+                                        "nullable": true
                                     },
                                     "email": {
                                         "description": "Email manzil",
@@ -253,7 +257,8 @@
                                     "message": {
                                         "description": "Xabar/izoh (ixtiyoriy)",
                                         "type": "string",
-                                        "example": "Men vegetarian ovqat xohlayman"
+                                        "example": "Men vegetarian ovqat xohlayman",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -308,7 +313,8 @@
                                                 },
                                                 "secondary_phone": {
                                                     "type": "string",
-                                                    "example": "+998909876543"
+                                                    "example": "+998909876543",
+                                                    "nullable": true
                                                 },
                                                 "email": {
                                                     "type": "string",
@@ -316,7 +322,8 @@
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Men vegetarian ovqat xohlayman"
+                                                    "example": "Men vegetarian ovqat xohlayman",
+                                                    "nullable": true
                                                 },
                                                 "status": {
                                                     "type": "string",
@@ -409,15 +416,18 @@
                                                     },
                                                     "name": {
                                                         "type": "string",
-                                                        "example": "Tabiiy safari"
+                                                        "example": "Tabiiy safari",
+                                                        "nullable": false
                                                     },
                                                     "sort_order": {
                                                         "type": "integer",
-                                                        "example": 1
+                                                        "example": 1,
+                                                        "nullable": false
                                                     },
                                                     "is_active": {
                                                         "type": "boolean",
-                                                        "example": true
+                                                        "example": true,
+                                                        "nullable": false
                                                     }
                                                 },
                                                 "type": "object"
@@ -533,55 +543,68 @@
                                                 },
                                                 "phone": {
                                                     "type": "string",
-                                                    "example": "+998901234567"
+                                                    "example": "+998901234567",
+                                                    "nullable": false
                                                 },
                                                 "email": {
                                                     "type": "string",
-                                                    "example": "info@example.com"
+                                                    "example": "info@example.com",
+                                                    "nullable": false
                                                 },
                                                 "address": {
                                                     "type": "string",
-                                                    "example": "Tashkent, Uzbekistan"
+                                                    "example": "Tashkent, Uzbekistan",
+                                                    "nullable": false
                                                 },
                                                 "longitude": {
                                                     "type": "string",
-                                                    "example": "69.2401"
+                                                    "example": "69.2401",
+                                                    "nullable": false
                                                 },
                                                 "latitude": {
                                                     "type": "string",
-                                                    "example": "41.2995"
+                                                    "example": "41.2995",
+                                                    "nullable": false
                                                 },
                                                 "telegram_url": {
                                                     "type": "string",
-                                                    "example": "https://t.me/example"
+                                                    "example": "https://t.me/example",
+                                                    "nullable": false
                                                 },
                                                 "telegram_username": {
                                                     "type": "string",
-                                                    "example": "@example"
+                                                    "example": "@example",
+                                                    "nullable": false
                                                 },
                                                 "instagram_url": {
                                                     "type": "string",
-                                                    "example": "https://instagram.com/example"
+                                                    "example": "https://instagram.com/example",
+                                                    "nullable": false
                                                 },
                                                 "instagram_username": {
                                                     "type": "string",
-                                                    "example": "@example"
+                                                    "example": "@example",
+                                                    "nullable": false
                                                 },
                                                 "facebook_url": {
                                                     "type": "string",
-                                                    "example": "https://facebook.com/example"
+                                                    "example": "https://facebook.com/example",
+                                                    "nullable": false
                                                 },
                                                 "facebook_name": {
                                                     "type": "string",
-                                                    "example": "Example Page"
+                                                    "example": "Example Page",
+                                                    "nullable": false
                                                 },
                                                 "youtube_url": {
                                                     "type": "string",
-                                                    "example": "https://youtube.com/example"
+                                                    "example": "https://youtube.com/example",
+                                                    "nullable": false
                                                 },
                                                 "whatsapp_phone": {
                                                     "type": "string",
-                                                    "example": "+998901234567"
+                                                    "example": "+998901234567",
+                                                    "nullable": false
                                                 }
                                             },
                                             "type": "object"
@@ -708,15 +731,18 @@
                                                     },
                                                     "sort_order": {
                                                         "type": "integer",
-                                                        "example": 1
+                                                        "example": 1,
+                                                        "nullable": false
                                                     },
                                                     "question": {
                                                         "type": "string",
-                                                        "example": "Orolga borish uchun eng maqbul vaqt qachon?"
+                                                        "example": "Orolga borish uchun eng maqbul vaqt qachon?",
+                                                        "nullable": false
                                                     },
                                                     "answer": {
                                                         "type": "string",
-                                                        "example": "Bizda iqlim keskin kontinental. Sayohat uchun eng ideal vaqt — bahor (aprel-may) va kuz (sentyabr-oktyabr) oylaridir."
+                                                        "example": "Bizda iqlim keskin kontinental. Sayohat uchun eng ideal vaqt — bahor (aprel-may) va kuz (sentyabr-oktyabr) oylaridir.",
+                                                        "nullable": false
                                                     }
                                                 },
                                                 "type": "object"
@@ -841,19 +867,23 @@
                                                     },
                                                     "image_path": {
                                                         "type": "string",
-                                                        "example": "/storage/uploads/hero-banner-1.jpg"
+                                                        "example": "/storage/uploads/hero-banner-1.jpg",
+                                                        "nullable": false
                                                     },
                                                     "sort_order": {
                                                         "type": "integer",
-                                                        "example": 1
+                                                        "example": 1,
+                                                        "nullable": false
                                                     },
                                                     "title": {
                                                         "type": "string",
-                                                        "example": "Sayohatni biz bilan boshlang"
+                                                        "example": "Sayohatni biz bilan boshlang",
+                                                        "nullable": false
                                                     },
                                                     "subtitle": {
                                                         "type": "string",
-                                                        "example": "Eng unutilmas lahzalar"
+                                                        "example": "Eng unutilmas lahzalar",
+                                                        "nullable": false
                                                     },
                                                     "description": {
                                                         "type": "string",
@@ -1119,7 +1149,8 @@
                                                     },
                                                     "city": {
                                                         "type": "string",
-                                                        "example": "Toshkent"
+                                                        "example": "Toshkent",
+                                                        "nullable": true
                                                     },
                                                     "comment": {
                                                         "type": "string",
@@ -1349,7 +1380,8 @@
                                                 },
                                                 "city": {
                                                     "type": "string",
-                                                    "example": "Toshkent"
+                                                    "example": "Toshkent",
+                                                    "nullable": true
                                                 },
                                                 "comment": {
                                                     "type": "string",
@@ -1510,53 +1542,68 @@
                                                         "type": "integer",
                                                         "example": 1
                                                     },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "aral-sea-safari-tour"
+                                                    },
                                                     "title": {
                                                         "type": "string",
                                                         "example": "Orol dengizi safari"
                                                     },
                                                     "phone": {
                                                         "type": "string",
-                                                        "example": "+998901234567"
+                                                        "example": "+998901234567",
+                                                        "nullable": false
                                                     },
                                                     "description": {
                                                         "type": "string",
-                                                        "example": "Ajoyib sayohat..."
+                                                        "example": "Ajoyib sayohat...",
+                                                        "nullable": false
                                                     },
                                                     "routes": {
                                                         "type": "string",
-                                                        "example": "Toshkent - Nukus - Moynaq"
+                                                        "example": "Toshkent - Nukus - Moynaq",
+                                                        "nullable": false
                                                     },
                                                     "important_info": {
                                                         "type": "string",
-                                                        "example": "Pasport talab qilinadi"
+                                                        "example": "Pasport talab qilinadi",
+                                                        "nullable": true
                                                     },
                                                     "price": {
                                                         "type": "number",
-                                                        "example": 1500000
+                                                        "example": 1500000,
+                                                        "nullable": false
                                                     },
                                                     "duration_days": {
                                                         "type": "integer",
-                                                        "example": 3
+                                                        "example": 3,
+                                                        "nullable": false
                                                     },
                                                     "duration_nights": {
                                                         "type": "integer",
-                                                        "example": 2
+                                                        "example": 2,
+                                                        "nullable": false
                                                     },
                                                     "min_age": {
                                                         "type": "integer",
-                                                        "example": 18
+                                                        "example": 18,
+                                                        "nullable": false
                                                     },
                                                     "max_people": {
                                                         "type": "integer",
-                                                        "example": 15
+                                                        "example": 15,
+                                                        "nullable": false
                                                     },
                                                     "rating": {
                                                         "type": "number",
-                                                        "example": 4.5
+                                                        "example": 4.5,
+                                                        "nullable": false
                                                     },
                                                     "reviews_count": {
                                                         "type": "integer",
-                                                        "example": 10
+                                                        "example": 10,
+                                                        "nullable": false
                                                     },
                                                     "category": {
                                                         "properties": {
@@ -1573,7 +1620,8 @@
                                                     },
                                                     "main_image": {
                                                         "type": "string",
-                                                        "example": "/storage/uploads/image.jpg"
+                                                        "example": "/storage/uploads/image.jpg",
+                                                        "nullable": true
                                                     },
                                                     "images": {
                                                         "type": "array",
@@ -1661,13 +1709,18 @@
                                                     "type": "integer",
                                                     "example": 1
                                                 },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "nukus-cultural-one-day-tour"
+                                                },
                                                 "title": {
                                                     "type": "string",
                                                     "example": "Nukus madaniy turi"
                                                 },
                                                 "phone": {
                                                     "type": "string",
-                                                    "example": "+998901234567"
+                                                    "example": "+998901234567",
+                                                    "nullable": false
                                                 },
                                                 "slogan": {
                                                     "type": "string",
@@ -1675,43 +1728,53 @@
                                                 },
                                                 "description": {
                                                     "type": "string",
-                                                    "example": "Nukus shahrini va uning tarixiy joylarini kashf eting"
+                                                    "example": "Nukus shahrini va uning tarixiy joylarini kashf eting",
+                                                    "nullable": false
                                                 },
                                                 "routes": {
                                                     "type": "string",
-                                                    "example": "Toshkent - Nukus"
+                                                    "example": "Toshkent - Nukus",
+                                                    "nullable": false
                                                 },
                                                 "important_info": {
                                                     "type": "string",
-                                                    "example": "Pasport talab qilinadi"
+                                                    "example": "Pasport talab qilinadi",
+                                                    "nullable": true
                                                 },
                                                 "price": {
                                                     "type": "number",
-                                                    "example": 500000
+                                                    "example": 500000,
+                                                    "nullable": false
                                                 },
                                                 "duration_days": {
                                                     "type": "integer",
-                                                    "example": 1
+                                                    "example": 1,
+                                                    "nullable": false
                                                 },
                                                 "duration_nights": {
                                                     "type": "integer",
-                                                    "example": 0
+                                                    "example": 0,
+                                                    "nullable": false
                                                 },
                                                 "min_age": {
                                                     "type": "integer",
-                                                    "example": 0
+                                                    "example": 0,
+                                                    "nullable": false
                                                 },
                                                 "max_people": {
                                                     "type": "integer",
-                                                    "example": 15
+                                                    "example": 15,
+                                                    "nullable": false
                                                 },
                                                 "rating": {
                                                     "type": "number",
-                                                    "example": 4.5
+                                                    "example": 4.5,
+                                                    "nullable": false
                                                 },
                                                 "reviews_count": {
                                                     "type": "integer",
-                                                    "example": 10
+                                                    "example": 10,
+                                                    "nullable": false
                                                 },
                                                 "category": {
                                                     "properties": {
@@ -1728,7 +1791,8 @@
                                                 },
                                                 "main_image": {
                                                     "type": "string",
-                                                    "example": "/storage/uploads/image.jpg"
+                                                    "example": "/storage/uploads/image.jpg",
+                                                    "nullable": true
                                                 },
                                                 "images": {
                                                     "type": "array",
@@ -1849,7 +1913,7 @@
                                                     }
                                                 },
                                                 "faq": {
-                                                    "description": "Tourga tegishli FAQ lar, kategoriya bo'yicha guruhlanган",
+                                                    "description": "Tourga tegishli FAQ lar, kategoriya bo'yicha guruhlanған",
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
@@ -1872,6 +1936,45 @@
                                                                     },
                                                                     "type": "object"
                                                                 }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "reviews": {
+                                                    "description": "Shu turga tegishli client yozgan va tasdiqlangan sharhlar",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "user_name": {
+                                                                "type": "string",
+                                                                "example": "Alisher Navoiy"
+                                                            },
+                                                            "rating": {
+                                                                "type": "integer",
+                                                                "example": 5
+                                                            },
+                                                            "comment": {
+                                                                "type": "string",
+                                                                "example": "Ajoyib tur edi! Juda yoqdi."
+                                                            },
+                                                            "city": {
+                                                                "type": "string",
+                                                                "example": "Toshkent"
+                                                            },
+                                                            "video_url": {
+                                                                "type": "string",
+                                                                "example": "https://youtube.com/watch?v=xxx",
+                                                                "nullable": true
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2025-02-15T10:30:00+00:00"
                                                             }
                                                         },
                                                         "type": "object"
@@ -1937,54 +2040,69 @@
                                                         "type": "integer",
                                                         "example": 1
                                                     },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "aral-sea-safari-tour"
+                                                    },
                                                     "title": {
                                                         "type": "string",
                                                         "example": "Orol dengizi safari"
                                                     },
                                                     "phone": {
                                                         "type": "string",
-                                                        "example": "+998901234567"
+                                                        "example": "+998901234567",
+                                                        "nullable": false
                                                     },
                                                     "description": {
                                                         "type": "string",
-                                                        "example": "Ajoyib sayohat..."
+                                                        "example": "Ajoyib sayohat...",
+                                                        "nullable": false
                                                     },
                                                     "routes": {
                                                         "type": "string",
-                                                        "example": "Toshkent - Nukus - Moynaq"
+                                                        "example": "Toshkent - Nukus - Moynaq",
+                                                        "nullable": false
                                                     },
                                                     "important_info": {
                                                         "type": "string",
-                                                        "example": "Pasport talab qilinadi"
+                                                        "example": "Pasport talab qilinadi",
+                                                        "nullable": true
                                                     },
                                                     "price": {
                                                         "type": "number",
-                                                        "example": 1500000
+                                                        "example": 1500000,
+                                                        "nullable": false
                                                     },
                                                     "duration_days": {
                                                         "type": "integer",
-                                                        "example": 3
+                                                        "example": 3,
+                                                        "nullable": false
                                                     },
                                                     "duration_nights": {
                                                         "type": "integer",
-                                                        "example": 2
+                                                        "example": 2,
+                                                        "nullable": false
                                                     },
                                                     "min_age": {
                                                         "type": "integer",
-                                                        "example": 18
+                                                        "example": 18,
+                                                        "nullable": false
                                                     },
                                                     "max_people": {
                                                         "type": "integer",
-                                                        "example": 15
+                                                        "example": 15,
+                                                        "nullable": false
                                                     },
                                                     "rating": {
                                                         "description": "Eng yuqori rating",
                                                         "type": "number",
-                                                        "example": 4.8
+                                                        "example": 4.8,
+                                                        "nullable": false
                                                     },
                                                     "reviews_count": {
                                                         "type": "integer",
-                                                        "example": 25
+                                                        "example": 25,
+                                                        "nullable": false
                                                     },
                                                     "category": {
                                                         "properties": {
@@ -2001,7 +2119,8 @@
                                                     },
                                                     "main_image": {
                                                         "type": "string",
-                                                        "example": "/storage/image.jpg"
+                                                        "example": "/storage/image.jpg",
+                                                        "nullable": true
                                                     },
                                                     "images": {
                                                         "type": "array",
