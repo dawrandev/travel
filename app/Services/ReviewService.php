@@ -16,7 +16,7 @@ class ReviewService
         return $this->reviewRepository->getAll();
     }
 
-    public function getAllByLanguage(string $langCode, ?string $search = null, $adminOnly = null)
+    public function getAllByLanguage(string $langCode, ?string $search = null, $adminOnly = null, $isChecked = null)
     {
         $reviews = $this->reviewRepository->getAll();
 
@@ -25,24 +25,45 @@ class ReviewService
             $adminOnly = filter_var($adminOnly, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         }
 
-        // Filter by client_created
+        // Filter by client_created using strict comparison
         if ($adminOnly === true) {
-            $reviews = $reviews->where('client_created', false);
+            $reviews = $reviews->filter(function ($review) {
+                return $review->client_created === false;
+            })->values();
         } elseif ($adminOnly === false) {
-            $reviews = $reviews->where('client_created', true);
+            $reviews = $reviews->filter(function ($review) {
+                return $review->client_created === true;
+            })->values();
+        }
+
+        // Filter by is_checked status using strict comparison
+        if ($isChecked !== null && $isChecked !== '') {
+            if ($isChecked === '1' || $isChecked === 1 || $isChecked === true) {
+                $reviews = $reviews->filter(function ($review) {
+                    return $review->is_checked === true;
+                })->values();
+            } elseif ($isChecked === '0' || $isChecked === 0 || $isChecked === false) {
+                $reviews = $reviews->filter(function ($review) {
+                    return $review->is_checked === false;
+                })->values();
+            }
         }
 
         $mappedReviews = $reviews->map(function ($review) use ($langCode) {
             $translation = $review->translations->where('lang_code', $langCode)->first();
+            // Fallback to first available translation if requested language not found
+            $fallbackTranslation = $translation ?? $review->translations->first();
+
             return [
                 'id' => $review->id,
                 'user_name' => $review->user_name,
-                'city' => $translation->city ?? 'N/A',
-                'comment' => $translation->comment ?? 'N/A',
+                'email' => $review->email,
+                'city' => $fallbackTranslation->city ?? 'N/A',
+                'comment' => $fallbackTranslation->comment ?? 'N/A',
                 'rating' => $review->rating,
                 'video_url' => $review->video_url,
                 'review_url' => $review->review_url,
-                'tour_name' => $review->tour->translations->where('lang_code', $langCode)->first()->title ?? 'N/A',
+                'tour_name' => $review->tour->translations->where('lang_code', $langCode)->first()->title ?? $review->tour->translations->first()->title ?? 'N/A',
                 'sort_order' => $review->sort_order,
                 'is_active' => $review->is_active,
                 'client_created' => $review->client_created,
@@ -58,10 +79,10 @@ class ReviewService
                        str_contains(mb_strtolower($review['city']), $search) ||
                        str_contains(mb_strtolower($review['comment']), $search) ||
                        str_contains(mb_strtolower($review['tour_name']), $search);
-            })->values();
+            });
         }
 
-        return $mappedReviews;
+        return $mappedReviews->values();
     }
 
     public function findById(int $id)

@@ -141,8 +141,8 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $review->user_name }}</td>
-                                <td>{{ $review->translations->first()->city ?? 'N/A' }}</td>
-                                <td>{{ $review->tour->translations->first()->title ?? 'N/A' }}</td>
+                                <td>{{ $review->translations->where('lang_code', 'ru')->first()->city ?? 'N/A' }}</td>
+                                <td>{{ $review->tour->translations->where('lang_code', 'ru')->first()->title ?? 'N/A' }}</td>
                                 <td>
                                     @for($i = 1; $i <= 5; $i++)
                                         @if($i <=$review->rating)
@@ -173,7 +173,7 @@
                                     @endif
                                 </td>
 
-                                <td>{{ Str::limit($review->translations->first()->comment ?? 'N/A', 50) }}</td>
+                                <td>{{ Str::limit($review->translations->where('lang_code', 'ru')->first()->comment ?? 'N/A', 50) }}</td>
                                 <td>{{ $review->sort_order }}</td>
                                 <td>
                                     @if($review->is_active)
@@ -355,11 +355,11 @@
                 if (response.success) {
                     $('#show_user_name').text(response.review.user_name);
 
-                    // Get tour name from first available translation
+                    // Get tour name from Russian translation
                     var tourName = 'N/A';
                     @foreach($tours as $tour)
                     if ({{ $tour->id }} == response.review.tour_id) {
-                        tourName = '{{ $tour->translations->first()->title ?? "N/A" }}';
+                        tourName = '{{ $tour->translations->where("lang_code", "ru")->first()->title ?? "N/A" }}';
                     }
                     @endforeach
                     $('#show_tour_name').text(tourName);

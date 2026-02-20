@@ -23,12 +23,10 @@
                 <div class="card-header-action d-flex align-items-center" style="gap: 10px;">
                     <input type="text" class="form-control" id="searchInput" placeholder="Поиск по имени, городу, комментарию..." style="width: 300px;">
 
-                    <select class="form-control" id="languageFilter" style="width: 150px;">
-                        @foreach($languages as $language)
-                        <option value="{{ $language->code }}" {{ $language->code == 'ru' ? 'selected' : '' }}>
-                            {{ $language->name }}
-                        </option>
-                        @endforeach
+                    <select class="form-control" id="statusFilter" style="width: 200px;">
+                        <option value="">Все отзывы</option>
+                        <option value="1">Одобренные</option>
+                        <option value="0">Ожидают проверки</option>
                     </select>
                 </div>
             </div>
@@ -56,7 +54,7 @@
                                 <td>
                                     <a href="mailto:{{ $review->email }}">{{ $review->email ?? 'N/A' }}</a>
                                 </td>
-                                <td>{{ $review->tour->translations->first()->title ?? 'N/A' }}</td>
+                                <td>{{ $review->tour->translations->where('lang_code', 'ru')->first()->title ?? 'N/A' }}</td>
                                 <td>
                                     @for($i = 1; $i <= 5; $i++)
                                         @if($i <=$review->rating)
@@ -67,7 +65,7 @@
                                         @endfor
                                 </td>
 
-                                <td>{{ Str::limit($review->translations->first()->comment ?? 'N/A', 50) }}</td>
+                                <td>{{ Str::limit($review->translations->where('lang_code', 'ru')->first()->comment ?? $review->translations->first()->comment ?? 'N/A', 50) }}</td>
 
                                 <td>
                                     @if($review->is_checked)
@@ -147,29 +145,35 @@
             }, 500); // Wait 500ms after user stops typing
         });
 
-        // Language filter - trigger AJAX
-        $('#languageFilter').on('change', function() {
+        // Status filter - trigger AJAX
+        $('#statusFilter').on('change', function() {
             filterReviews();
         });
 
         function filterReviews() {
             var search = $('#searchInput').val();
-            var langCode = $('#languageFilter').val();
+            var isChecked = $('#statusFilter').val();
+
+            console.log('Filter called with:', { search, isChecked, adminOnly: false });
 
             $.ajax({
                 url: ROUTES.filter,
                 type: 'GET',
                 data: {
                     search: search,
-                    lang_code: langCode,
+                    is_checked: isChecked,
+                    lang_code: 'ru',
                     adminOnly: false
                 },
                 success: function(response) {
+                    console.log('Filter response:', response);
                     if (response.success) {
+                        console.log('Updating table with', response.data.length, 'reviews');
                         updateTable(response.data);
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error('Filter error:', xhr, status, error);
                     swal({
                         title: 'Ошибка!',
                         text: 'Ошибка при загрузке данных',
@@ -181,6 +185,7 @@
         }
 
         function updateTable(reviews) {
+            console.log('updateTable called with reviews:', reviews);
             var tbody = $('#reviewTableBody');
             tbody.empty();
 
@@ -253,11 +258,11 @@
                 if (response.success) {
                     $('#show_user_name').text(response.review.user_name);
 
-                    // Get tour name from first available translation
+                    // Get tour name from Russian translation
                     var tourName = 'N/A';
                     @foreach($tours as $tour)
                     if ({{ $tour->id }} == response.review.tour_id) {
-                        tourName = '{{ $tour->translations->first()->title ?? "N/A" }}';
+                        tourName = '{{ $tour->translations->where("lang_code", "ru")->first()->title ?? "N/A" }}';
                     }
                     @endforeach
                     $('#show_tour_name').text(tourName);

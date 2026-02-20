@@ -1158,6 +1158,136 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Yangi sharh qo'shish",
+                "description": "Foydalanuvchi tomonidan yangi sharh qo'shish",
+                "operationId": "1a9ed3737615a28b60c78a0d05d0eb35",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Til kodi (uz, ru, kk, en)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "uz",
+                            "enum": [
+                                "uz",
+                                "ru",
+                                "kk",
+                                "en"
+                            ]
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tour_id",
+                                    "name",
+                                    "email",
+                                    "rating",
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "tour_id": {
+                                        "description": "Tur ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "description": "Foydalanuvchi ismi",
+                                        "type": "string",
+                                        "example": "Alisher Navoiy"
+                                    },
+                                    "email": {
+                                        "description": "Foydalanuvchi email",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "rating": {
+                                        "description": "Reyting (1-5)",
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "comment": {
+                                        "description": "Sharh mazmuni",
+                                        "type": "string",
+                                        "example": "Ajoyib tur edi!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sharh muvaffaqiyatli qo'shildi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your review has been submitted and is pending approval"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "tour_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Alisher Navoiy"
+                                                },
+                                                "rating": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "comment": {
+                                                    "type": "string",
+                                                    "example": "Ajoyib tur edi!"
+                                                },
+                                                "is_checked": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-20T10:30:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validatsiya xatosi"
+                    }
+                }
             }
         },
         "/reviews/{id}": {

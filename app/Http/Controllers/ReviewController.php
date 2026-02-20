@@ -65,7 +65,8 @@ class ReviewController extends Controller
         $langCode = $request->get('lang_code', 'ru');
         $search = $request->get('search');
         $adminOnly = $request->get('adminOnly', false);
-        $reviews = $this->reviewService->getAllByLanguage($langCode, $search, $adminOnly);
+        $isChecked = $request->get('is_checked');
+        $reviews = $this->reviewService->getAllByLanguage($langCode, $search, $adminOnly, $isChecked);
 
         return response()->json([
             'success' => true,
@@ -123,7 +124,7 @@ class ReviewController extends Controller
     {
         $review = \App\Models\Review::findOrFail($id);
         $review->update(['is_checked' => true]);
-        return redirect()->route('reviews.index')->with('success', 'Отзыв успешно одобрен');
+        return redirect()->back()->with('success', 'Отзыв успешно одобрен');
     }
 
     public function storeBanner(ReviewBannerRequest $request): RedirectResponse

@@ -9,7 +9,6 @@ class ReviewSeeder extends Seeder
 {
     public function run(): void
     {
-        // Mavjud 5 ta tur ID-larini olamiz
         $tourIds = DB::table('tours')->pluck('id')->toArray();
 
         if (count($tourIds) < 5) {
@@ -18,7 +17,6 @@ class ReviewSeeder extends Seeder
         }
 
         $reviews = [
-            // TOUR 1 uchun reviewlar (Noriyuki va Sarah-lena)
             [
                 'user_name' => 'Noriyuki',
                 'rating' => 10,

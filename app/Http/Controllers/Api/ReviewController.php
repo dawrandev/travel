@@ -92,6 +92,60 @@ class ReviewController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: "/reviews",
+        tags: ["Reviews"],
+        summary: "Yangi sharh qo'shish",
+        description: "Foydalanuvchi tomonidan yangi sharh qo'shish",
+        parameters: [
+            new OA\Parameter(
+                name: "Accept-Language",
+                in: "header",
+                description: "Til kodi (uz, ru, kk, en)",
+                required: false,
+                schema: new OA\Schema(type: "string", default: "uz", enum: ["uz", "ru", "kk", "en"])
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["tour_id", "name", "email", "rating", "comment"],
+                properties: [
+                    new OA\Property(property: "tour_id", type: "integer", example: 1, description: "Tur ID"),
+                    new OA\Property(property: "name", type: "string", example: "Alisher Navoiy", description: "Foydalanuvchi ismi"),
+                    new OA\Property(property: "email", type: "string", format: "email", example: "user@example.com", description: "Foydalanuvchi email"),
+                    new OA\Property(property: "rating", type: "integer", example: 5, description: "Reyting (1-5)"),
+                    new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi!", description: "Sharh mazmuni")
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Sharh muvaffaqiyatli qo'shildi",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(property: "message", type: "string", example: "Your review has been submitted and is pending approval"),
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "tour_id", type: "integer", example: 1),
+                                new OA\Property(property: "name", type: "string", example: "Alisher Navoiy"),
+                                new OA\Property(property: "rating", type: "integer", example: 5),
+                                new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi!"),
+                                new OA\Property(property: "is_checked", type: "boolean", example: false),
+                                new OA\Property(property: "created_at", type: "string", format: "date-time", example: "2025-02-20T10:30:00Z")
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 422, description: "Validatsiya xatosi")
+        ]
+    )]
     public function store(StoreClientReviewRequest $request): JsonResponse
     {
         $review = Review::create([
