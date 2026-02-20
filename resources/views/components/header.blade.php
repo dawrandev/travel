@@ -16,6 +16,9 @@
                       class="user-img-radious-style"> <span class="d-sm-none d-lg-inline-block"></span></a>
               <div class="dropdown-menu dropdown-menu-right pullDown">
                   <div class="dropdown-title">Toktarbay aga</div>
+                  <a href="#" class="dropdown-item has-icon text-danger" onclick="document.getElementById('logout-form').submit(); return false;">
+                      <i class="fas fa-sign-out-alt"></i> Logout
+                  </a>
                   <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                       @csrf
                   </form>

@@ -184,7 +184,7 @@
                         <div class="card-header bg-white border-bottom">
                             <h5 class="mb-0"><i class="fas fa-chart-pie text-primary"></i> Туры по категориям</h5>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body p-2">
                             <div id="chart7"></div>
                         </div>
                     </div>
@@ -218,7 +218,7 @@
         // Chart 1: Tours by Category (Pie Chart)
         var chart7Options = {
             chart: {
-                width: 360,
+                height: 400,
                 type: 'pie',
             },
             labels: @json($charts['tours_by_category']['labels']),
@@ -226,15 +226,15 @@
             responsive: [{
                 breakpoint: 480,
                 options: {
-                    chart: {
-                        width: 200
-                    },
                     legend: {
                         position: 'bottom'
                     }
                 }
             }],
-            colors: ['#7366ff', '#f73164', '#51bb25', '#ffc107', '#a927f9', '#f8d62b']
+            colors: ['#7366ff', '#f73164', '#51bb25', '#ffc107', '#a927f9', '#f8d62b'],
+            legend: {
+                position: 'right'
+            }
         };
 
         var chart7 = new ApexCharts(document.querySelector("#chart7"), chart7Options);

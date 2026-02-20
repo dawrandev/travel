@@ -98,8 +98,10 @@ class DashboardRepository
             ->having('tours_count', '>', 0)
             ->get()
             ->map(function ($category) {
+                $russianTranslation = $category->translations->firstWhere('lang_code', 'ru');
+                $name = $russianTranslation?->name ?? 'N/A';
                 return [
-                    'name' => $category->translations->first()?->name ?? 'N/A',
+                    'name' => $name,
                     'count' => $category->tours_count,
                 ];
             });

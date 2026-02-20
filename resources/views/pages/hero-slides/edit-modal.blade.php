@@ -86,3 +86,61 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#editSlideForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-sync-alt').addClass('fa-spinner fa-spin');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    swal({
+                        title: 'Успешно!',
+                        text: 'Слайд успешно обновлен',
+                        icon: 'success',
+                        button: 'ОК',
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    let errorMsg = 'Ошибка при обновлении';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
+                    }
+                    $submitBtn.prop('disabled', false);
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+                    swal({
+                        title: 'Ошибка!',
+                        text: errorMsg,
+                        icon: 'error',
+                        button: 'ОК',
+                    });
+                }
+            });
+        });
+
+        // Reset on modal close
+        $('#editSlideModal').on('hidden.bs.modal', function() {
+            $('#editSlideForm')[0].reset();
+            const $btn = $('#editSlideForm').find('button[type="submit"]');
+            $btn.prop('disabled', false);
+            $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
+        });
+    });
+</script>
+@endpush

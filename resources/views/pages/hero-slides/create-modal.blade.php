@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('hero-slides.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="createHeroSlideForm" action="{{ route('hero-slides.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <ul class="nav nav-pills mb-3" id="languageTabs" role="tablist">
@@ -85,3 +85,61 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#createHeroSlideForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-save').addClass('fa-spinner fa-spin');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    swal({
+                        title: 'Успешно!',
+                        text: 'Слайд успешно создан',
+                        icon: 'success',
+                        button: 'ОК',
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr) {
+                    let errorMsg = 'Ошибка при создании';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
+                    }
+                    $submitBtn.prop('disabled', false);
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
+                    swal({
+                        title: 'Ошибка!',
+                        text: errorMsg,
+                        icon: 'error',
+                        button: 'ОК',
+                    });
+                }
+            });
+        });
+
+        // Reset on modal close
+        $('#createModal').on('hidden.bs.modal', function() {
+            $('#createHeroSlideForm')[0].reset();
+            const $btn = $('#createHeroSlideForm').find('button[type="submit"]');
+            $btn.prop('disabled', false);
+            $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-save');
+        });
+    });
+</script>
+@endpush

@@ -106,6 +106,11 @@
         $('#editAboutForm').on('submit', function(e) {
             e.preventDefault();
 
+            const $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-sync-alt').addClass('fa-spinner fa-spin');
+
             const files = editAboutDropzone.getAcceptedFiles();
             const formData = new FormData(this);
 
@@ -150,6 +155,8 @@
                     } else if (xhr.responseJSON && xhr.responseJSON.errors) {
                         errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
                     }
+                    $submitBtn.prop('disabled', false);
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
                     swal({
                         title: 'Ошибка!',
                         text: errorMsg,
@@ -165,6 +172,9 @@
             $('#editAboutForm')[0].reset();
             editAboutDropzone.removeAllFiles();
             $('#currentAboutImages').empty();
+            const $btn = $('#editAboutForm').find('button[type="submit"]');
+            $btn.prop('disabled', false);
+            $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-sync-alt');
         });
     });
 

@@ -116,6 +116,11 @@
                 return false;
             }
 
+            const $submitBtn = $(this).find('button[type="submit"]');
+            $submitBtn.prop('disabled', true);
+            const $icon = $submitBtn.find('i');
+            $icon.removeClass('fa-save').addClass('fa-spinner fa-spin');
+
             // Create FormData from form
             const formData = new FormData(this);
 
@@ -156,6 +161,8 @@
                     } else if (xhr.responseJSON && xhr.responseJSON.errors) {
                         errorMsg = Object.values(xhr.responseJSON.errors).flat().join('\n');
                     }
+                    $submitBtn.prop('disabled', false);
+                    $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
                     swal({
                         title: 'Ошибка!',
                         text: errorMsg,
@@ -170,6 +177,9 @@
         $('#createModal').on('hidden.bs.modal', function() {
             $('#createAboutForm')[0].reset();
             createAboutDropzone.removeAllFiles();
+            const $btn = $('#createAboutForm').find('button[type="submit"]');
+            $btn.prop('disabled', false);
+            $btn.find('i').removeClass('fa-spinner fa-spin').addClass('fa-save');
         });
     });
 </script>
