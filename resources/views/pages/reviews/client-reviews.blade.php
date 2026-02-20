@@ -257,6 +257,7 @@
             success: function(response) {
                 if (response.success) {
                     $('#show_user_name').text(response.review.user_name);
+                    $('#show_email').text(response.review.email);
 
                     // Get tour name from Russian translation
                     var tourName = 'N/A';
@@ -267,47 +268,26 @@
                     @endforeach
                     $('#show_tour_name').text(tourName);
 
-                    // Rating stars
-                    var stars = '';
-                    for (var i = 1; i <= 5; i++) {
-                        stars += (i <= response.review.rating) ?
-                            '<i class="fas fa-star text-warning"></i> ' :
-                            '<i class="far fa-star text-warning"></i> ';
-                    }
-                    $('#show_rating').html(stars);
-
-                    // Video URL
-                    if (response.review.video_url) {
-                        $('#show_video_url').html('<a href="' + response.review.video_url + '" target="_blank" class="btn btn-sm btn-danger"><i class="fab fa-youtube"></i> Смотреть видео</a>');
+                    // Get comment from first available translation (prefer ru, then any other language)
+                    var comment = 'N/A';
+                    if (response.translations['ru']) {
+                        comment = response.translations['ru'].comment || 'N/A';
                     } else {
-                        $('#show_video_url').html('<span class="text-muted">Нет видео</span>');
+                        // Get first available translation
+                        for (var langCode in response.translations) {
+                            if (response.translations.hasOwnProperty(langCode)) {
+                                comment = response.translations[langCode].comment || 'N/A';
+                                break;
+                            }
+                        }
                     }
+                    $('#show_comment').text(comment);
 
-                    // Review URL
-                    if (response.review.review_url) {
-                        $('#show_review_url').html('<a href="' + response.review.review_url + '" target="_blank" class="btn btn-sm btn-info"><i class="fas fa-external-link-alt"></i> Перейти к отзыву</a>');
-                    } else {
-                        $('#show_review_url').html('<span class="text-muted">Нет ссылки</span>');
-                    }
-
-                    $('#show_sort_order').text(response.review.sort_order);
-
-                    // Status
-                    var statusBadge = response.review.is_active ?
-                        '<span class="badge badge-success badge-lg">Активен</span>' :
-                        '<span class="badge badge-danger badge-lg">Неактивен</span>';
-                    $('#show_status').html(statusBadge);
-
-                    // Translations
-                    @foreach($languages as $language)
-                    if (response.translations['{{ $language->code }}']) {
-                        $('#show_city_{{ $language->code }}').text(response.translations['{{ $language->code }}'].city || 'N/A');
-                        $('#show_comment_{{ $language->code }}').text(response.translations['{{ $language->code }}'].comment || 'N/A');
-                    } else {
-                        $('#show_city_{{ $language->code }}').text('N/A');
-                        $('#show_comment_{{ $language->code }}').text('N/A');
-                    }
-                    @endforeach
+                    // Checked status
+                    var checkedBadge = response.review.is_checked ?
+                        '<span class="badge badge-success">Одобрен</span>' :
+                        '<span class="badge badge-warning">Ожидает проверки</span>';
+                    $('#show_checked_status').html(checkedBadge);
 
                     $('#showModal').modal('show');
                 }

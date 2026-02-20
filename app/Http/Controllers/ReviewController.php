@@ -23,7 +23,6 @@ class ReviewController extends Controller
 
     public function index(): View
     {
-        // Get only admin reviews for the old index page
         $reviews = \App\Models\Review::with('translations', 'tour.translations')
             ->where('client_created', false)
             ->orderBy('created_at', 'desc')
@@ -92,11 +91,13 @@ class ReviewController extends Controller
                 'id' => $review->id,
                 'tour_id' => $review->tour_id,
                 'user_name' => $review->user_name,
+                'email' => $review->email,
                 'rating' => $review->rating,
                 'video_url' => $review->video_url,
                 'review_url' => $review->review_url,
                 'sort_order' => $review->sort_order,
-                'is_active' => $review->is_active
+                'is_active' => $review->is_active,
+                'is_checked' => $review->is_checked
             ],
             'translations' => $translations
         ]);
@@ -116,8 +117,13 @@ class ReviewController extends Controller
 
     public function destroy(int $id): RedirectResponse
     {
+        $review = \App\Models\Review::findOrFail($id);
+        $isClientReview = $review->client_created;
+
         $this->reviewService->delete($id);
-        return redirect()->route('reviews.index')->with('success', 'Отзыв успешно удален');
+
+        $route = $isClientReview ? 'reviews.client' : 'reviews.index';
+        return redirect()->route($route)->with('success', 'Отзыв успешно удален');
     }
 
     public function approve(int $id): RedirectResponse

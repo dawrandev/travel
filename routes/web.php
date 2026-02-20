@@ -20,7 +20,7 @@ Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('login.post');
 
 // Public routes
-Route::get('/reviews/add', function() {
+Route::get('/reviews/add', function () {
     return view('public.reviews.add', [
         'tours' => \App\Models\Tour::with('translations')->get()
     ]);
