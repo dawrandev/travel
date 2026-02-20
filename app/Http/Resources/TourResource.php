@@ -20,6 +20,7 @@ class TourResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'slug' => $translation->slug ?? null,
             'title' => $translation->title ?? '',
             'slogan' => $translation->slogan ?? '',
             'description' => $translation->description ?? '',

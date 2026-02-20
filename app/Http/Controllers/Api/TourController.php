@@ -51,6 +51,7 @@ class TourController extends Controller
                             items: new OA\Items(
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
+                                    new OA\Property(property: "slug", type: "string", example: "aral-sea-safari-tour"),
                                     new OA\Property(property: "title", type: "string", example: "Orol dengizi safari"),
                                     new OA\Property(property: "phone", type: "string", example: "+998901234567"), // Qo'shildi
                                     new OA\Property(property: "description", type: "string", example: "Ajoyib sayohat..."),
@@ -141,6 +142,7 @@ class TourController extends Controller
                             type: "object",
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "slug", type: "string", example: "nukus-cultural-one-day-tour"),
                                 new OA\Property(property: "title", type: "string", example: "Nukus madaniy turi"),
                                 new OA\Property(property: "phone", type: "string", example: "+998901234567"), // Qo'shildi
                                 new OA\Property(property: "slogan", type: "string", example: "O'zbekistonning madaniy poytaxti"),
@@ -224,7 +226,7 @@ class TourController extends Controller
                                 new OA\Property(
                                     property: "faq",
                                     type: "array",
-                                    description: "Tourga tegishli FAQ lar, kategoriya bo'yicha guruhlanган",
+                                    description: "Tourga tegishli FAQ lar, kategoriya bo'yicha guruhlanған",
                                     items: new OA\Items(
                                         properties: [
                                             new OA\Property(property: "title", type: "string", example: "Umumiy savollar"),
@@ -238,6 +240,22 @@ class TourController extends Controller
                                                     ]
                                                 )
                                             ),
+                                        ]
+                                    )
+                                ),
+                                new OA\Property(
+                                    property: "reviews",
+                                    type: "array",
+                                    description: "Shu turga tegishli client yozgan va tasdiqlangan sharhlar",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "id", type: "integer", example: 1),
+                                            new OA\Property(property: "user_name", type: "string", example: "Alisher Navoiy"),
+                                            new OA\Property(property: "rating", type: "integer", example: 5),
+                                            new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi! Juda yoqdi."),
+                                            new OA\Property(property: "city", type: "string", example: "Toshkent"),
+                                            new OA\Property(property: "video_url", type: "string", nullable: true, example: "https://youtube.com/watch?v=xxx"),
+                                            new OA\Property(property: "created_at", type: "string", format: "date-time", example: "2025-02-15T10:30:00+00:00"),
                                         ]
                                     )
                                 ),
@@ -256,6 +274,14 @@ class TourController extends Controller
         if (!$tour) {
             return response()->json(['success' => false, 'message' => 'Tour not found'], 404);
         }
+
+        // Load client reviews for this tour
+        $tour->load(['reviews' => function ($query) {
+            $query->where('client_created', true)
+                  ->where('is_checked', true)
+                  ->orderBy('created_at', 'desc')
+                  ->with('translations');
+        }]);
 
         return response()->json([
             'success' => true,
@@ -290,6 +316,7 @@ class TourController extends Controller
                             items: new OA\Items(
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
+                                    new OA\Property(property: "slug", type: "string", example: "aral-sea-safari-tour"),
                                     new OA\Property(property: "title", type: "string", example: "Orol dengizi safari"),
                                     new OA\Property(property: "phone", type: "string", example: "+998901234567"), // Qo'shildi
                                     new OA\Property(property: "description", type: "string", example: "Ajoyib sayohat..."),

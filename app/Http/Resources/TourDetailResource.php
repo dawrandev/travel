@@ -117,6 +117,20 @@ class TourDetailResource extends JsonResource
                         : null,
                 ];
             })->values(),
+
+            'reviews' => $this->reviews->map(function ($review) use ($lang) {
+                $reviewTranslation = $review->translations->firstWhere('lang_code', $lang)
+                    ?? $review->translations->first();
+
+                return [
+                    'id' => $review->id,
+                    'user_name' => $review->user_name,
+                    'email' => $review->email,
+                    'rating' => $review->rating,
+                    'comment' => $reviewTranslation->comment ?? '',
+                    'created_at' => $review->created_at->toIso8601String(),
+                ];
+            })->values(),
         ];
     }
 
