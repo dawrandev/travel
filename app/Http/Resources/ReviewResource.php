@@ -19,6 +19,8 @@ class ReviewResource extends JsonResource
             'city' => $translation?->city ?? '',
             'comment' => $translation?->comment ?? '',
             'rating' => $this->rating,
+            'sort_order' => $this->sort_order,
+            'is_active' => $this->is_active,
             'video_url' => $this->video_url,
             'review_url' => $this->review_url,
             'tour' => $this->when($this->tour, function () use ($lang) {

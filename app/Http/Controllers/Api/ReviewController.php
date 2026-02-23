@@ -18,7 +18,7 @@ class ReviewController extends Controller
         path: "/reviews",
         tags: ["Reviews"],
         summary: "Barcha sharhlarni olish",
-        description: "Aktiv sharhlarni ro'yxatini qaytaradi. Tour bo'yicha filter qilish mumkin.",
+        description: "Admin tomonidan yaratilgan aktiv sharhlarni ro'yxatini qaytaradi. Tour bo'yicha filter qilish mumkin. (client_created = false)",
         parameters: [
             new OA\Parameter(
                 name: "Accept-Language",
@@ -52,6 +52,8 @@ class ReviewController extends Controller
                                     new OA\Property(property: "city", type: "string", nullable: true, example: "Toshkent"),
                                     new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."),
                                     new OA\Property(property: "rating", type: "integer", example: 5),
+                                    new OA\Property(property: "sort_order", type: "integer", nullable: false, example: 1),
+                                    new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                     new OA\Property(property: "video_url", type: "string", nullable: true, example: "https://youtube.com/watch?v=xxx"),
                                     new OA\Property(
                                         property: "tour",
@@ -75,7 +77,8 @@ class ReviewController extends Controller
 
         $query = Review::with(['translations', 'tour.translations'])
             ->where('is_active', true)
-            ->where('is_checked', true);
+            ->where('is_checked', true)
+            ->where('client_created', false);
 
         // Filter by tour if provided
         if ($request->has('tour_id')) {
@@ -218,6 +221,8 @@ class ReviewController extends Controller
                                 new OA\Property(property: "city", type: "string", nullable: true, example: "Toshkent"),
                                 new OA\Property(property: "comment", type: "string", example: "Ajoyib tur edi! Juda yoqdi, hamma narsasi mukammal tashkil etilgan."),
                                 new OA\Property(property: "rating", type: "integer", example: 5),
+                                new OA\Property(property: "sort_order", type: "integer", nullable: false, example: 1),
+                                new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                 new OA\Property(property: "video_url", type: "string", nullable: true, example: "https://youtube.com/watch?v=xxx"),
                                 new OA\Property(
                                     property: "tour",
@@ -273,6 +278,7 @@ class ReviewController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Mijozlar sharhlari"),
+                                new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                 new OA\Property(
                                     property: "images",
                                     type: "array",

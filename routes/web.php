@@ -29,6 +29,8 @@ Route::get('/reviews/add', function () {
 Route::middleware('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/profile', [AuthController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
     Route::prefix('hero-slides')->name('hero-slides.')->group(function () {
         Route::get('/', [HeroSlideController::class, 'index'])->name('index');

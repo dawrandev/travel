@@ -20,6 +20,7 @@ class ContactBannerResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $translation->title ?? '',
+            'is_active' => $this->is_active,
             'images' => $images,
         ];
     }

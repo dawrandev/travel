@@ -64,6 +64,7 @@ class TourController extends Controller
                                     new OA\Property(property: "max_people", type: "integer", nullable: false, example: 15),
                                     new OA\Property(property: "rating", type: "number", nullable: false, example: 4.5),
                                     new OA\Property(property: "reviews_count", type: "integer", nullable: false, example: 10),
+                                    new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                     new OA\Property(
                                         property: "category",
                                         type: "object",
@@ -156,6 +157,7 @@ class TourController extends Controller
                                 new OA\Property(property: "max_people", type: "integer", nullable: false, example: 15),
                                 new OA\Property(property: "rating", type: "number", nullable: false, example: 4.5),
                                 new OA\Property(property: "reviews_count", type: "integer", nullable: false, example: 10),
+                                new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                 new OA\Property(
                                     property: "category",
                                     type: "object",
@@ -329,6 +331,7 @@ class TourController extends Controller
                                     new OA\Property(property: "max_people", type: "integer", nullable: false, example: 15),
                                     new OA\Property(property: "rating", type: "number", nullable: false, example: 4.8, description: "Eng yuqori rating"),
                                     new OA\Property(property: "reviews_count", type: "integer", nullable: false, example: 25),
+                                    new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                     new OA\Property(
                                         property: "category",
                                         type: "object",

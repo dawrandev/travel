@@ -40,6 +40,7 @@ class FaqController extends Controller
                                 properties: [
                                     new OA\Property(property: "id", type: "integer", example: 1),
                                     new OA\Property(property: "sort_order", type: "integer", nullable: false, example: 1),
+                                    new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                     new OA\Property(property: "question", type: "string", nullable: false, example: "Orolga borish uchun eng maqbul vaqt qachon?"),
                                     new OA\Property(property: "answer", type: "string", nullable: false, example: "Bizda iqlim keskin kontinental. Sayohat uchun eng ideal vaqt — bahor (aprel-may) va kuz (sentyabr-oktyabr) oylaridir."),
                                 ]

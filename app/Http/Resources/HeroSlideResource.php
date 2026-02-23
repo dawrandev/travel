@@ -17,6 +17,7 @@ class HeroSlideResource extends JsonResource
             'id' => $this->id,
             'image_path' => $this->formatImagePath($this->image_path),
             'sort_order' => $this->sort_order,
+            'is_active' => $this->is_active,
             'title' => $translation->title ?? '',
             'subtitle' => $translation->subtitle ?? '',
             'description' => $translation->description ?? null,

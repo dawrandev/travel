@@ -39,6 +39,7 @@ class AboutController extends Controller
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", nullable: false, example: "Sarguzashtlar olami"),
                                 new OA\Property(property: "description", type: "string", nullable: false, example: "Biz haqimizda batafsil..."),
+                                new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                 new OA\Property(
                                     property: "images",
                                     type: "array",
@@ -131,6 +132,7 @@ class AboutController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Biz haqimizda"),
+                                new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                 new OA\Property(
                                     property: "images",
                                     type: "array",

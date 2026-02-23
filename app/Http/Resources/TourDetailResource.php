@@ -34,6 +34,7 @@ class TourDetailResource extends JsonResource
             'max_people' => $this->max_people,
             'rating' => (float) $this->rating,
             'reviews_count' => $this->reviews_count,
+            'is_active' => $this->is_active,
             'category' => [
                 'id' => $this->category->id,
                 'name' => $categoryTranslation->name ?? '',

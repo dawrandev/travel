@@ -101,6 +101,7 @@ class ContactController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Biz bilan bog'laning"),
+                                new OA\Property(property: "is_active", type: "boolean", nullable: false, example: true),
                                 new OA\Property(
                                     property: "images",
                                     type: "array",

@@ -33,6 +33,7 @@ class AboutResource extends JsonResource
             'id' => $this->id,
             'title' => $translation->title ?? '',
             'description' => $translation->description ?? '',
+            'is_active' => $this->is_active,
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
