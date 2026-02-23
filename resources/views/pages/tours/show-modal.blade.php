@@ -141,6 +141,14 @@
                 itinerariesByDay[it.day_number].push(it);
             });
 
+            // Group accommodations by day_number (convert to string to match day keys)
+            const accommodationsByDay = {};
+            if (tour.accommodations && Array.isArray(tour.accommodations)) {
+                tour.accommodations.forEach(acc => {
+                    accommodationsByDay[String(acc.day_number)] = acc;
+                });
+            }
+
             // Sort days
             const days = Object.keys(itinerariesByDay).sort((a, b) => a - b);
 
@@ -175,6 +183,37 @@
                         </div>
                     `;
                 });
+
+                // Add accommodation for this day if exists
+                if (accommodationsByDay[day]) {
+                    const acc = accommodationsByDay[day];
+                    const ruAccTrans = acc.translations
+                        ? (acc.translations.find(t => t.lang_code === 'ru') || acc.translations[0])
+                        : null;
+                    const typeLabel = acc.type === 'accommodation' ? 'Размещение' : 'Рекомендация';
+
+                    let imageHtml = '';
+                    if (acc.image_path) {
+                        const imageSrc = acc.image_path.includes('/storage/')
+                            ? '/storage/' + acc.image_path.split('/').pop()
+                            : '/storage/uploads/' + acc.image_path.split('/').pop();
+                        imageHtml = `<img src="${imageSrc}" alt="Accommodation" style="max-height:120px; max-width:100%; object-fit: contain; border-radius:6px; margin-right:10px; display:inline-block; vertical-align:top;">`;
+                    }
+
+                    dayContent += `
+                        <div class="mt-3 pt-3 pb-2" style="border-top: 1px solid #e0e0e0;">
+                            <div class="d-flex align-items-start">
+                                ${imageHtml}
+                                <div style="flex:1;">
+                                    <p class="mb-1"><strong><i class="fas fa-bed mr-1"></i>${typeLabel}</strong></p>
+                                    ${ruAccTrans && ruAccTrans.name ? `<p class="mb-1"><strong>${ruAccTrans.name}</strong></p>` : ''}
+                                    ${ruAccTrans && ruAccTrans.description ? `<p class="text-muted small mb-1">${ruAccTrans.description}</p>` : ''}
+                                    ${acc.price !== null && acc.price !== undefined ? `<p class="mb-0"><small class="badge badge-success">💰 $${parseFloat(acc.price).toFixed(2)}</small></p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
 
                 tabContentHtml += `
                     <div class="tab-pane fade ${isActive} show" id="day-${day}" role="tabpanel">
@@ -213,29 +252,6 @@
         $('#showIncluded').html(includedHtml || '<p class="text-muted">Нет функций</p>');
         $('#showExcluded').html(excludedHtml || '<p class="text-muted">Нет функций</p>');
 
-        // Accommodations
-        let accHtml = '';
-        if (tour.accommodations && tour.accommodations.length > 0) {
-            tour.accommodations.forEach(acc => {
-                const ruAccTrans = acc.translations
-                    ? (acc.translations.find(t => t.lang_code === 'ru') || acc.translations[0])
-                    : null;
-                const typeBadge = acc.type === 'accommodation'
-                    ? '<span class="badge badge-info">Размещение</span>'
-                    : '<span class="badge badge-warning">Рекомендация</span>';
-                accHtml += `
-                    <div class="mb-2 p-2" style="border:1px solid #e0e0e0; border-radius:4px;">
-                        <strong>День ${acc.day_number}</strong> ${typeBadge}
-                        ${acc.price !== null && acc.price !== undefined ? '<span class="ml-2 text-muted">$' + parseFloat(acc.price).toFixed(2) + '</span>' : ''}
-                        ${ruAccTrans ? '<div><strong>' + (ruAccTrans.name || '') + '</strong> — ' + (ruAccTrans.description || '') + '</div>' : ''}
-                        ${acc.image_path ? '<img src="/storage/uploads/' + acc.image_path.split('/').pop() + '" style="max-height:60px; border-radius:4px; margin-top:4px;">' : ''}
-                    </div>
-                `;
-            });
-        } else {
-            accHtml = '<p class="text-muted">Размещение не добавлено</p>';
-        }
-        $('#showAccommodations').html(accHtml);
 
         // GIF map
         if (tour.gif_map) {
