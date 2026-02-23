@@ -235,6 +235,10 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- Pagination -->
+                <div class="mt-3">
+                    {{ $reviews->links() }}
+                </div>
             </div>
         </div>
     </div>

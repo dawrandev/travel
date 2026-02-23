@@ -11,7 +11,8 @@
       "Bash(git commit:*)",
       "Bash(tree:*)",
       "Bash(find:*)",
-      "Bash(ls -la \"C:\\\\laragon\\\\www\\\\travel\\\\resources\\\\views\\\\pages\\\\reviews\"\" | grep -i \"admin \")"
+      "Bash(ls -la \"C:\\\\laragon\\\\www\\\\travel\\\\resources\\\\views\\\\pages\\\\reviews\"\" | grep -i \"admin \")",
+      "Bash(git push)"
     ]
   }
 }

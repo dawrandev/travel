@@ -26,7 +26,7 @@ class ReviewController extends Controller
         $reviews = \App\Models\Review::with('translations', 'tour.translations')
             ->where('client_created', false)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15);
         $banner = ReviewBanner::first();
         $languages = Language::where('is_active', true)->get();
         $tours = Tour::with('translations')->get();
@@ -39,7 +39,7 @@ class ReviewController extends Controller
         $reviews = \App\Models\Review::with('translations', 'tour.translations')
             ->where('client_created', false)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15);
         $banner = ReviewBanner::first();
         $languages = Language::where('is_active', true)->get();
         $tours = Tour::with('translations')->get();
@@ -52,7 +52,7 @@ class ReviewController extends Controller
             ->where('client_created', true)
             ->orderBy('is_checked', 'asc')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15);
         $languages = Language::where('is_active', true)->get();
         $tours = Tour::with('translations')->get();
         $pendingCount = \App\Models\Review::where('client_created', true)->where('is_checked', false)->count();
