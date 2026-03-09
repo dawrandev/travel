@@ -17,6 +17,7 @@ class ContactRequest extends FormRequest
         $rules = [
             'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'whatsapp_phone' => 'nullable|string|max:255',
             'longitude' => 'nullable|string|max:255',
             'latitude' => 'nullable|string|max:255',
             'telegram_url' => 'nullable|url|max:255',
@@ -24,6 +25,7 @@ class ContactRequest extends FormRequest
             'instagram_url' => 'nullable|url|max:255',
             'instagram_username' => 'nullable|string|max:255',
             'facebook_url' => 'nullable|url|max:255',
+            'facebook_name' => 'nullable|string|max:255',
             'youtube_url' => 'nullable|url|max:255',
         ];
 
