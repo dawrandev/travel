@@ -74,13 +74,6 @@
                 <!-- Accommodations -->
                 <h5 class="mt-3"><i class="fas fa-bed"></i> Размещение / Рекомендация</h5>
                 <div id="showAccommodations"></div>
-
-                <!-- GIF Route Map -->
-                <h6 class="mt-3 mb-2"><i class="fas fa-film"></i> Маршрутная карта</h6>
-                <div id="showGifMap" style="display:none;">
-                    <img id="showGifMapImg" src="" alt="Route Map" style="max-height:180px; width:auto; border-radius:6px; display:block;">
-                </div>
-                <p id="showGifMapEmpty" class="text-muted small" style="display:none;">Карта не загружена</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -251,17 +244,6 @@
 
         $('#showIncluded').html(includedHtml || '<p class="text-muted">Нет функций</p>');
         $('#showExcluded').html(excludedHtml || '<p class="text-muted">Нет функций</p>');
-
-
-        // GIF map
-        if (tour.gif_map) {
-            $('#showGifMapImg').attr('src', tour.gif_map);
-            $('#showGifMap').show();
-            $('#showGifMapEmpty').hide();
-        } else {
-            $('#showGifMap').hide();
-            $('#showGifMapEmpty').show();
-        }
     }
 </script>
 @endpush

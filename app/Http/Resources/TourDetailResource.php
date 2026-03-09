@@ -101,8 +101,6 @@ class TourDetailResource extends JsonResource
                 })
                 ->values(),
 
-            'gif_map' => $this->gif_map ? '/storage/' . $this->gif_map : null,
-
             'accommodations' => $this->accommodations->map(function ($accommodation) use ($lang) {
                 $accTranslation = $accommodation->translations->firstWhere('lang_code', $lang)
                     ?? $accommodation->translations->first();

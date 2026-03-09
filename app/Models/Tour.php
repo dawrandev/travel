@@ -20,7 +20,6 @@ class Tour extends Model
         'min_age',
         'max_people',
         'is_active',
-        'gif_map',
     ];
 
     protected $casts = [

@@ -203,7 +203,6 @@ class TourController extends Controller
                                         ]
                                     )
                                 ),
-                                new OA\Property(property: "gif_map", type: "string", nullable: true, example: "/storage/uploads/route.gif"),
                                 new OA\Property(
                                     property: "accommodations",
                                     type: "array",

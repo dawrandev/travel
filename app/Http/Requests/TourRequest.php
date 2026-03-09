@@ -32,8 +32,6 @@ class TourRequest extends FormRequest
             'itineraries.*.day_number' => 'required|integer|min:1',
             'itineraries.*.event_time' => 'required|date_format:H:i:s,H:i',
 
-            'gif_map' => 'nullable|file|mimes:gif|max:10240',
-
             'accommodations'              => 'nullable|array',
             'accommodations.*.day_number' => 'required_with:accommodations|integer|min:1',
             'accommodations.*.type'       => 'required_with:accommodations|in:accommodation,recommendation',

@@ -63,12 +63,6 @@ class TourService
                 $this->createItineraries($tour->id, $data['itineraries']);
             }
 
-            // Store gif_map if uploaded
-            if (isset($data['gif_map']) && $data['gif_map'] instanceof \Illuminate\Http\UploadedFile) {
-                $path = $data['gif_map']->store('uploads', 'public');
-                $tour->update(['gif_map' => $path]);
-            }
-
             // Create accommodations
             if (isset($data['accommodations']) && is_array($data['accommodations'])) {
                 $this->createAccommodations($tour->id, $data['accommodations']);
@@ -149,15 +143,6 @@ class TourService
                 $this->createItineraries($tour->id, $data['itineraries']);
             }
 
-            // Update gif_map if new file uploaded
-            if (isset($data['gif_map']) && $data['gif_map'] instanceof \Illuminate\Http\UploadedFile) {
-                if ($tour->gif_map && Storage::disk('public')->exists($tour->gif_map)) {
-                    Storage::disk('public')->delete($tour->gif_map);
-                }
-                $path = $data['gif_map']->store('uploads', 'public');
-                $tour->update(['gif_map' => $path]);
-            }
-
             // Update accommodations
             foreach ($tour->accommodations as $accommodation) {
                 if ($accommodation->image_path && Storage::disk('public')->exists($accommodation->image_path)) {
@@ -199,11 +184,6 @@ class TourService
             if (Storage::disk('public')->exists($image->image_path)) {
                 Storage::disk('public')->delete($image->image_path);
             }
-        }
-
-        // Delete gif_map from storage
-        if ($tour->gif_map && Storage::disk('public')->exists($tour->gif_map)) {
-            Storage::disk('public')->delete($tour->gif_map);
         }
 
         return $this->tourRepository->delete($tour);

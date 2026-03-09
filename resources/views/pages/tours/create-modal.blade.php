@@ -135,15 +135,6 @@
 
                     <hr>
 
-                    <!-- GIF Route Map -->
-                    <h6 class="mb-3"><i class="fas fa-film"></i> Маршрутная карта (GIF)</h6>
-                    <div class="form-group">
-                        <input type="file" name="gif_map" id="gif_map_create" class="form-control-file" accept=".gif">
-                        <small class="text-muted">Только GIF формат. Макс. 10MB.</small>
-                    </div>
-
-                    <hr>
-
                     <!-- Features/Inclusions -->
                     <h6 class="mb-3">Функции тура</h6>
                     <div class="table-responsive">

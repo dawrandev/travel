@@ -34,7 +34,6 @@ class TourController extends Controller
         $tour = $this->tourService->findById($id);
 
         $tourData = $tour->toArray();
-        $tourData['gif_map'] = $tour->gif_map ? '/storage/' . $tour->gif_map : null;
 
         return response()->json([
             'success' => true,
@@ -112,7 +111,6 @@ class TourController extends Controller
                 'max_people' => $tour->max_people,
                 'phone' => $tour->phone,
                 'is_active' => $tour->is_active,
-                'gif_map' => $tour->gif_map ? '/storage/' . $tour->gif_map : null,
             ],
             'translations' => $translations,
             'itineraries' => $itineraries,

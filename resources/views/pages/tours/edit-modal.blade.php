@@ -146,19 +146,6 @@
 
                     <hr>
 
-                    <!-- GIF Route Map -->
-                    <h6 class="mb-3"><i class="fas fa-film"></i> Маршрутная карта (GIF)</h6>
-                    <div class="form-group">
-                        <div id="current_gif_map_container" class="mb-2" style="display:none;">
-                            <img id="current_gif_map" src="" alt="Route GIF" style="max-height:200px; border-radius:6px;">
-                            <small class="text-muted d-block">Текущий GIF</small>
-                        </div>
-                        <input type="file" name="gif_map" id="gif_map_edit" class="form-control-file" accept=".gif">
-                        <small class="text-muted">Только GIF формат. Макс. 10MB. Если не загружать — текущий сохранится.</small>
-                    </div>
-
-                    <hr>
-
                     <!-- Features -->
                     <h6 class="mb-3">Функции тура</h6>
                     <div class="table-responsive">
@@ -729,7 +716,6 @@
             editDropzone.removeAllFiles();
             $('#editItinerariesContainer').empty();
             $('#currentImages').empty();
-            $('#current_gif_map_container').hide();
             editItineraryCounter = 0;
             // Re-enable submit button
             const $btn = $('#editForm button[type="submit"]');
@@ -899,14 +885,6 @@
                         });
                     }
                 });
-            }
-
-            // GIF map
-            if (tour.gif_map) {
-                $('#current_gif_map').attr('src', tour.gif_map);
-                $('#current_gif_map_container').show();
-            } else {
-                $('#current_gif_map_container').hide();
             }
         } catch (error) {
             swal({

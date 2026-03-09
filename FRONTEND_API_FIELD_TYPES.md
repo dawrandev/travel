@@ -80,7 +80,6 @@ Bu dokumentatsiya Next.js da TypeScript types yaratish uchun zarur bo'lgan barch
 | images[].id | integer | Yes | No | | |
 | images[].url | string | Yes | No | | |
 | images[].is_main | boolean | Yes | No | | |
-| gif_map | string | No | Yes | | |
 | itineraries[].day_number | integer | Yes | No | | |
 | itineraries[].event_time | string | Yes | No | HH:MM | |
 | itineraries[].activity_title | string | Yes | No | | |
@@ -534,7 +533,6 @@ interface Tour {
     url: string;
     is_main: boolean;
   }>; // Required, not nullable
-  gif_map?: string | null; // Optional, nullable
 }
 ```
 
