@@ -712,19 +712,25 @@
         });
 
         // Feature toggle radio - allow deselecting by clicking again (Edit)
-        $(document).on('mousedown', '.edit-feature-radio', function(e) {
-            const $radio = $(this);
+        // Track checked state before click
+        $(document).on('mousedown', '.edit-feature-radio + label', function(e) {
+            const $label = $(this);
+            const $radio = $label.prev('.edit-feature-radio');
             if ($radio.prop('checked')) {
                 $radio.data('was-checked', true);
             }
         });
 
-        $(document).on('click', '.edit-feature-radio', function(e) {
-            const $radio = $(this);
-            if ($radio.data('was-checked')) {
-                $radio.prop('checked', false);
-                $radio.removeData('was-checked');
-            }
+        $(document).on('click', '.edit-feature-radio + label', function(e) {
+            const $label = $(this);
+            const $radio = $label.prev('.edit-feature-radio');
+            // Small delay to let default behavior complete first
+            setTimeout(function() {
+                if ($radio.data('was-checked')) {
+                    $radio.prop('checked', false);
+                    $radio.removeData('was-checked');
+                }
+            }, 10);
         });
 
         // Remove Time (Edit)

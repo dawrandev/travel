@@ -650,20 +650,25 @@
         });
 
         // Feature toggle radio - allow deselecting by clicking again
-        $(document).on('mousedown', '.feature-toggle-radio', function(e) {
-            const $radio = $(this);
+        // Track checked state before click
+        $(document).on('mousedown', '.feature-toggle-radio + label', function(e) {
+            const $label = $(this);
+            const $radio = $label.prev('.feature-toggle-radio');
             if ($radio.prop('checked')) {
-                // Mark for unchecking after click completes
                 $radio.data('was-checked', true);
             }
         });
 
-        $(document).on('click', '.feature-toggle-radio', function(e) {
-            const $radio = $(this);
-            if ($radio.data('was-checked')) {
-                $radio.prop('checked', false);
-                $radio.removeData('was-checked');
-            }
+        $(document).on('click', '.feature-toggle-radio + label', function(e) {
+            const $label = $(this);
+            const $radio = $label.prev('.feature-toggle-radio');
+            // Small delay to let default behavior complete first
+            setTimeout(function() {
+                if ($radio.data('was-checked')) {
+                    $radio.prop('checked', false);
+                    $radio.removeData('was-checked');
+                }
+            }, 10);
         });
 
         // Show/hide accommodation fields based on type
