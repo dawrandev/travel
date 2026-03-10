@@ -366,34 +366,77 @@
 
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
+                    console.log('XHR completed with status:', xhr.status);
                     if (xhr.status >= 200 && xhr.status < 300) {
-                        const response = JSON.parse(xhr.responseText);
-                        swal({
-                            title: 'Успешно!',
-                            text: 'Тур успешно создан',
-                            icon: 'success',
-                            button: 'ОК',
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        let errorMsg = 'Ошибка при создании тура';
                         try {
                             const response = JSON.parse(xhr.responseText);
-                            if (response.message) {
-                                errorMsg = response.message;
-                            } else if (response.errors) {
-                                errorMsg = Object.values(response.errors).flat().join('\n');
+                            swal({
+                                title: 'Успешно!',
+                                text: response.message || 'Тур успешно создан',
+                                icon: 'success',
+                                button: 'ОК',
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } catch (e) {
+                            // Server returned HTML instead of JSON
+                            console.log('Server returned non-JSON response, reloading...');
+                            swal({
+                                title: 'Успешно!',
+                                text: 'Тур успешно создан',
+                                icon: 'success',
+                                button: 'ОК',
+                            }).then(() => {
+                                location.reload();
+                            });
+                        }
+                    } else {
+                        let errorMsg = 'Произошла ошибка при создании тура. Пожалуйста, попробуйте еще раз.';
+
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.errors) {
+                                // Collect validation errors in Russian
+                                const errors = [];
+                                for (const [field, messages] of Object.entries(response.errors)) {
+                                    messages.forEach(msg => errors.push(msg));
+                                }
+                                if (errors.length > 0) {
+                                    errorMsg = errors.join('\n');
+                                }
+                            } else if (response.message) {
+                                // Use server message if it's not technical
+                                if (!response.message.includes('Exception') && !response.message.includes('Error')) {
+                                    errorMsg = response.message;
+                                }
                             }
                         } catch (e) {
-                            console.error('Failed to parse error response:', e);
+                            console.error('Parse error:', e);
                         }
+
+                        // User-friendly messages based on status code
+                        if (xhr.status === 422) {
+                            // Keep validation errors from above, or show default
+                            if (errorMsg === 'Произошла ошибка при создании тура. Пожалуйста, попробуйте еще раз.') {
+                                errorMsg = 'Пожалуйста, проверьте правильность заполнения всех полей.';
+                            }
+                        } else if (xhr.status === 413) {
+                            errorMsg = 'Размер загружаемых файлов слишком большой. Максимум 5MB на изображение.';
+                        } else if (xhr.status === 500) {
+                            errorMsg = 'Произошла ошибка на сервере. Пожалуйста, попробуйте позже.';
+                        } else if (xhr.status === 403) {
+                            errorMsg = 'У вас нет прав для выполнения этого действия.';
+                        } else if (xhr.status === 401) {
+                            errorMsg = 'Сессия истекла. Пожалуйста, обновите страницу и войдите заново.';
+                        }
+
                         swal({
                             title: 'Ошибка!',
                             text: errorMsg,
                             icon: 'error',
                             button: 'ОК',
                         });
+
                         // Re-enable submit button on error
                         $submitBtn.prop('disabled', false);
                         $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
@@ -412,6 +455,7 @@
                 $icon.removeClass('fa-spinner fa-spin').addClass('fa-save');
             };
 
+            console.log('Sending create tour request to:', formAction);
             xhr.send(formData);
         });
 
