@@ -711,6 +711,22 @@
             $(this).closest('.edit-itinerary-day').remove();
         });
 
+        // Feature toggle radio - allow deselecting by clicking again (Edit)
+        $(document).on('mousedown', '.edit-feature-radio', function(e) {
+            const $radio = $(this);
+            if ($radio.prop('checked')) {
+                $radio.data('was-checked', true);
+            }
+        });
+
+        $(document).on('click', '.edit-feature-radio', function(e) {
+            const $radio = $(this);
+            if ($radio.data('was-checked')) {
+                $radio.prop('checked', false);
+                $radio.removeData('was-checked');
+            }
+        });
+
         // Remove Time (Edit)
         $(document).on('click', '.remove-edit-time', function() {
             const timeItem = $(this).closest('.edit-time-item');

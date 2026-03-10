@@ -159,13 +159,13 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" name="feature_{{ $feature->id }}" id="feature_included_{{ $feature->id }}" value="included">
+                                            <input type="radio" class="custom-control-input feature-toggle-radio" name="feature_{{ $feature->id }}" id="feature_included_{{ $feature->id }}" value="included">
                                             <label class="custom-control-label" for="feature_included_{{ $feature->id }}"></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" name="feature_{{ $feature->id }}" id="feature_excluded_{{ $feature->id }}" value="excluded">
+                                            <input type="radio" class="custom-control-input feature-toggle-radio" name="feature_{{ $feature->id }}" id="feature_excluded_{{ $feature->id }}" value="excluded">
                                             <label class="custom-control-label" for="feature_excluded_{{ $feature->id }}"></label>
                                         </div>
                                     </td>
@@ -647,6 +647,23 @@
         // Remove Day
         $(document).on('click', '.remove-day', function() {
             $(this).closest('.itinerary-day').remove();
+        });
+
+        // Feature toggle radio - allow deselecting by clicking again
+        $(document).on('mousedown', '.feature-toggle-radio', function(e) {
+            const $radio = $(this);
+            if ($radio.prop('checked')) {
+                // Mark for unchecking after click completes
+                $radio.data('was-checked', true);
+            }
+        });
+
+        $(document).on('click', '.feature-toggle-radio', function(e) {
+            const $radio = $(this);
+            if ($radio.data('was-checked')) {
+                $radio.prop('checked', false);
+                $radio.removeData('was-checked');
+            }
         });
 
         // Show/hide accommodation fields based on type
