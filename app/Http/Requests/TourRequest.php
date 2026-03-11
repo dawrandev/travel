@@ -37,6 +37,7 @@ class TourRequest extends FormRequest
             'accommodations.*.type'       => 'required_with:accommodations|in:accommodation,recommendation',
             'accommodations.*.price'      => 'nullable|numeric|min:0',
             'accommodations.*.image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'accommodations.*.existing_image_path' => 'nullable|string',
         ];
 
         // Add validation rules for all languages
