@@ -133,6 +133,40 @@ class ReviewController extends Controller
         return redirect()->back()->with('success', 'Отзыв успешно одобрен');
     }
 
+    public function updateVideoUrl(Request $request, int $id): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'video_url' => 'nullable|url|max:500',
+            ], [
+                'video_url.url' => 'Некорректный URL видео. Пожалуйста, введите действительный URL.',
+                'video_url.max' => 'URL видео не должен превышать 500 символов.',
+            ]);
+
+            $review = \App\Models\Review::findOrFail($id);
+
+            // Explicitly set video_url, even if null
+            $videoUrl = $request->input('video_url', null);
+            $review->video_url = $videoUrl;
+            $review->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Видео URL успешно обновлен',
+                'data' => [
+                    'id' => $review->id,
+                    'video_url' => $review->video_url,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error updating video URL: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка при обновлении: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function storeBanner(ReviewBannerRequest $request): RedirectResponse
     {
         $this->reviewBannerService->create($request->validated());

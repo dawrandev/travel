@@ -32,6 +32,10 @@
                             <td class="font-weight-bold">Комментарий</td>
                             <td id="show_comment"></td>
                         </tr>
+                        <tr>
+                            <td class="font-weight-bold">Видео URL</td>
+                            <td id="show_video_url"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

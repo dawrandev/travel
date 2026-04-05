@@ -107,6 +107,7 @@ Route::middleware('admin')->group(function () {
         Route::post('/', [ReviewController::class, 'store'])->name('store');
         Route::put('/{id}', [ReviewController::class, 'update'])->name('update');
         Route::put('/{id}/approve', [ReviewController::class, 'approve'])->name('approve');
+        Route::put('/{id}/video-url', [ReviewController::class, 'updateVideoUrl'])->name('updateVideoUrl');
         Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
         Route::post('/banner', [ReviewController::class, 'storeBanner'])->name('banner.store');
         Route::put('/banner/{id}', [ReviewController::class, 'updateBanner'])->name('banner.update');

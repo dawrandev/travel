@@ -41,6 +41,7 @@
                                 <th>Тур</th>
                                 <th>Рейтинг</th>
                                 <th>Комментарий</th>
+                                <th>Видео URL</th>
                                 <th>Статус проверки</th>
                                 <th>Статус</th>
                                 <th>Действия</th>
@@ -68,6 +69,16 @@
                                 <td>{{ Str::limit($review->translations->where('lang_code', 'ru')->first()->comment ?? $review->translations->first()->comment ?? 'N/A', 50) }}</td>
 
                                 <td>
+                                    @if($review->video_url)
+                                    <a href="{{ $review->video_url }}" target="_blank" class="btn btn-sm btn-primary">
+                                        <i class="fab fa-youtube"></i> Видео
+                                    </a>
+                                    @else
+                                    <span class="text-muted">Нет</span>
+                                    @endif
+                                </td>
+
+                                <td>
                                     @if($review->is_checked)
                                     <span class="badge badge-success">Одобрен</span>
                                     @else
@@ -86,6 +97,9 @@
                                 <td style="white-space: nowrap;">
                                     <button class="btn btn-sm btn-info" onclick="showReview({{ $review->id }})" title="Просмотр">
                                         <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" onclick="editVideoUrl({{ $review->id }})" title="Редактировать видео URL">
+                                        <i class="fas fa-video"></i>
                                     </button>
                                     @if(!$review->is_checked)
                                     <form action="{{ route('reviews.approve', $review->id) }}" method="POST" style="display:inline-block;">
@@ -121,6 +135,7 @@
 
 @push('modals')
 @include('pages.reviews.show-modal')
+@include('pages.reviews.edit-video-url-modal')
 @endpush
 
 @push('styles')
@@ -194,7 +209,7 @@
             tbody.empty();
 
             if (reviews.length === 0) {
-                tbody.append('<tr><td colspan="9" class="text-center">Нет данных</td></tr>');
+                tbody.append('<tr><td colspan="10" class="text-center">Нет данных</td></tr>');
                 return;
             }
 
@@ -218,6 +233,11 @@
                     review.comment.substring(0, 50) + '...' :
                     (review.comment || 'N/A');
 
+                var videoUrlCell = review.video_url ?
+                    '<a href="' + review.video_url + '" target="_blank" class="btn btn-sm btn-primary">' +
+                    '<i class="fab fa-youtube"></i> Видео</a>' :
+                    '<span class="text-muted">Нет</span>';
+
                 var approveBtn = !review.is_checked ?
                     '<form action="/reviews/' + review.id + '/approve" method="POST" style="display:inline-block;">' +
                     '@csrf @method("PUT")' +
@@ -233,11 +253,15 @@
                     '<td>' + (review.tour_name || 'N/A') + '</td>' +
                     '<td>' + stars + '</td>' +
                     '<td>' + comment + '</td>' +
+                    '<td>' + videoUrlCell + '</td>' +
                     '<td>' + checkedBadge + '</td>' +
                     '<td>' + statusBadge + '</td>' +
                     '<td style="white-space: nowrap;">' +
                     '<button class="btn btn-sm btn-info" onclick="showReview(' + review.id + ')" title="Просмотр">' +
                     '<i class="fas fa-eye"></i>' +
+                    '</button> ' +
+                    '<button class="btn btn-sm btn-warning" onclick="editVideoUrl(' + review.id + ')" title="Редактировать видео URL">' +
+                    '<i class="fas fa-video"></i>' +
                     '</button> ' +
                     approveBtn +
                     '<form action="/reviews/' + review.id + '" method="POST" style="display:inline-block;" data-confirm-delete data-item-name="отзыв">' +
@@ -293,6 +317,13 @@
                         '<span class="badge badge-warning">Ожидает проверки</span>';
                     $('#show_checked_status').html(checkedBadge);
 
+                    // Video URL
+                    if (response.review.video_url) {
+                        $('#show_video_url').html('<a href="' + response.review.video_url + '" target="_blank">' + response.review.video_url + '</a>');
+                    } else {
+                        $('#show_video_url').text('Нет');
+                    }
+
                     $('#showModal').modal('show');
                 }
             },
@@ -306,5 +337,86 @@
             }
         });
     };
+
+    window.editVideoUrl = function(id) {
+        $.ajax({
+            url: ROUTES.translations.replace('{id}', id),
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    $('#edit_review_id').val(response.review.id);
+                    $('#edit_user_name_display').text(response.review.user_name);
+                    $('#edit_video_url').val(response.review.video_url || '');
+                    $('#editVideoUrlModal').modal('show');
+                }
+            },
+            error: function() {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Ошибка при загрузке данных',
+                    icon: 'error',
+                    button: 'ОК'
+                });
+            }
+        });
+    };
+
+    // Video URL update form submit handler
+    $('#editVideoUrlForm').on('submit', function(e) {
+        e.preventDefault();
+
+        var reviewId = $('#edit_review_id').val();
+        var videoUrl = $('#edit_video_url').val();
+
+        console.log('Submitting video URL update:', {
+            reviewId: reviewId,
+            videoUrl: videoUrl
+        });
+
+        $.ajax({
+            url: '/reviews/' + reviewId + '/video-url',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                _method: 'PUT',
+                video_url: videoUrl
+            },
+            beforeSend: function() {
+                console.log('Sending request...');
+            },
+            success: function(response) {
+                console.log('Success response:', response);
+                if (response.success) {
+                    swal({
+                        title: 'Успешно!',
+                        text: response.message || 'Видео URL успешно обновлен',
+                        icon: 'success',
+                        button: 'ОК'
+                    }).then(function() {
+                        $('#editVideoUrlModal').modal('hide');
+                        location.reload();
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error('Error response:', xhr);
+                var errorMessage = 'Ошибка при обновлении видео URL';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    var errors = xhr.responseJSON.errors;
+                    errorMessage = Object.values(errors).flat().join('\n');
+                }
+                swal({
+                    title: 'Ошибка!',
+                    text: errorMessage,
+                    icon: 'error',
+                    button: 'ОК'
+                });
+            }
+        });
+    });
 </script>
 @endpush

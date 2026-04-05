@@ -127,6 +127,7 @@ class TourDetailResource extends JsonResource
                     'email' => $review->email,
                     'rating' => $review->rating,
                     'comment' => $reviewTranslation->comment ?? '',
+                    'video_url' => $review->video_url,
                     'created_at' => $review->created_at->toIso8601String(),
                 ];
             })->values(),
