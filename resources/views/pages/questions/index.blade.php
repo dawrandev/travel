@@ -20,7 +20,7 @@
                 <div class="row mb-3">
                     <div class="col-md-5">
                         <div class="input-group">
-                            <input type="text" id="searchInput" class="form-control" placeholder="Поиск по имени, email, телефону, вопросу..." value="{{ request('search') }}">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Поиск по имени, email, WhatsApp телефону, региону, вопросу..." value="{{ request('search') }}">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -177,8 +177,12 @@
                                 <td>${question.email}</td>
                             </tr>
                             <tr>
-                                <th>Телефон</th>
-                                <td>${question.phone}</td>
+                                <th>WhatsApp телефон</th>
+                                <td>${question.whatsapp_phone}</td>
+                            </tr>
+                            <tr>
+                                <th>Регион</th>
+                                <td>${question.region || '<span class="text-muted">Не указано</span>'}</td>
                             </tr>
                             <tr>
                                 <th>Вопрос</th>

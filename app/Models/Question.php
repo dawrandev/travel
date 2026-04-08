@@ -12,7 +12,8 @@ class Question extends Model
         'tour_id',
         'full_name',
         'email',
-        'phone',
+        'whatsapp_phone',
+        'region',
         'comment',
         'status',
     ];

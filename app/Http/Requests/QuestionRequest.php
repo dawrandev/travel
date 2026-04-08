@@ -17,7 +17,8 @@ class QuestionRequest extends FormRequest
             'tour_id' => 'required|exists:tours,id',
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
+            'whatsapp_phone' => 'required|string|max:20',
+            'region' => 'nullable|string|max:255',
             'comment' => 'required|string|max:2000',
         ];
     }
@@ -32,8 +33,9 @@ class QuestionRequest extends FormRequest
             'email.required' => 'Email majburiy',
             'email.email' => 'To\'g\'ri email kiriting',
             'email.max' => 'Email 255 ta belgidan oshmasligi kerak',
-            'phone.required' => 'Telefon raqam majburiy',
-            'phone.max' => 'Telefon raqam 20 ta belgidan oshmasligi kerak',
+            'whatsapp_phone.required' => 'WhatsApp telefon raqam majburiy',
+            'whatsapp_phone.max' => 'WhatsApp telefon raqam 20 ta belgidan oshmasligi kerak',
+            'region.max' => 'Viloyat nomi 255 ta belgidan oshmasligi kerak',
             'comment.required' => 'Savol matni majburiy',
             'comment.max' => 'Savol matni 2000 ta belgidan oshmasligi kerak',
         ];

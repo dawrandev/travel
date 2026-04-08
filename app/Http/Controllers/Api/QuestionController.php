@@ -18,7 +18,7 @@ class QuestionController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ["tour_id", "full_name", "email", "phone", "comment"],
+                required: ["tour_id", "full_name", "email", "whatsapp_phone", "comment"],
                 properties: [
                     new OA\Property(
                         property: "tour_id",
@@ -40,10 +40,16 @@ class QuestionController extends Controller
                         example: "alisher@example.com"
                     ),
                     new OA\Property(
-                        property: "phone",
+                        property: "whatsapp_phone",
                         type: "string",
-                        description: "Telefon raqam",
+                        description: "WhatsApp telefon raqam",
                         example: "+998901234567"
+                    ),
+                    new OA\Property(
+                        property: "region",
+                        type: "string",
+                        description: "Viloyat/hudud (ixtiyoriy)",
+                        example: "Toshkent shahar"
                     ),
                     new OA\Property(
                         property: "comment",
@@ -70,7 +76,8 @@ class QuestionController extends Controller
                                 new OA\Property(property: "tour_id", type: "integer", example: 1),
                                 new OA\Property(property: "full_name", type: "string", example: "Alisher Navoiy"),
                                 new OA\Property(property: "email", type: "string", example: "alisher@example.com"),
-                                new OA\Property(property: "phone", type: "string", example: "+998901234567"),
+                                new OA\Property(property: "whatsapp_phone", type: "string", example: "+998901234567"),
+                                new OA\Property(property: "region", type: "string", example: "Toshkent shahar", nullable: true),
                                 new OA\Property(property: "comment", type: "string", example: "Bu tur qaysi oyda eng yaxshi vaqt?"),
                                 new OA\Property(property: "status", type: "string", example: "pending", description: "pending yoki answered"),
                                 new OA\Property(property: "created_at", type: "string", format: "date-time", example: "2026-02-01T12:00:00.000000Z"),
@@ -142,7 +149,8 @@ class QuestionController extends Controller
                 'tour_id' => $question->tour_id,
                 'full_name' => $question->full_name,
                 'email' => $question->email,
-                'phone' => $question->phone,
+                'whatsapp_phone' => $question->whatsapp_phone,
+                'region' => $question->region,
                 'comment' => $question->comment,
                 'status' => $question->status,
                 'created_at' => $question->created_at,

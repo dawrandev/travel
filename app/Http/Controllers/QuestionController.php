@@ -18,7 +18,8 @@ class QuestionController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('whatsapp_phone', 'like', "%{$search}%")
+                    ->orWhere('region', 'like', "%{$search}%")
                     ->orWhere('comment', 'like', "%{$search}%");
             });
         }

@@ -166,6 +166,11 @@ class TourController extends Controller
             $data['main_image_id'] = $request->input('main_image_id');
         }
 
+        // Add deleted_image_ids if present
+        if ($request->has('deleted_image_ids')) {
+            $data['deleted_image_ids'] = $request->input('deleted_image_ids');
+        }
+
         $tour = $this->tourService->update($id, $data);
 
         // Return JSON for AJAX requests

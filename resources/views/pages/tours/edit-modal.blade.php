@@ -117,18 +117,18 @@
                     <!-- Current Images -->
                     <h6 class="mb-3">Текущие изображения</h6>
                     <small class="text-muted d-block mb-2">
-                        <i class="fas fa-info-circle"></i> Выберите главное изображение
+                        <i class="fas fa-info-circle"></i> Выберите главное изображение. Нажмите <i class="fas fa-trash text-danger"></i> чтобы удалить изображение.
                     </small>
                     <div id="currentImages" class="row mb-3"></div>
                     <input type="hidden" name="main_image_id" id="main_image_id">
+                    <input type="hidden" name="deleted_image_ids" id="deleted_image_ids" value="">
 
                     <!-- New Images -->
-                    <h6 class="mb-3">Загрузить новые изображения (опционально)</h6>
+                    <h6 class="mb-3">Добавить новые изображения (опционально)</h6>
                     <div class="form-group">
                         <div id="dropzone-edit" class="dropzone"></div>
                         <small class="text-muted d-block mt-2">
-                            <i class="fas fa-info-circle"></i> Если загрузите новые изображения, старые будут удалены.<br>
-                            Если не загрузите, текущие изображения сохранятся.
+                            <i class="fas fa-info-circle"></i> Новые изображения будут добавлены к существующим (не удаленным).
                         </small>
                     </div>
 
@@ -201,13 +201,16 @@
 </div>
 
 @push('styles')
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
 @endpush
 
 @push('scripts')
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/lang/summernote-ru-RU.min.js"></script>
 <script>
+    Dropzone.autoDiscover = false;
     let editDropzone;
     let editItineraryCounter = 0;
 
@@ -454,6 +457,35 @@
                     button: 'ОК',
                 });
                 return false;
+            }
+
+            // Check if at least one image exists (existing not deleted OR new uploaded)
+            const remainingExistingImages = $('.existing-image-item').length;
+            const newFiles = editDropzone.getAcceptedFiles();
+            const totalImages = remainingExistingImages + newFiles.length;
+
+            if (totalImages === 0) {
+                swal({
+                    title: 'Ошибка!',
+                    text: 'Должно быть хотя бы одно изображение. Загрузите новое изображение или не удаляйте все существующие.',
+                    icon: 'error',
+                    button: 'ОК',
+                });
+                return false;
+            }
+
+            // Check if main image is selected (if there are existing images)
+            if (remainingExistingImages > 0) {
+                const mainImageSelected = $('input[name="main_image_radio"]:checked').length > 0;
+                if (!mainImageSelected) {
+                    swal({
+                        title: 'Ошибка!',
+                        text: 'Выберите главное изображение',
+                        icon: 'error',
+                        button: 'ОК',
+                    });
+                    return false;
+                }
             }
 
             // Reindex all itineraries before submit
@@ -753,6 +785,49 @@
             timeItem.remove();
         });
 
+        // Delete existing image
+        $(document).on('click', '.delete-existing-image', function(e) {
+            e.preventDefault();
+            const imageId = $(this).data('image-id');
+            const $imageItem = $(this).closest('.existing-image-item');
+
+            // Check if this is the main image
+            const isMainImage = $imageItem.find('input[name="main_image_radio"]').prop('checked');
+
+            swal({
+                title: 'Удалить изображение?',
+                text: isMainImage ? 'Это главное изображение. После удаления выберите другое главное изображение.' : 'Вы уверены, что хотите удалить это изображение?',
+                icon: 'warning',
+                buttons: ['Отмена', 'Удалить'],
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    // Add to deleted list
+                    let deletedIds = $('#deleted_image_ids').val();
+                    deletedIds = deletedIds ? deletedIds.split(',') : [];
+                    if (!deletedIds.includes(imageId.toString())) {
+                        deletedIds.push(imageId.toString());
+                    }
+                    $('#deleted_image_ids').val(deletedIds.join(','));
+
+                    // Remove from UI
+                    $imageItem.fadeOut(300, function() {
+                        $(this).remove();
+
+                        // If was main image, clear main_image_id
+                        if (isMainImage) {
+                            $('#main_image_id').val('');
+                        }
+
+                        // Check if any images remain
+                        if ($('.existing-image-item').length === 0) {
+                            $('#currentImages').html('<div class="col-12"><p class="text-muted">Нет изображений. Загрузите новые изображения ниже.</p></div>');
+                        }
+                    });
+                }
+            });
+        });
+
         // Reset on modal close
         $('#editModal').on('hidden.bs.modal', function() {
             $('#editForm')[0].reset();
@@ -760,6 +835,7 @@
             $('#editItinerariesContainer').empty();
             $('#currentImages').empty();
             editItineraryCounter = 0;
+            $('#deleted_image_ids').val('');
             // Re-enable submit button
             const $btn = $('#editForm button[type="submit"]');
             $btn.prop('disabled', false);
@@ -818,11 +894,17 @@
                         mainImageId = img.id;
                     }
                     imagesHtml += `
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3 mb-3 existing-image-item" data-image-id="${img.id}">
                         <div class="position-relative">
                             <img src="/storage/${img.image_path}" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;">
+                            <button type="button" class="btn btn-danger btn-sm delete-existing-image"
+                                    style="position: absolute; top: 5px; right: 5px; padding: 2px 6px;"
+                                    data-image-id="${img.id}"
+                                    title="Удалить изображение">
+                                <i class="fas fa-trash"></i>
+                            </button>
                             <div class="custom-control custom-radio mt-2">
-                                <input type="radio" class="custom-control-input" name="main_image_radio" id="main_img_${img.id}" value="${img.id}" ${img.is_main ? 'checked' : ''}>
+                                <input type="radio" class="custom-control-input existing-main-image-radio" name="main_image_radio" id="main_img_${img.id}" value="${img.id}" ${img.is_main ? 'checked' : ''}>
                                 <label class="custom-control-label" for="main_img_${img.id}">
                                     Главное фото
                                 </label>
@@ -834,6 +916,7 @@
             }
             $('#currentImages').html(imagesHtml);
             $('#main_image_id').val(mainImageId);
+            $('#deleted_image_ids').val('');
 
             // Handle main image selection - Remove old listeners first
             $('input[name="main_image_radio"]').off('change').on('change', function() {

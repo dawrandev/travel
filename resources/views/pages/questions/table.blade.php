@@ -6,7 +6,8 @@
                 <th>Тур</th>
                 <th>Имя</th>
                 <th>Email</th>
-                <th>Телефон</th>
+                <th>WhatsApp телефон</th>
+                <th>Регион</th>
                 <th>Вопрос</th>
                 <th>Статус</th>
                 <th>Создано</th>
@@ -26,7 +27,8 @@
                 </td>
                 <td>{{ $question->full_name }}</td>
                 <td>{{ $question->email }}</td>
-                <td>{{ $question->phone }}</td>
+                <td>{{ $question->whatsapp_phone }}</td>
+                <td>{{ $question->region ?? '-' }}</td>
                 <td>
                     <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ $question->comment }}">
                         {{ Str::limit($question->comment, 50) }}
@@ -61,7 +63,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="9" class="text-center text-muted">Вопросов не найдено</td>
+                <td colspan="10" class="text-center text-muted">Вопросов не найдено</td>
             </tr>
             @endforelse
         </tbody>

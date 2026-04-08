@@ -98,7 +98,26 @@ class TourService
             $tour->translations()->delete();
             $this->createTranslations($tour->id, $data);
 
-            // Update images (only if new images uploaded)
+            // Handle deleted images first
+            if (isset($data['deleted_image_ids']) && !empty($data['deleted_image_ids'])) {
+                $deletedIds = is_array($data['deleted_image_ids'])
+                    ? $data['deleted_image_ids']
+                    : explode(',', $data['deleted_image_ids']);
+
+                $deletedIds = array_filter($deletedIds); // Remove empty values
+
+                if (!empty($deletedIds)) {
+                    $imagesToDelete = $tour->images()->whereIn('id', $deletedIds)->get();
+                    foreach ($imagesToDelete as $image) {
+                        if (Storage::disk('public')->exists($image->image_path)) {
+                            Storage::disk('public')->delete($image->image_path);
+                        }
+                        $image->delete();
+                    }
+                }
+            }
+
+            // Handle new images upload (add to existing, not replace)
             if (isset($data['images']) && is_array($data['images']) && count($data['images']) > 0) {
                 // Check if actual files were uploaded
                 $hasNewImages = false;
@@ -110,25 +129,17 @@ class TourService
                 }
 
                 if ($hasNewImages) {
-                    // Delete old images
-                    foreach ($tour->images as $image) {
-                        if (Storage::disk('public')->exists($image->image_path)) {
-                            Storage::disk('public')->delete($image->image_path);
-                        }
-                    }
-                    $tour->images()->delete();
-
-                    // Create new images
+                    // Add new images (don't delete existing ones)
                     $this->createImages($tour->id, $data['images'], $data['main_image'] ?? null);
                 }
-            } else {
-                // No new images uploaded, but check if main image changed
-                if (isset($data['main_image_id'])) {
-                    // Reset all images to not main
-                    $tour->images()->update(['is_main' => false]);
-                    // Set selected image as main
-                    $tour->images()->where('id', $data['main_image_id'])->update(['is_main' => true]);
-                }
+            }
+
+            // Update main image selection
+            if (isset($data['main_image_id'])) {
+                // Reset all images to not main
+                $tour->images()->update(['is_main' => false]);
+                // Set selected image as main
+                $tour->images()->where('id', $data['main_image_id'])->update(['is_main' => true]);
             }
 
             // Update itineraries

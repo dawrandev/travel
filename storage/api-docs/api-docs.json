@@ -964,7 +964,7 @@
                                     "tour_id",
                                     "full_name",
                                     "email",
-                                    "phone",
+                                    "whatsapp_phone",
                                     "comment"
                                 ],
                                 "properties": {
@@ -984,10 +984,15 @@
                                         "format": "email",
                                         "example": "alisher@example.com"
                                     },
-                                    "phone": {
-                                        "description": "Telefon raqam",
+                                    "whatsapp_phone": {
+                                        "description": "WhatsApp telefon raqam",
                                         "type": "string",
                                         "example": "+998901234567"
+                                    },
+                                    "region": {
+                                        "description": "Viloyat/hudud (ixtiyoriy)",
+                                        "type": "string",
+                                        "example": "Toshkent shahar"
                                     },
                                     "comment": {
                                         "description": "Savol matni (maksimal 2000 belgi)",
@@ -1033,9 +1038,14 @@
                                                     "type": "string",
                                                     "example": "alisher@example.com"
                                                 },
-                                                "phone": {
+                                                "whatsapp_phone": {
                                                     "type": "string",
                                                     "example": "+998901234567"
+                                                },
+                                                "region": {
+                                                    "type": "string",
+                                                    "example": "Toshkent shahar",
+                                                    "nullable": true
                                                 },
                                                 "comment": {
                                                     "type": "string",
@@ -1930,11 +1940,6 @@
                                                         },
                                                         "type": "object"
                                                     }
-                                                },
-                                                "gif_map": {
-                                                    "type": "string",
-                                                    "example": "/storage/uploads/route.gif",
-                                                    "nullable": true
                                                 },
                                                 "accommodations": {
                                                     "description": "Har bir kun uchun turar joy yoki tavsiya",
