@@ -13,7 +13,8 @@
       "Bash(find:*)",
       "Bash(ls -la \"C:\\\\laragon\\\\www\\\\travel\\\\resources\\\\views\\\\pages\\\\reviews\"\" | grep -i \"admin \")",
       "Bash(git push)",
-      "Bash(git -C \"C:\\\\laragon\\\\www\\\\travel\" log --oneline --all --grep=\"gif_map\")"
+      "Bash(git -C \"C:\\\\laragon\\\\www\\\\travel\" log --oneline --all --grep=\"gif_map\")",
+      "Bash(curl:*)"
     ]
   }
 }
